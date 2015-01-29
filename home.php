@@ -20,12 +20,13 @@ if (isset($_POST['url']) and $_POST['url'] <> '') {
 		
 		if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
 		
+		/*
 		$sql = "SELECT url FROM Favs WHERE userid='".$userid."' AND url='".$url."' LIMIT 1";
 		$result = $mysqli->query($sql);
 				
 		if ($result->num_rows <> 0){
 			$errcode = text('Bookmark already exists: ').$url;
-		} else {
+		} else {*/
 			
 			if (!isset($_POST['title']) or $_POST['title'] == '') {
 				
@@ -53,16 +54,22 @@ if (isset($_POST['url']) and $_POST['url'] <> '') {
 				$title = $_POST['title'];
 			}
 						
-			$url = $mysqli->real_escape_string($url);
-			$title = $mysqli->real_escape_string($title);
+			$url = sanitize($mysqli->real_escape_string($url));
+			$title = sanitize($mysqli->real_escape_string($title));
+			$hash = md5($url);
 
-			$sql = "INSERT INTO Favs (userid, url, title, timepoint) VALUES ('".$userid."', '".$url."', '".$title."', '".$time."')";
+			$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
 			$result = $mysqli->query($sql);
+			$affectedRows = $mysqli->affected_rows;
 				
-			if (!$result) {
+			if ($result) {
+				$errcode = '';
+			} elseif ($affectedRows != 1) {
+				$errcode = text('This URL already exists.');
+			} else {
 				$errcode = text('There was an error, please try again.');
 			}
-		}
+		// }
 	}
 }
 
@@ -77,7 +84,7 @@ if (isset($_POST['fav-list-delete-item']) and $_POST['fav-list-delete-item'] <> 
 	}
 }
 
-$sql = "SELECT * FROM Favs WHERE userid='".$userid."'";
+$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
 $result = $mysqli->query($sql);
 
 if ($result) {
@@ -85,19 +92,20 @@ if ($result) {
 		$fav_list = "";
 		
 		while ($row = $result->fetch_array()) {
-			$fav_id = $row[0];
-			$url = $row[2];
-			$title = $row[3];
-			$timestamp = $row[4];
+			$fav_id = $row['id'];
+			$url = $row['url'];
+			$title = $row['title'];
+			$timestamp = $row['timepoint'];
 			
-			if (strlen($title) > 70) {
-				$title = substr($title, 0, 46)." ... ".substr($title, -15);
-			}
+			// Shortening the title if it's too long (Method from Discuz!)		
+			$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
 			
-			$fav_list .= "<tr><td><a href=\"".$url."\" target=\"_blank\">".$title."</a></td><td>".date(text('H:i:s M d, Y'), $timestamp)."</td><td><form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"fav-list-delete-item\" value=\"".$fav_id."\" /><input type=\"submit\" value=\"".text('Delete')."\" class=\"btn btn-xs\" /></form></td></tr>";
+			$titleHTML = ($title == $titleTrimmed) ? '' : $title;
+			
+			$fav_list .= '<tr><td><a href="'.$url.'" title="'.$titleHTML.'" target="_blank">'.$titleTrimmed.'</a></td><td>'.date(text('H:i:s M d, Y'), $timestamp).'</td><td><form action="home.php" method="post"><input type="hidden" name="fav-list-delete-item" value="'.$fav_id.'" /><input type="submit" value="'.text('Delete').'" class="btn btn-xs" /></form></td></tr>';
 		}		
 	} else {
-		$fav_list = "<h4><span class=\"label label-default\">".text('No bookmarks yet? Start to save them right away!')."</span></h4>";
+		$fav_list = '<h4><span class="label label-default">'.text('No bookmarks yet? Start to save them right away!').'</span></h4>';
 	}
 }
 

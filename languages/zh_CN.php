@@ -79,4 +79,6 @@ $GLOBALS['zh_CN'] = Array (
 	'Confirm New Password' => '重复新密码',
 	'About' => '关于',
 	'This is about dialog text' => 'FavNow 可以让你在线存储书签。你可以轻松地保存、编辑以及删除书签，高效地进行书签管理。',
+	
+	'This URL already exists.' => '此 URL 已存在。',
 );

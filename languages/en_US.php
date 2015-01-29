@@ -79,4 +79,6 @@ $GLOBALS['en_US'] = Array (
 	'Confirm New Password' => 'Confirm New Password',
 	'About' => 'About',
 	'This is about dialog text' => 'FavNow is a place for your bookmarks online. You can save, edit and delete your bookmarks with ease, and manage them in an effective way.',
+	
+	'This URL already exists.' => 'This URL already exists.',
 );
