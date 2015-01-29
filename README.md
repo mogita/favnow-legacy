@@ -1,7 +1,7 @@
 FavNow
 =========
 
-A PHP-based online multi-user bookmark service.
+A multi-user bookmark app in PHP & MYSQL, with Bootstrap.
 
 ---
 
