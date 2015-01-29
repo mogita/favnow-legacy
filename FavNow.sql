@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: 2015-01-19 04:17:02
+-- Generation Time: 2015-01-30 02:41:27
 -- 服务器版本： 5.5.34
 -- PHP Version: 5.5.10
 
@@ -22,14 +22,17 @@ USE `favnow`;
 -- 表的结构 `Favs`
 --
 
+DROP TABLE IF EXISTS `Favs`;
 CREATE TABLE IF NOT EXISTS `Favs` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`userid` int(11) NOT NULL,
-	`url` varchar(2083) NOT NULL,
-	`title` varchar(200) NOT NULL,
-	`timepoint` int(11) NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `url` varchar(2083) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `timepoint` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `hash` (`hash`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=40 ;
 
 -- --------------------------------------------------------
 
@@ -39,11 +42,11 @@ CREATE TABLE IF NOT EXISTS `Favs` (
 
 DROP TABLE IF EXISTS `PreRegister`;
 CREATE TABLE IF NOT EXISTS `PreRegister` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`email` varchar(254) NOT NULL,
-	`preregtime` int(11) NOT NULL,
-	`notified` int(11) NOT NULL,
-	PRIMARY KEY (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(254) NOT NULL,
+  `preregtime` int(11) NOT NULL,
+  `notified` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
@@ -54,12 +57,12 @@ CREATE TABLE IF NOT EXISTS `PreRegister` (
 
 DROP TABLE IF EXISTS `Users`;
 CREATE TABLE IF NOT EXISTS `Users` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`user` varchar(32) NOT NULL,
-	`password` varchar(100) NOT NULL,
-	`email` varchar(254) NOT NULL,
-	`jointime` int(11) NOT NULL,
-	`resetcode` varchar(100) NOT NULL,
-	`resetcodetime` int(11) NOT NULL,
-	PRIMARY KEY (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` varchar(32) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `jointime` int(11) NOT NULL,
+  `resetcode` varchar(100) NOT NULL,
+  `resetcodetime` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
