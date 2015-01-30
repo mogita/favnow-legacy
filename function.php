@@ -1,16 +1,12 @@
 <?php
-session_start();
-// error_reporting(E_ALL); 
+/*
+ * Functionalities definition for Favnow
+ * Author: mogita
+ * 
+*/
 
-require_once(__DIR__.'/../config.php');
-require_once('UI_text.php');
+if (basename($_SERVER['PHP_SELF'] == basename(__FILE__))) die();
 
-$errcode = "";
-
-$mysqli = new Mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-$mysqli->set_charset("utf8");
-
-/*-------------------------- Functions --------------------------*/
 
 // Trimming strings method from Discuz!
 function cutstr($string, $length, $charset, $dot = '...') {
@@ -80,7 +76,7 @@ function sanitize($str)
 	$str = strip_tags($str);
 	$str = trim($str);
 	$str = htmlspecialchars($str);
-	$str = mysql_real_escape_string($str);
+	// $str = mysql_real_escape_string($str);
 
 	return $str;
 }

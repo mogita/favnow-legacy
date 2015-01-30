@@ -81,4 +81,9 @@ $GLOBALS['en_US'] = Array (
 	'This is about dialog text' => 'FavNow is a place for your bookmarks online. You can save, edit and delete your bookmarks with ease, and manage them in an effective way.',
 	
 	'This URL already exists.' => 'This URL already exists.',
+	
+	'Bookmark deleted.' => 'Bookmark deleted.',
+	'Unable to establish database connection: ' => 'Unable to establish database connection: ',
+	'Unable to establish database connection.' => 'Unable to establish database connection.',
+	'Unable to fetch bookmarks: ' => 'Unable to fetch bookmarks: ',
 );

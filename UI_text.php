@@ -5,7 +5,7 @@
  * @file UI_text.php
  * @brief Language files hub for a more convenient include
  *
- * @author mogita <mogita@163.com>
+ * @author mogita <himogita@gmail.com>
  * @date 14-3-9
  */
 
@@ -37,6 +37,6 @@ function text($string) {
 		return $GLOBALS[$lang][$string];
 	} else {
 		error_log("l10n error: locale: "."$lang, message:'$string'");
-		return $string.'*?';
+		return $string.' *L10N?';
 	}
 }

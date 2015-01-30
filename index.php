@@ -1,8 +1,13 @@
 <?php
-require_once('lib/favnow.lib.php');
+require_once 'config.php';
+include 'query.php';
+// include 'function.php';
+
 $title_pattern = text('Login');
 
 if (isset($_SESSION['loggedin']) and $_SESSION['loggedin']) header("Location: home.php");
+
+$mysqli = newDBConn();
 
 if (isset($_POST['usn']) and isset($_POST['pwd']) and $_POST['usn'] <> '' and $_POST['pwd'] <> '') {
 	
@@ -35,10 +40,10 @@ if (isset($_POST['usn']) and isset($_POST['pwd']) and $_POST['usn'] <> '' and $_
 			header("Location: home.php");
 			exit;
 		} else {
-			$errcode = text('Username or password incorrect');
+			$msg = text('Username or password incorrect');
 		}	
 	} else {
-		$errcode = text('Username or password incorrect');
+		$msg = text('Username or password incorrect');
 	}
 }
 
@@ -52,7 +57,7 @@ include('head.php');
 										
 					<form action="index.php" method="post" role="form">
 						<h2 class="form-signin-heading"><?php echo text('Login') ?></h2>
-						<div class="alert alert-danger <?php if ($errcode == '') echo 'hidden'; ?>" role="alert"><?php echo $errcode; ?></div>
+						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						<div class="alert alert-success <?php if (!isset($_SESSION['warncode']) or $_SESSION['warncode'] == '') echo 'hidden'; ?>" role="alert"><?php if (isset($_SESSION['warncode']) and $_SESSION['warncode'] <> '') { echo $_SESSION['warncode']; $_SESSION['warncode'] = ''; } ?></div>
 						
 						<div class="form-group">

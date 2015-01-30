@@ -1,7 +1,11 @@
 <?php
-require_once('lib/favnow.lib.php');
+require_once 'config.php';
+include 'query.php';
+// include 'function.php';
 
 $title_pattern = text('Change Password');
+
+$mysqli = newDBConn();
 
 if (isset($_GET['code']) or isset($_POST['code'])) {
 	
@@ -41,9 +45,9 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 					$securimage = new Securimage();
 
 					if (!$securimage->check($_POST['captcha'])) {
-						$errcode = text('Captcha incorrect, please try again.');
+						$msg = text('Captcha incorrect, please try again.');
 					} elseif ($_POST['newpwd1'] <> $_POST['newpwd2']) {
-						$errcode = text('The passwords you entered do not match.');
+						$msg = text('The passwords you entered do not match.');
 					} else {
 						$password = strip_tags(substr($_POST['newpwd1'], 0, 32));
 						$safepwd = crypt(md5($password), md5($username).'romeoyjulieta');
@@ -86,7 +90,7 @@ include('head.php');
 										
 					<form action="reset_step2.php" method="post" role="form">
 						<h2 class="form-signin-heading"><?php echo text('Change Password'); ?></h2>
-						<div class="alert alert-danger <?php if ($errcode == '') echo 'hidden'; ?>" role="alert"><?php echo $errcode; ?></div>
+						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						<div class="alert alert-warning <?php if ($warncode == '') echo 'hidden'; ?>" role="alert"><?php echo $warncode; ?></div>
 						
 						<div class="form-group">

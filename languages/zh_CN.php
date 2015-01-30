@@ -59,7 +59,7 @@ $GLOBALS['zh_CN'] = Array (
 	'There were problems deleting, please try again.' => '删除时出错，请重试。',
 	'H:i:s M d, Y' => 'Y 年 m 月 d 日 H:i:s',
 	'Delete' => '删除',
-	'No bookmarks yet? Start to save them right away!' => '还没有保存书签？请在上面试着保存一条吧！',
+	'No bookmarks yet? Start to save them right away!' => '还没有书签？那么现在就来保存吧！',
 	'Hello, ' => '你好，',
 	'Kun' => '君',
 	'Logout' => '登出',
@@ -81,4 +81,9 @@ $GLOBALS['zh_CN'] = Array (
 	'This is about dialog text' => 'FavNow 可以让你在线存储书签。你可以轻松地保存、编辑以及删除书签，高效地进行书签管理。',
 	
 	'This URL already exists.' => '此 URL 已存在。',
+	
+	'Bookmark deleted.' => '书签已删除。',
+	'Unable to establish database connection: ' => '无法连接到数据库：',
+	'Unable to establish database connection.' => '无法连接到数据库。',
+	'Unable to fetch bookmarks: ' => '无法读取书签：',
 );

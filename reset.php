@@ -1,20 +1,24 @@
 <?php
-require_once('lib/favnow.lib.php');
-require_once('lib/phpmailer/class.phpmailer.php');
-require_once('lib/phpmailer/class.smtp.php');
+require_once 'config.php';
+include 'query.php';
+// include 'function.php';
+require_once 'lib/phpmailer/class.phpmailer.php';
+require_once 'lib/phpmailer/class.smtp.php';
 
 $title_pattern = text('Reset Password');
+
+$mysqli = newDBConn();
 
 if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']) and $_POST['captcha'] <> '') {
 	include_once 'lib/securimage/securimage.php';
 	$securimage = new Securimage();
 
 	if (!$securimage->check($_POST['captcha'])) {
-		$errcode = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again.');
 	} else {
 		
 		if (strlen($_POST['email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['email'])) {
-			$errcode = text('Email incorrect, please try again.');
+			$msg = text('Email incorrect, please try again.');
 		} else {
 			$sql = "SELECT email FROM Users WHERE email='".$mysqli->real_escape_string($_POST['email'])."' LIMIT 1";
 			$result = $mysqli->query($sql);
@@ -51,15 +55,15 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$mailer->AltBody = $mailer->Body;
 						
 					if (!$mailer->Send()) {
-						$errcode = text('There were problems sending the link, please try again.')/*.$mailer->ErrorInfo*/;
+						$msg = text('There were problems sending the link, please try again.')/*.$mailer->ErrorInfo*/;
 					} else {
 						$warncode = text('The link was sent to ').$_POST['email'].text(', only valid within 48 hours and once. Keep it safe and secret. Check your spam folder if you didn\'t see the email.');
 					}					
 				} else {
-					$errcode = text('This Email does not match any records.');
+					$msg = text('This Email does not match any records.');
 				}
 			} else {
-				$errcode = text('There were problems inquiring, please try again.');
+				$msg = text('There were problems inquiring, please try again.');
 			}
 		}
 	}
@@ -75,7 +79,7 @@ include('head.php');
 										
 					<form action="reset.php" method="post" role="form">
 						<h2 class="form-signin-heading"><?php echo text('Reset Password'); ?></h2>
-						<div class="alert alert-danger <?php if ($errcode == '') echo 'hidden'; ?>" role="alert"><?php echo $errcode; ?></div>
+						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						<div class="alert alert-danger <?php if (!isset($_SESSION['errcode']) or $_SESSION['errcode'] == '') echo 'hidden'; ?>" role="alert"><?php if (isset($_SESSION['errcode']) and $_SESSION['errcode'] <> '') { echo $_SESSION['errcode']; $_SESSION['errcode'] = ''; } ?></div>
 						<div class="alert alert-warning <?php if ($warncode == '') echo 'hidden'; ?>" role="alert"><?php echo $warncode; ?></div>
 						

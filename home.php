@@ -1,5 +1,7 @@
 <?php
-require_once('lib/favnow.lib.php');
+require_once 'config.php';
+include 'query.php';
+include 'function.php';
 
 if (!$_SESSION['loggedin']) header("Location: logout.php");
 if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
@@ -7,108 +9,48 @@ $userid = $_SESSION['userid'];
 
 $title_pattern = text('Home');
 
+// Adding a bookmark
 if (isset($_POST['url']) and $_POST['url'] <> '') {
-	$url = $_POST['url'];
-	
-	if (strlen($url) > 500) {
-		$errcode = text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.');
-	} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
-		$errcode = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
-	}*/ else {
-				
-		$time = time();
-		
-		if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
-		
-		/*
-		$sql = "SELECT url FROM Favs WHERE userid='".$userid."' AND url='".$url."' LIMIT 1";
-		$result = $mysqli->query($sql);
-				
-		if ($result->num_rows <> 0){
-			$errcode = text('Bookmark already exists: ').$url;
-		} else {*/
-			
-			if (!isset($_POST['title']) or $_POST['title'] == '') {
-				
-				$ctx = stream_context_create(array(
-					'http' => array(
-						'timeout' => 7
-						)
-					)
-				);
-				
-				$content = file_get_contents($url, 0, $ctx);
-				
-				if (strlen($content) > 0) {
-					preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
-					if (isset($title[1]) and $title[1] <> '') {
-						$title = $title[1];
-					} else {
-						$title = $url;
-					}
-				} else {
-					$title = $url;
-				}
-				
-			} else {
-				$title = $_POST['title'];
-			}
-						
-			$url = sanitize($mysqli->real_escape_string($url));
-			$title = sanitize($mysqli->real_escape_string($title));
-			$hash = md5($url);
-
-			$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
-			$result = $mysqli->query($sql);
-			$affectedRows = $mysqli->affected_rows;
-				
-			if ($result) {
-				$errcode = '';
-			} elseif ($affectedRows != 1) {
-				$errcode = text('This URL already exists.');
-			} else {
-				$errcode = text('There was an error, please try again.');
-			}
-		// }
-	}
+	$msg = addBookmark($_POST['url'], $userid, $_POST['title']);
 }
 
+// Deleting a bookmark
 if (isset($_POST['fav-list-delete-item']) and $_POST['fav-list-delete-item'] <> '') {
-	$fav_id = $_POST['fav-list-delete-item'];
-	
-	$sql = "DELETE FROM Favs WHERE id=\"".$fav_id."\" AND userid=\"".$userid."\"";
-	$result = $mysqli->query($sql);
-	
-	if (!$result) {
-		$errcode = text('There were problems deleting, please try again.');
-	}
+	$msg = deleteBookmark($_POST['fav-list-delete-item'], $userid);
 }
 
-$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
-$result = $mysqli->query($sql);
+// Reading bookmarks
+$result = readBookmark($userid);
+$count = $result[1];
+$bookmark = $result[2];
+$favlist = '';
 
-if ($result) {
-	if ($result->num_rows > 0) {
-		$fav_list = "";
+if ($count == -1) {
+	
+	$msg = text('Unable to fetch bookmarks: ').$result[0];
+	
+} elseif ($count == 0) {
+	
+	$favlist = '<h4><span class="label label-default">'.text('No bookmarks yet? Start to save them right away!').'</span></h4>';
+	
+} else {
 		
-		while ($row = $result->fetch_array()) {
-			$fav_id = $row['id'];
-			$url = $row['url'];
-			$title = $row['title'];
-			$timestamp = $row['timepoint'];
-			
-			// Shortening the title if it's too long (Method from Discuz!)		
-			$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
-			
-			$titleHTML = ($title == $titleTrimmed) ? '' : $title;
-			
-			$fav_list .= '<tr><td><a href="'.$url.'" title="'.$titleHTML.'" target="_blank">'.$titleTrimmed.'</a></td><td>'.date(text('H:i:s M d, Y'), $timestamp).'</td><td><form action="home.php" method="post"><input type="hidden" name="fav-list-delete-item" value="'.$fav_id.'" /><input type="submit" value="'.text('Delete').'" class="btn btn-xs" /></form></td></tr>';
-		}		
-	} else {
-		$fav_list = '<h4><span class="label label-default">'.text('No bookmarks yet? Start to save them right away!').'</span></h4>';
+	foreach ($bookmark as $row) {
+		$favid = $row['id'];
+		$url = $row['url'];
+		$title = $row['title'];
+		$time = $row['timepoint'];
+		
+		// Shortening the title if it's too long (Method from Discuz!)		
+		$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
+		
+		$titleHTML = ($title == $titleTrimmed) ? '' : $title;
+		
+		$favlist .= '<tr><td><a href="'.$url.'" title="'.$titleHTML.'" target="_blank">'.$titleTrimmed.'</a></td><td>'.date(text('H:i:s M d, Y'), $time).'</td><td><form action="home.php" method="post"><input type="hidden" name="fav-list-delete-item" value="'.$favid.'" /><input type="submit" value="'.text('Delete').'" class="btn btn-xs" /></form></td></tr>';
 	}
 }
 
+// Loading home page now
 include('head.php');
 ?>
 <script>
@@ -241,7 +183,7 @@ $(function(){
 									<input type="submit" value="<?php echo text('Add'); ?>" class="btn btn-sm btn-primary" />
 								</form>
 							</div>
-							<div class="panel-footer <?php if ($errcode == '') echo 'hidden'; ?>" role="alert"  style="margin-top: 15px; word-wrap: break-word;"><?php echo $errcode; ?></div>
+							<div class="panel-footer <?php if ($msg == '') echo 'hidden'; ?>" role="alert"  style="margin-top: 15px; word-wrap: break-word;"><?php echo $msg; ?></div>
 							
 						</div>
 				</div>
@@ -253,7 +195,7 @@ $(function(){
 						<div class="panel-body">
 						<table class="table table-hover">
 							<tr>
-								<p><?php echo $fav_list; ?></p>
+								<p><?php echo $favlist; ?></p>
 							</tr>
 						</table>
 					</div>

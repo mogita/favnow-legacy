@@ -1,5 +1,7 @@
 <?php
-require_once('lib/favnow.lib.php');
+require_once 'config.php';
+include 'query.php';
+// include 'function.php';
 
 if (!REGISTER_OPEN) {
 	$title_pattern = text('Preserve');
@@ -7,16 +9,18 @@ if (!REGISTER_OPEN) {
 	$title_pattern = text('Register');
 }
 
+$mysqli = newDBConn();
+
 if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 	include_once 'lib/securimage/securimage.php';
 	$securimage = new Securimage();
 	
 	if ($_POST['pre-email'] == '' or $_POST['captcha'] == '') {
-		$errcode = text('Please fill in all the required fields.');
+		$msg = text('Please fill in all the required fields.');
 	} elseif (!$securimage->check($_POST['captcha'])) {
-		$errcode = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again.');
 	} elseif (strlen($_POST['pre-email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['pre-email'])) {
-		$errcode = text('Email format incorrect, please try again.');
+		$msg = text('Email format incorrect, please try again.');
 	} else {
 		$email = strip_tags($_POST['pre-email']);
 		$time = time();
@@ -40,7 +44,7 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 			$result = $mysqli->query($sql);
 			
 			if (!$result) {
-				$errcode = text('There were problems processing your preservation, please try again.');
+				$msg = text('There were problems processing your preservation, please try again.');
 			} else {
 				$_SESSION['warncode'] = text('Thank you! I\'ll make FavNow getting to you as soon as possible!');
 				header("Location: index.php");
@@ -59,15 +63,15 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 	$securimage = new Securimage();
 	
 	if ($_POST['usn'] == '' or $_POST['pwd1'] == '' or $_POST['pwd2'] == '' or $_POST['email'] == '' or $_POST['captcha'] == '') {
-		$errcode = text('Please fill in all the required fields.');
+		$msg = text('Please fill in all the required fields.');
 	} elseif (!$securimage->check($_POST['captcha'])) {
-		$errcode = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again.');
 	} elseif (strlen($_POST['usn']) < 3) {
-		$errcode = text('Username must be between 3 and 32 chars long.');
+		$msg = text('Username must be between 3 and 32 chars long.');
 	} elseif ($_POST['pwd1'] <> $_POST['pwd2']) {
-		$errcode = text('The passwords you entered do not match.');
+		$msg = text('The passwords you entered do not match.');
 	} elseif (strlen($_POST['email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['email'])) {
-		$errcode = text('Email format incorrect, please try again.');
+		$msg = text('Email format incorrect, please try again.');
 	} else {
 		$username = strip_tags(substr($_POST['usn'], 0, 32));
 		$password = strip_tags(substr($_POST['pwd1'], 0, 32));
@@ -81,13 +85,13 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows <> 0) {
-			$errcode = text('This Email has already been a registered user, please <a href="index.php">login</a>. If you got difficulties logging in, please try to <a href="reset.php">reset</a> your password.');
+			$msg = text('This Email has already been a registered user, please <a href="index.php">login</a>. If you got difficulties logging in, please try to <a href="reset.php">reset</a> your password.');
 		} else {
 			$sql = "SELECT * FROM Users WHERE user='".$username."'";
 			$result = $mysqli->query($sql);
 			
 			if ($result->num_rows <> 0) {
-				$errcode = text('Username was taken by another user, please pick a different one.');
+				$msg = text('Username was taken by another user, please pick a different one.');
 			} else {
 				$sql = "INSERT INTO Users (user, password, email, jointime) VALUES ('".$mysqli->real_escape_string($username)."', '".$mysqli->real_escape_string($safepw)."', '".$mysqli->real_escape_string($email)."', '".$time."')";
 				$result = $mysqli->query($sql);
@@ -109,7 +113,7 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 			
 				} else {
 					unset($mysqli);
-					$errcode = text('There were problems processing your registration, please try again.');
+					$msg = text('There were problems processing your registration, please try again.');
 				}
 			}
 		}
@@ -126,7 +130,7 @@ include('head.php');
 					
 					<form action="register.php" method="post" class="form">
 						<h2 class="form-signin-heading"><?php echo $title_pattern; ?></h2>
-						<div class="alert alert-danger <?php if ($errcode == '') echo 'hidden'; ?>" role="alert"><?php echo $errcode; ?></div>
+						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						
 						<?php if (!REGISTER_OPEN) { ?>
 							<div class="alert alert-warning" role="alert"><?php echo text('FavNow still needs a little while to open register. Submit your Email to get notified right away about the public registration.'); ?></div>
