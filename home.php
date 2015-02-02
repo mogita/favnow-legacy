@@ -19,40 +19,10 @@ if (isset($_POST['fav-list-delete-item']) and $_POST['fav-list-delete-item'] <> 
 	$msg = deleteBookmark($_POST['fav-list-delete-item'], $userid);
 }
 
-// Reading bookmarks
-$result = readBookmark($userid);
-$count = $result[1];
-$bookmark = $result[2];
-$favlist = '';
-
-if ($count == -1) {
-	
-	$msg = text('Unable to fetch bookmarks: ').$result[0];
-	
-} elseif ($count == 0) {
-	
-	$favlist = '<h4><span class="label label-default">'.text('No bookmarks yet? Start to save them right away!').'</span></h4>';
-	
-} else {
-		
-	foreach ($bookmark as $row) {
-		$favid = $row['id'];
-		$url = $row['url'];
-		$title = $row['title'];
-		$time = $row['timepoint'];
-		
-		// Shortening the title if it's too long (Method from Discuz!)		
-		$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
-		
-		$titleHTML = ($title == $titleTrimmed) ? '' : $title;
-		
-		$favlist .= '<tr><td><a href="'.$url.'" title="'.$titleHTML.'" target="_blank">'.$titleTrimmed.'</a></td><td>'.date(text('H:i:s M d, Y'), $time).'</td><td><form action="home.php" method="post"><input type="hidden" name="fav-list-delete-item" value="'.$favid.'" /><input type="submit" value="'.text('Delete').'" class="btn btn-xs" /></form></td></tr>';
-	}
-}
-
 // Loading home page now
 include('head.php');
 ?>
+
 <script>
 $(function(){
 	var sideBarNavWidth=$('#leftColumn').width() - parseInt($('#sidePanel').css('paddingLeft')) - parseInt($('#sidePanel').css('paddingRight'));
@@ -194,9 +164,58 @@ $(function(){
 						<div class="panel-heading"><?php echo text('My Bookmarks'); ?></div>
 						<div class="panel-body">
 						<table class="table table-hover">
-							<tr>
-								<p><?php echo $favlist; ?></p>
-							</tr>
+								<?php
+								// Reading bookmarks
+								$result = readBookmark($userid);
+								$count = $result[1];
+								$bookmark = $result[2];
+								$favlist = '';
+								
+								if ($count < 0) {
+								?>
+									<h4>
+										<span class="label label-error">
+											<?php echo text('Unable to fetch bookmarks: ').$result[0]; ?>
+										</span>
+									</h4>
+								<?php } elseif ($count == 0) { ?>
+									<h2>
+										<span class="label label-default">
+											<?php echo text('No bookmarks yet? Start to save them right away!'); ?>
+										</span>
+									</h2>
+								<?php } else {
+										foreach ($bookmark as $row) {
+										$favid = $row['id'];
+										$url = $row['url'];
+										$title = $row['title'];
+										$time = $row['timepoint'];
+										
+										// Shortening the title if it's too long (Method from Discuz!)		
+										$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
+										$titleHTML = ($title == $titleTrimmed) ? '' : $title;
+								?>
+								<tr>
+									<td>
+										<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
+									</td>
+									<td>
+										<?php echo date(text('H:i:s M d, Y'), $time); ?>
+									</td>
+									<td>
+										<form action="home.php" method="post">
+											<span class="delete-button">
+												<input type="hidden" name="fav-list-delete-item" value="<?php echo $favid; ?>" />
+												<input type="submit" value="<?php echo text('Delete'); ?>" class="btn btn-xs" />
+													
+											</span>
+										</form>
+									</td>
+								</tr>
+								<?php 
+										}
+									}
+								?>
 						</table>
 					</div>
 					</div>
