@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
+include 'function.php';
 include 'query.php';
-// include 'function.php';
 
 $title_pattern = text('Login');
 
@@ -27,8 +27,7 @@ if (isset($_POST['usn']) and isset($_POST['pwd']) and $_POST['usn'] <> '' and $_
 		$username = $row[1];
 		$password = $row[2];
 		
-		$pass = strip_tags(substr($_POST['pwd'], 0, 32));
-		$safepw = crypt(md5($pass), md5($username).'romeoyjulieta');
+		$safepw = safePassword($_POST['pwd'], $username);
 		
 		if ($password == $safepw) {
 			$_SESSION['loggedin'] = True;

@@ -80,3 +80,11 @@ function sanitize($str)
 
 	return $str;
 }
+
+// Password salter. Password max length is 32.
+function safePassword ($pw, $username) {
+	$pw = strip_tags(substr($pw, 0, 32));
+	$salted = crypt(md5($pw), md5($username).'romeoyjulieta');
+	
+	return $salted;
+}

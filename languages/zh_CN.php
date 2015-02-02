@@ -74,9 +74,9 @@ $GLOBALS['zh_CN'] = Array (
 	'Save changes' => '保存变更',
 	'UI Language' => '界面语言',
 	'Change Password' => '更换密码',
-	'Current Password' => '当前密码',
+	'Type current password to change it' => '输入当前密码来进行密码修改',
 	'New Password' => '新密码',
-	'Confirm New Password' => '重复新密码',
+	'New Password Again' => '重复新密码',
 	'About' => '关于',
 	'This is about dialog text' => 'FavNow 可以让你在线存储书签。你可以轻松地保存、编辑以及删除书签，高效地进行书签管理。',
 	
@@ -86,4 +86,6 @@ $GLOBALS['zh_CN'] = Array (
 	'Unable to establish database connection: ' => '无法连接到数据库：',
 	'Unable to establish database connection.' => '无法连接到数据库。',
 	'Unable to fetch bookmarks: ' => '无法读取书签：',
+	
+	'Edit' => '编辑',
 );

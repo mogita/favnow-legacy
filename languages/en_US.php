@@ -73,10 +73,10 @@ $GLOBALS['en_US'] = Array (
 	'Setting' => 'Preferences',
 	'Save changes' => 'Save changes',
 	'UI Language' => 'UI Language',
-	'Change Password' => 'Change Password',
+	'Type current password to change it' => 'Type current password to change it',
 	'Current Password' => 'Current Password',
 	'New Password' => 'New Password',
-	'Confirm New Password' => 'Confirm New Password',
+	'New Password Again' => 'New Password Again',
 	'About' => 'About',
 	'This is about dialog text' => 'FavNow is a place for your bookmarks online. You can save, edit and delete your bookmarks with ease, and manage them in an effective way.',
 	
@@ -86,4 +86,5 @@ $GLOBALS['en_US'] = Array (
 	'Unable to establish database connection: ' => 'Unable to establish database connection: ',
 	'Unable to establish database connection.' => 'Unable to establish database connection.',
 	'Unable to fetch bookmarks: ' => 'Unable to fetch bookmarks: ',
+	'Edit' => 'Edit',
 );

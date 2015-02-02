@@ -23,7 +23,7 @@ function newDBConn() {
 	return $mysqli;
 }
 
-/***************** READ DATA *****************/
+/***************** BOOKMARK DATA *****************/
 
 function readBookmark($userid) {
 	$msg = '';
@@ -51,8 +51,6 @@ function readBookmark($userid) {
 	
 }
 
-
-/***************** WRITE DATA *****************/
 
 function addBookmark($url, $userid, $title) {
 	$msg = '';
@@ -108,10 +106,6 @@ function addBookmark($url, $userid, $title) {
 }
 
 
-
-
-/***************** DELETE DATA *****************/
-
 function deleteBookmark($fav_id, $userid) {
 	// $fav_id = $_POST['fav-list-delete-item'];
 	$msg = '';
@@ -127,4 +121,18 @@ function deleteBookmark($fav_id, $userid) {
 	}
 	
 	return $msg;
+}
+
+
+/***************** USER DATA *****************/
+
+function pwChange($pwc1, $pwc2, $pwc3, $userid) {
+	// $pwcmsg = 'You wanted a change';
+	
+	// 先判断是否有 userid，若无就返回错误；若有则进行数据库操作逻辑。
+	
+	$mysqli = newDBConn();
+	$sql = "SELECT password FROM Users WHERE id='".$userid."' LIMIT 1";
+	
+	return $pwcmsg;
 }

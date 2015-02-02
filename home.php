@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
-include 'query.php';
 include 'function.php';
+include 'query.php';
 
 if (!$_SESSION['loggedin']) header("Location: logout.php");
 if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
@@ -15,8 +15,13 @@ if (isset($_POST['url']) and $_POST['url'] <> '') {
 }
 
 // Deleting a bookmark
-if (isset($_POST['fav-list-delete-item']) and $_POST['fav-list-delete-item'] <> '') {
-	$msg = deleteBookmark($_POST['fav-list-delete-item'], $userid);
+if (isset($_GET['delete']) and $_GET['delete'] <> '') {
+	$msg = deleteBookmark($_GET['delete'], $userid);
+}
+
+// Changing password
+if (isset($_POST['pwd0']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and $_POST['pwd0'] <> '' and $_POST['pwd1'] <> '' and $_POST['pwd2']) {
+	$msg = pwChange($_POST['pwd0'], $_POST['pwd1'], $_POST['pwd2'], $userid);
 }
 
 // Loading home page now
@@ -47,16 +52,18 @@ $(function(){
 					</div>
 					<div class="col-xs-7">
 						<div class="form-group">
-							<label for="password0"><?php echo text('Current Password'); ?></label>
+							<label for="password0"><?php echo text('Type current password to change it'); ?></label>
 							<input type="password" name="pwd0" id="password0" class="form-control" />
 						</div>
-						<div class="form-group">
-							<label for="password1"><?php echo text('New Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small></label>
-							<input type="password" name="pwd1" id="password1" class="form-control" />
-						</div>
-						<div class="form-group">
-							<label for="password2"><?php echo text('Confirm New Password'); ?></label>
-							<input type="password" name="pwd2" id="password2" class="form-control" />
+						<div id="new-password">
+							<div class="form-group">
+								<label for="password1"><?php echo text('New Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small></label>
+								<input type="password" name="pwd1" id="password1" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label for="password2"><?php echo text('New Password Again'); ?></label>
+								<input type="password" name="pwd2" id="password2" class="form-control" />
+							</div>
 						</div>
 					</div>
 				</div>
@@ -70,7 +77,7 @@ $(function(){
 					<div class="col-xs-4">
 							<input type="hidden" name="chlang" value="1">
 							<select class="form-control" name="language-switch" id="language-switch">
-								<option disabled selected="selected">Change languages</option>
+								<option disabled selected="selected">Change language</option>
 								<option value="zh_CN">简体中文</option>
 								<option value="en_US">English</option>
 							</select>
@@ -163,7 +170,7 @@ $(function(){
 						<div class="panel panel-primary">
 						<div class="panel-heading"><?php echo text('My Bookmarks'); ?></div>
 						<div class="panel-body">
-						<table class="table table-hover">
+						<table class="table table-hover" id="fav-list-table">
 								<?php
 								// Reading bookmarks
 								$result = readBookmark($userid);
@@ -197,19 +204,24 @@ $(function(){
 								?>
 								<tr>
 									<td>
-										<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
-									</td>
-									<td>
-										<?php echo date(text('H:i:s M d, Y'), $time); ?>
-									</td>
-									<td>
-										<form action="home.php" method="post">
-											<span class="delete-button">
-												<input type="hidden" name="fav-list-delete-item" value="<?php echo $favid; ?>" />
-												<input type="submit" value="<?php echo text('Delete'); ?>" class="btn btn-xs" />
-													
-											</span>
-										</form>
+										<div class="fav-list-cell" id="<?php echo $favid; ?>">
+											<div class="fav-list-cell-top">
+												<span class="fav-list-cell-title">
+													<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
+												</span>
+												<span class="fav-list-cell-service">
+													<a class="edit-button" href="#" data-toggle="modal" data-target="#edit"><?php echo text('Edit'); ?></a>
+												</span>
+											</div>
+											<div class="fav-list-cell-bottom">
+												<span class="fav-list-cell-datetime">
+													<?php echo date(text('H:i:s M d, Y'), $time); ?>
+												</span>
+												<span class="fav-list-cell-service">
+													<a class="delete-button" href="<?php echo $_SERVER['REQUEST_URI']; ?>?delete=<?php echo $favid; ?>"><?php echo text('Delete'); ?></a>
+												</span>
+											</div>
+										</div>
 									</td>
 								</tr>
 								<?php 
@@ -222,5 +234,29 @@ $(function(){
 				</div>
 			</div>
 		</div>
+		<script language="javascript">
+			$(document).ready(function(){
+				$('.fav-list-cell-service').hide()
+				
+				$('#fav-list-table tr td').hover(
+				function(){
+					$(this).find('.fav-list-cell-service').show();
+				},
+				function(){
+					$(this).find('.fav-list-cell-service').hide();
+				});
+			});
+			
+			$(document).ready(function() {
+				$('#new-password').hide();
+				$('#password0').keyup(function() {
+					if($('#password0').val().length > 0) {
+						$('#new-password').show();
+					} else {
+						$('#new-password').hide();
+					}
+				});
+			});
+		</script>
 	</body>
 </html>

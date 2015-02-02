@@ -14,7 +14,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 	} elseif (isset($_GET['code']) and $_GET['code'] <> '') {
 		$code = $_GET['code'];
 	} else {
-		header("Location: logout.php");
+		header("Location: index.php");
 		exit;
 	}
 	
@@ -22,7 +22,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 	$result = $mysqli->query($sql);
 	
 	if ($result) {
-		if ($result->num_rows <> 0) {
+		if ($result->num_rows > 0) {
 			$row = $result->fetch_array(MYSQLI_NUM);
 			$userid = $row[0];
 			$username = $row[1];
@@ -37,7 +37,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 				$result = $mysqli->query($sql);
 				
 				$_SESSION['errcode'] = text('The link has expired, please send another link.');
-				header("Location: reset.php");
+				header("Location: index.php");
 				exit;
 			} else {
 				if (isset($_POST['newpwd1']) and isset($_POST['newpwd2']) and isset($_POST['captcha']) and $_POST['newpwd1'] <> '' and $_POST['newpwd2'] <> '' and $_POST['captcha'] <> '') {
