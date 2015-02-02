@@ -15,7 +15,7 @@ if(isset($_POST['language-switch'])){
 		<meta name="keywords" content="书签, 网址, 工具, 实用, 小工具, 服务, 批量管理, URL, 浏览器">
 		<meta name="author" content="mogita">
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-		<title><? if(isset($title_pattern) && $title_pattern <> '') echo $title_pattern.' - '; ?>FavNow</title>
+		<title><?php if(isset($title_pattern) && $title_pattern <> '') echo $title_pattern.' - '; ?>FavNow</title>
 		
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="css/favnow.css" rel="stylesheet">

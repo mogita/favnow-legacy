@@ -107,7 +107,7 @@ function addBookmark($url, $userid, $title) {
 
 
 function deleteBookmark($fav_id, $userid) {
-	// $fav_id = $_POST['fav-list-delete-item'];
+
 	$msg = '';
 	
 	$mysqli = newDBConn();
@@ -131,8 +131,24 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid) {
 	
 	// 先判断是否有 userid，若无就返回错误；若有则进行数据库操作逻辑。
 	
-	$mysqli = newDBConn();
-	$sql = "SELECT password FROM Users WHERE id='".$userid."' LIMIT 1";
+	if ($userid == '' or !isset($userid)) {
+		
+		// Something wrong with the session.
+		$pwcmsg = text('Could not change your password, please reload the page and try again.');
+		
+	} else {
+		
+		$mysqli = newDBConn();
+		$sql = "SELECT * FROM Users WHERE id='".$userid."' LIMIT 1";
+		$result = $mysqli->query($sql);
+		
+		if (!$result) {
+			$pwcmsg = text('Could not change your password, please reload the page and try again.');
+		} else {
+			
+		}
+	}
+	
 	
 	return $pwcmsg;
 }
