@@ -3,7 +3,7 @@
 /**
  * @project DoubanCocktail
  * @file UI_text.php
- * @brief Language files hub for a more convenient include
+ * @brief Language files hub for a more convenient include. Default language is Simplified Chinese (zh_CN)
  *
  * @author mogita <himogita@gmail.com>
  * @date 14-3-9
@@ -36,7 +36,7 @@ function text($string) {
 	if (isset($GLOBALS[$lang][$string])) {
 		return $GLOBALS[$lang][$string];
 	} else {
-		error_log("l10n error: locale: "."$lang, message:'$string'");
+		// error_log("l10n error: locale: "."$lang, message:'$string'");
 		return $string.' *L10N?';
 	}
 }

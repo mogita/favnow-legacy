@@ -45,7 +45,7 @@ $(function(){
 				<h4 class="modal-title" id="settings"><?php echo text('Setting'); ?></h4>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="home.php" role="form">
+				<form method="post" action="home.php" role="form" onsubmit="return validatePreferenceForm()">
 				
 				<div class="row">
 					<div class="col-xs-3">
@@ -58,11 +58,12 @@ $(function(){
 						</div>
 						<div id="new-password">
 							<div class="form-group">
-								<label for="password1"><?php echo text('New Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small></label>
+								<label for="password1"><?php echo text('New Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small><small for="password1" id="password-invalid" class="password-info"></small></label>
 								<input type="password" name="pwd1" id="password1" class="form-control" />
 							</div>
 							<div class="form-group">
 								<label for="password2"><?php echo text('New Password Again'); ?></label>
+								<small for="password2" class="password-info" id="password-mismatch"><?php echo text('Passwords mismatch'); ?></small>
 								<input type="password" name="pwd2" id="password2" class="form-control" />
 							</div>
 						</div>
@@ -236,28 +237,61 @@ $(function(){
 			</div>
 		</div>
 		<script language="javascript">
-			$(document).ready(function(){
-				$('.fav-list-cell-service').hide()
+		function checkPasswordValid() {
+			if ($('#password1').val().length < 6 || $('#password1').val().length > 32) {
+				$('#password-invalid').html('<?php echo text('Invalid length'); ?>');
+				passwordValidation = false;
+			} else {
+				$('#password-invalid').html('');
 				
-				$('#fav-list-table tr td').hover(
-				function(){
-					$(this).find('.fav-list-cell-service').show();
-				},
-				function(){
-					$(this).find('.fav-list-cell-service').hide();
-				});
-			});
-			
-			$(document).ready(function() {
+				if ($('#password1').val() != $('#password2').val()) {
+					$('#password-mismatch').show();
+					passwordValidation = false;
+				} else {
+					$('#password-mismatch').hide();
+					passwordValidation = true;
+				}
+			}
+		}
+		
+		function changePassword() {
+			if ($('#password0').val().length > 0) {
+				$('#new-password').show();
+				passwordValidation = false;
+			} else {
 				$('#new-password').hide();
-				$('#password0').keyup(function() {
-					if($('#password0').val().length > 0) {
-						$('#new-password').show();
-					} else {
-						$('#new-password').hide();
-					}
-				});
-			});
+				passwordValidation = true;
+			}
+		}
+		
+		function showCellService() {
+			$(this).find('.fav-list-cell-service').show();
+		}
+		
+		function hideCellService() {
+			$(this).find('.fav-list-cell-service').hide();
+		}
+		
+		function validatePreferenceForm() {
+			if (passwordValidation == false) {
+				return false;
+			} else if (passwordValidation == true) {
+				return true;
+			}
+		}
+		
+		$(document).ready(function(){
+			$('.fav-list-cell-service').hide();
+			$('#new-password').hide();
+			$('#password-mismatch').hide();
+			
+			var passwordValidation = true;
+						
+			$('#fav-list-table tr td').hover(showCellService, hideCellService);
+			$('#password0').keyup(changePassword);
+			$('#password1').keyup(checkPasswordValid);
+			$('#password2').keyup(checkPasswordValid);
+		});
 		</script>
 	</body>
 </html>

@@ -28,8 +28,8 @@ $GLOBALS['en_US'] = Array (
 	'There were problems processing your registration, please try again.' => 'There were problems processing your registration, please try again.',
 	'FavNow still needs a little while to open register. Submit your Email to get notified right away about the public registration.' => 'FavNow still needs a little while to open register. Submit your Email to get notified right away about the public registration.',
 	'(Please enter a valid Email address for receiving password reset links.)' => '(Please enter a valid Email address for receiving password reset links.)',
-	'(Must be between 3 and 32 chars long.)' => '(Must be between 3 and 32 chars long.)',
-	'(Must be between 6 and 32 chars long.)' => '(Must be between 6 and 32 chars long.)',
+	'(Must be between 3 and 32 chars long.)' => '(Must be between 3 and 32 chars long)',
+	'(Must be between 6 and 32 chars long.)' => '(Must be between 6 and 32 chars long)',
 	'Confirm password' => 'Confirm password',
 	'Captcha' => 'Captcha',
 	'Click to change a picture' => 'Click to change a picture',
@@ -93,4 +93,6 @@ $GLOBALS['en_US'] = Array (
 	'Current password incorrect, please try again.' => 'Current password incorrect, please try again.',
 	'Could not change your password, please try again.' => 'Could not change your password, please try again.',
 	
+	'Passwords mismatch' => 'Passwords mismatch',
+	'Invalid length' => 'Invalid length',
 );

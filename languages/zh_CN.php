@@ -93,5 +93,7 @@ $GLOBALS['zh_CN'] = Array (
 	'New passwords mismatch, please try again.' => '两次输入的新密码不同，请重试。',
 	'Current password incorrect, please try again.' => '当前密码不正确，请重试。',
 	'Could not change your password, please try again.' => '未能修改密码，请重试。',
-
+	
+	'Passwords mismatch' => '两次密码不一致',
+	'Invalid length' => '长度不符',
 );
