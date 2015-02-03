@@ -126,15 +126,20 @@ function deleteBookmark($fav_id, $userid) {
 
 /***************** USER DATA *****************/
 
-function pwChange($pwc1, $pwc2, $pwc3, $userid) {
+function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 	// $pwcmsg = 'You wanted a change';
 	
 	// 先判断是否有 userid，若无就返回错误；若有则进行数据库操作逻辑。
 	
-	if ($userid == '' or !isset($userid)) {
+	if ($userid == '' or !isset($userid) or $username == '' or !isset($username)) {
 		
 		// Something wrong with the session.
 		$pwcmsg = text('Could not change your password, please reload the page and try again.');
+		
+	} elseif ($pwc2 <> $pwc3) {
+		
+		// New passwords don't match
+		$pwcmsg = text('New passwords mismatch, please try again.');
 		
 	} else {
 		
@@ -145,7 +150,24 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid) {
 		if (!$result) {
 			$pwcmsg = text('Could not change your password, please reload the page and try again.');
 		} else {
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$oldPassword = $row[2];
+			$safePassword1 = safePassword($pwc1, $username);
+			$safePassword2 = safePassword($pwc2, $username);
 			
+			if ($oldPassword <> $safePassword1) {
+				$pwcmsg = text('Current password incorrect, please try again.');
+			} else {
+				$pwcsql = "UPDATE Users SET password='".$mysqli->real_escape_string($safePassword2)."' WHERE id='".$userid."'";
+				$pwcresult = $mysqli->query($pwcsql);
+				
+				if (!$pwcresult) {
+					$pwcmsg = text('Could not change your password, please try again.');
+				} else {
+					$_SESSION['warncode'] = text('Password successfully changed. Please login.');
+					header("Location: logout.php");
+				}
+			}
 		}
 	}
 	

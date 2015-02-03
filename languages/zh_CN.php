@@ -88,4 +88,10 @@ $GLOBALS['zh_CN'] = Array (
 	'Unable to fetch bookmarks: ' => '无法读取书签：',
 	
 	'Edit' => '编辑',
+	
+	'Could not change your password, please reload the page and try again.' => '未能修改密码，请刷新页面后重试。',
+	'New passwords mismatch, please try again.' => '两次输入的新密码不同，请重试。',
+	'Current password incorrect, please try again.' => '当前密码不正确，请重试。',
+	'Could not change your password, please try again.' => '未能修改密码，请重试。',
+
 );

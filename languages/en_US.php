@@ -87,4 +87,10 @@ $GLOBALS['en_US'] = Array (
 	'Unable to establish database connection.' => 'Unable to establish database connection.',
 	'Unable to fetch bookmarks: ' => 'Unable to fetch bookmarks: ',
 	'Edit' => 'Edit',
+	
+	'Could not change your password, please reload the page and try again.' => 'Could not change your password, please reload the page and try again.',
+	'New passwords mismatch, please try again.' => 'New passwords mismatch, please try again.',
+	'Current password incorrect, please try again.' => 'Current password incorrect, please try again.',
+	'Could not change your password, please try again.' => 'Could not change your password, please try again.',
+	
 );

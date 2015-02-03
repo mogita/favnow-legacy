@@ -6,6 +6,7 @@ include 'query.php';
 if (!$_SESSION['loggedin']) header("Location: logout.php");
 if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
 $userid = $_SESSION['userid'];
+$username = $_SESSION['username'];
 
 $title_pattern = text('Home');
 
@@ -21,7 +22,7 @@ if (isset($_GET['delete']) and $_GET['delete'] <> '') {
 
 // Changing password
 if (isset($_POST['pwd0']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and $_POST['pwd0'] <> '' and $_POST['pwd1'] <> '' and $_POST['pwd2']) {
-	$msg = pwChange($_POST['pwd0'], $_POST['pwd1'], $_POST['pwd2'], $userid);
+	$msg = pwChange($_POST['pwd0'], $_POST['pwd1'], $_POST['pwd2'], $userid, $username);
 }
 
 // Loading home page now
