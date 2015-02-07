@@ -134,7 +134,8 @@ $(function(){
 					<ul class="dropdown-menu" role="menu" style="min-width: 0px;">
 						<li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
 						<li class="divider"></li>
-						<li><a href="#" data-toggle="modal" data-target="#settings"><?php echo text('Setting'); ?></a></li>
+						<?php /*<li><a href="#" data-toggle="modal" data-target="#settings"><?php echo text('Setting'); ?></a></li>*/ ?>
+						<li><a href="setting.php"><?php echo text('Setting'); ?></a></li>
 						<li class="divider"></li>
 						<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
 					</ul>					
@@ -142,7 +143,7 @@ $(function(){
 			</ul>
         </div><!--/.navbar-collapse -->
       </div>
-    </div>
+</div>
 	
 		<div class="container">
 			<div class="row">
