@@ -63,7 +63,32 @@ include('head.php');
 </div>
 
 <div class="container">
-	Settings pane
+	<div class="row">
+		<div class="col-xs-2" style="background-color: #dedef8; ">
+			<h4>第一列</h4>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+		</div>
+		
+		<div class="col-xs-8"  style="background-color: #555; ">
+			<h4>settings pane</h4>
+			
+			<div class="col-xs-6" style="background-color: #333; ">
+				<p>Left</p>
+			</div>
+			
+			<div class="col-xs-6" style="background-color: #777; ">
+				<p>Right</p>
+			</div>
+		</div>
+		
+		<div class="col-xs-2" style="background-color: #dedef8; ">
+			<h4>第三列</h4>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+		</div>
+		
+	</div>
+</div>
+
 </div>
 </body>
 </html>
