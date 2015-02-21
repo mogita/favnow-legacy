@@ -3,7 +3,7 @@ require_once 'config.php';
 include 'function.php';
 include 'query.php';
 
-if (!$_SESSION['loggedin']) header("Location: logout.php");
+if (empty($_SESSION['loggedin'])) header("Location: logout.php");
 if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
 $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
@@ -20,11 +20,6 @@ if (isset($_GET['delete']) and $_GET['delete'] <> '') {
 	$msg = deleteBookmark($_GET['delete'], $userid);
 }
 
-// Changing password
-if (isset($_POST['pwd0']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and $_POST['pwd0'] <> '' and $_POST['pwd1'] <> '' and $_POST['pwd2']) {
-	$msg = pwChange($_POST['pwd0'], $_POST['pwd1'], $_POST['pwd2'], $userid, $username);
-}
-
 // Loading home page now
 include('head.php');
 ?>
@@ -35,67 +30,6 @@ $(function(){
 	$('#sidePanel').css('width', sideBarNavWidth);
 	});
 </script>
-<!-- Settings modal -->
-
-<div class="modal" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
-				<h4 class="modal-title" id="settings"><?php echo text('Setting'); ?></h4>
-			</div>
-			<div class="modal-body">
-				<form method="post" action="home.php" role="form" onsubmit="return validatePreferenceForm()">
-				
-				<div class="row">
-					<div class="col-xs-3">
-						<h4><?php echo text('Change Password'); ?></h4>
-					</div>
-					<div class="col-xs-7">
-						<div class="form-group">
-							<label for="password0"><?php echo text('Type current password to change it'); ?></label>
-							<input type="password" name="pwd0" id="password0" class="form-control" />
-						</div>
-						<div id="new-password">
-							<div class="form-group">
-								<label for="password1"><?php echo text('New Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small><small for="password1" id="password-invalid" class="password-info"></small></label>
-								<input type="password" name="pwd1" id="password1" class="form-control" />
-							</div>
-							<div class="form-group">
-								<label for="password2"><?php echo text('New Password Again'); ?></label>
-								<small for="password2" class="password-info" id="password-mismatch"><?php echo text('Passwords mismatch'); ?></small>
-								<input type="password" name="pwd2" id="password2" class="form-control" />
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<hr />
-				
-				<div class="row">
-					<div class="col-xs-3">
-						<h4><?php echo text('UI Language'); ?></h4>
-					</div>
-					<div class="col-xs-4">
-							<input type="hidden" name="chlang" value="1">
-							<select class="form-control" name="language-switch" id="language-switch">
-								<option disabled selected="selected">Change language</option>
-								<option value="zh_CN">简体中文</option>
-								<option value="en_US">English</option>
-							</select>
-					</div>
-				</div>
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
-				<button type="submit" class="btn btn-primary"><?php echo text('Save changes'); ?></button>
-			</div>
-			</form>
-			
-		</div>
-	</div>
-</div>
 
 <div class="modal" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -135,7 +69,7 @@ $(function(){
 						<li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
 						<li class="divider"></li>
 						<?php /*<li><a href="#" data-toggle="modal" data-target="#settings"><?php echo text('Setting'); ?></a></li>*/ ?>
-						<li><a href="setting.php"><?php echo text('Setting'); ?></a></li>
+						<li><a href="preference.php"><?php echo text('Preference'); ?></a></li>
 						<li class="divider"></li>
 						<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
 					</ul>					
@@ -238,33 +172,6 @@ $(function(){
 			</div>
 		</div>
 		<script language="javascript">
-		function checkPasswordValid() {
-			if ($('#password1').val().length < 6 || $('#password1').val().length > 32) {
-				$('#password-invalid').html('<?php echo text('Invalid length'); ?>');
-				passwordValidation = false;
-			} else {
-				$('#password-invalid').html('');
-				
-				if ($('#password1').val() != $('#password2').val()) {
-					$('#password-mismatch').show();
-					passwordValidation = false;
-				} else {
-					$('#password-mismatch').hide();
-					passwordValidation = true;
-				}
-			}
-		}
-		
-		function changePassword() {
-			if ($('#password0').val().length > 0) {
-				$('#new-password').show();
-				passwordValidation = false;
-			} else {
-				$('#new-password').hide();
-				passwordValidation = true;
-			}
-		}
-		
 		function showCellService() {
 			$(this).find('.fav-list-cell-service').show();
 		}
@@ -273,25 +180,9 @@ $(function(){
 			$(this).find('.fav-list-cell-service').hide();
 		}
 		
-		function validatePreferenceForm() {
-			if (passwordValidation == false) {
-				return false;
-			} else if (passwordValidation == true) {
-				return true;
-			}
-		}
-		
 		$(document).ready(function(){
-			$('.fav-list-cell-service').hide();
-			$('#new-password').hide();
-			$('#password-mismatch').hide();
-			
-			var passwordValidation = true;
-						
+			$('.fav-list-cell-service').hide();						
 			$('#fav-list-table tr td').hover(showCellService, hideCellService);
-			$('#password0').keyup(changePassword);
-			$('#password1').keyup(checkPasswordValid);
-			$('#password2').keyup(checkPasswordValid);
 		});
 		</script>
 	</body>

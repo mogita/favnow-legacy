@@ -23,3 +23,17 @@
 	margin-left: 5px;
 	color: #CA6E5E;
 }
+
+.preference-left {
+	margin-bottom: 17px;
+	text-align: left;
+}
+
+.preference-right {
+	margin-bottom: 17px;
+	text-align: right;
+}
+
+.preference-right a {
+	text-decoration: none;
+}
