@@ -126,6 +126,48 @@ function deleteBookmark($fav_id, $userid) {
 
 /***************** USER DATA *****************/
 
+function getUserFromID($userid) {
+	if (!isset($userid) or empty($userid)) {
+		// $getUserResult = text('Could not get user information, please reload the page and try again.')
+		$getUserResult = false;
+	} else {
+		$mysqli = newDBConn();
+		$sql = "SELECT * FROM Users WHERE id='".$userid."' LIMIT 1";
+		
+		$result = $mysqli->query($sql);
+		
+		if ($result->num_rows <> 0) {
+			$getUserResult = $result->fetch_array(MYSQLI_NUM);
+		} else {
+			// $getUserResult = text('Could not get user information, please reload the page and try again.');
+			$getUserResult = false;
+		}
+	}
+	
+	return $getUserResult;
+}
+
+function emailChange($email, $userid) {
+	if (!isset($userid) or empty($userid) or !isset($email) or empty($email)) {
+		$emailChangeResult = text('Could not change your Email, please reload the page and try again.');
+	} elseif (!preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $email)) {
+		$emailChangeResult = text('Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.');
+	} else {
+		$mysqli = newDBConn();
+		$sql = "UPDATE Users SET email='".$mysqli->real_escape_string($email)."' WHERE id='".$userid."'";
+		
+		$result = $mysqli->query($sql);
+		
+		if ($result) {
+			$emailChangeResult = text('Email changed to ').$email;
+		} else {
+			$emailChangeResult = text('Could not change your Email, please try again later.');
+		}
+	}
+	
+	return $emailChangeResult;
+}
+
 function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 	// $pwcmsg = 'You wanted a change';
 	

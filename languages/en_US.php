@@ -95,4 +95,12 @@ $GLOBALS['en_US'] = Array (
 	
 	'Passwords mismatch' => 'Passwords mismatch',
 	'Invalid length' => 'Invalid length',
+	
+	'Change Email' => 'Change Email',
+	'Please type your new Email address' => 'Please type your new Email address',
+	'Could not get user information, please reload the page and try again.' => 'Could not get user information, please reload the page and try again.',
+	'Could not change your Email, please reload the page and try again.' => 'Could not change your Email, please reload the page and try again.',
+	'Could not change your Email, please try again later.' => 'Could not change your Email, please try again later.',
+	'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.' => 'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.',
+	'Email changed to ' => 'Email changed to ',
 );

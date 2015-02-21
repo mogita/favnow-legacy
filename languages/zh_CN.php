@@ -96,4 +96,12 @@ $GLOBALS['zh_CN'] = Array (
 	
 	'Passwords mismatch' => '两次密码不一致',
 	'Invalid length' => '长度不符',
+	
+	'Change Email' => '变更电子邮箱',
+	'Please type your new Email address' => '请输入新电子邮箱地址',
+	'Could not get user information, please reload the page and try again.' => '无法获得用户信息，请刷新页面后重试。',
+	'Could not change your Email, please reload the page and try again.' => '无法修改电子邮箱，请刷新页面后重试。',
+	'Could not change your Email, please try again later.' => '无法修改电子邮箱，请刷稍后重试。',
+	'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.' => '电子邮箱格式无效。如果遇到问题，请<a href="mailto:favnow@mogita.com?Subject=电子邮箱格式无效的问题">联系我们</a>。',
+	'Email changed to ' => '电子邮箱已变更为 ',
 );

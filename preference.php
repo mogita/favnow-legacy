@@ -10,9 +10,26 @@ $username = $_SESSION['username'];
 
 $title_pattern = text('Preference');
 
+$userInfo = getUserFromID($_SESSION['userid']);
+if (!$userInfo) {
+	header("Location: logout.php");
+} else {
+	$currentEmail = $userInfo[3];
+}
+
 // Changing password
 if (isset($_POST['pwd0']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and $_POST['pwd0'] <> '' and $_POST['pwd1'] <> '' and $_POST['pwd2']) {
 	$msg = pwChange($_POST['pwd0'], $_POST['pwd1'], $_POST['pwd2'], $userid, $username);
+}
+
+// Changing Email
+if (isset($_POST['email']) and $_POST['email'] <> '' and isset($currentEmail) and $currentEmail <> '') {
+	if ($_POST['email'] == $currentEmail) {
+		$msg = text('New Email is the same as current Email ').$currentEmail;
+	} else {
+		$msg = emailChange($_POST['email'], $_SESSION['userid']);
+		$currentEmail = getUserFromID($_SESSION['userid'])[3];
+	}
 }
 
 // Loading home page now
@@ -33,6 +50,32 @@ include('head.php');
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
 			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal" id="email-change" tabindex="-1" role="dialog" aria-labelledby="emailChangeLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
+				<h4 class="modal-title" id="settings"><?php echo text('Change Email'); ?></h4>
+			</div>
+			
+			<div class="modal-body">
+				<form method="post" action="" role="form">
+					<div class="form-group">
+						<label for="email"><?php echo text('Please type your new Email address'); ?></label>
+						<input type="text" name="email" id="email" class="form-control" />
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+						<button type="submit" class="btn btn-primary"><?php echo text('Save changes'); ?></button>
+					</div>
+				</form>
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -111,43 +154,61 @@ include('head.php');
 		<div class="col-xs-6"  style="background-color: #f8f8f8; ">
 			<h3 style="margin-bottom: 30px;"><?php echo text('Preference'); ?></h3>
 		
-		<div class="col-xs-12" style="padding-top: 7px; padding-bottom: 7px; margin-bottom: 10px; word-wrap: break-word; background-color: #fffdcb; <?php if (empty($msg)) echo 'display: none;';?>" role="alert">
-			<?php if (!empty($msg)) echo $msg; ?>
-		</div>
-		
+			<div class="col-xs-12" style="padding-top: 7px; padding-bottom: 7px; margin-bottom: 10px; word-wrap: break-word; background-color: #fffdcb; <?php if (empty($msg)) echo 'display: none;';?>" role="alert">
+				<?php if (!empty($msg)) echo $msg; ?>
+			</div>
+			
 			<div class="col-xs-6 preference-left">
-				<p>
+				<div>
+					<span><?php echo text('Email'); ?>: </span>
+					<span><?php echo $currentEmail; ?></span>
+				</div>
+			</div>
+			
+			<div class="col-xs-6 preference-right">
+				<div>
+					<a href="#" data-toggle="modal" data-target="#email-change"><?php echo text('Change Email'); ?></a>
+				</div>
+			</div>
+			
+			<div class="col-xs-6 preference-left">
+				<div>
+					<span><?php echo text('Password'); ?>: </span>
+					<span>·······</span>
+				</div>
+			</div>
+			
+			<div class="col-xs-6 preference-right">
+				<div>
+					<a href="#" data-toggle="modal" data-target="#password-change"><?php echo text('Change Password'); ?></a>
+				</div>
+			</div>
+			
+			<div class="col-xs-6 preference-left">
+				<div>
 					<form method="post" action="">
 						<span>语言 / Language: </span>
 						<span><?php echo $_SESSION['lang']; ?>
 					</form>
-				</p>
+				</div>
 			</div>
 			
 			<div class="col-xs-6 preference-right">
-				<p>
-					<form method="post" action="">
-						<input type="hidden" name="chlang" value="1">
-						<select name="language-switch" id="language-switch" onchange="this.form.submit();">
-							<option disabled selected="selected">Change language</option>
-							<option value="zh_CN">简体中文</option>
-							<option value="en_US">English</option>
-						</select>
-					</form>
-				</p>
-			</div>
-			
-			<div class="col-xs-6 preference-left">
-				<p>
-					<span><?php echo text('Password'); ?>: </span>
-					<span>·······</span>
-				</p>
-			</div>
-			
-			<div class="col-xs-6 preference-right">
-				<p>
-					<a href="#" data-toggle="modal" data-target="#password-change"><?php echo text('Change Password'); ?></a>
-				</p>
+				<div class="row">
+					<div class="col-xs-5">
+					</div>
+					
+					<div class="col-xs-7">
+						<form method="post" action="">
+							<input type="hidden" name="chlang" value="1">
+							<select name="language-switch" id="language-switch" onchange="this.form.submit();">
+								<option disabled selected="selected">Change language</option>
+								<option value="zh_CN">简体中文</option>
+								<option value="en_US">English</option>
+							</select>
+						</form>
+					</div>
+				</div>
 			</div>
 			
 		</div>
