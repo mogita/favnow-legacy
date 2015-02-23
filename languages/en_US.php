@@ -65,7 +65,7 @@ $GLOBALS['en_US'] = Array (
 	'Logout' => 'Logout',
 	'New Bookmark' => 'New Bookmark',
 	'URL' => 'URL',
-	'Title (Optional. Leave it blank for FavNow to get it for you)' => 'Title (Optional. Leave it blank for FavNow to get it for you)',
+	'Title (Optional)' => 'Title (Optional)',
 	'Save' => 'Save',
 	'My Bookmarks' => 'My Bookmarks',
 	'Add' => 'Add',
@@ -103,4 +103,5 @@ $GLOBALS['en_US'] = Array (
 	'Could not change your Email, please try again later.' => 'Could not change your Email, please try again later.',
 	'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.' => 'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.',
 	'Email changed to ' => 'Email changed to ',
+	'Add Bookmark' => 'Add Bookmark',
 );

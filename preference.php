@@ -3,11 +3,12 @@ require_once 'config.php';
 include 'function.php';
 include 'query.php';
 
-if (empty($_SESSION['loggedin'])) header("Location: logout.php");
-if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
+// if (empty($_SESSION['loggedin'])) header("Location: logout.php");
+// if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
+if (empty($_SESSION['username']) or empty($_SESSION['userid']) or empty($_SESSION['loggedin'])) header("Location: logout.php");
+
 $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
-
 $title_pattern = text('Preference');
 
 $userInfo = getUserFromID($_SESSION['userid']);
@@ -36,7 +37,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($currentEmail) an
 include('head.php');
 ?>
 
-<div class="modal" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -54,7 +55,7 @@ include('head.php');
 	</div>
 </div>
 
-<div class="modal" id="email-change" tabindex="-1" role="dialog" aria-labelledby="emailChangeLabel" aria-hidden="true">
+<div class="modal fade" id="email-change" tabindex="-1" role="dialog" aria-labelledby="emailChangeLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -80,7 +81,7 @@ include('head.php');
 	</div>
 </div>
 
-<div class="modal" id="password-change" tabindex="-1" role="dialog" aria-labelledby="passwordChangeLabel" aria-hidden="true">
+<div class="modal fade" id="password-change" tabindex="-1" role="dialog" aria-labelledby="passwordChangeLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -117,105 +118,93 @@ include('head.php');
 </div>
 
 
-<div class="navbar navbar-default" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="home.php">FavNow<sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup></a>
-        </div>
-        <div class="navbar-collapse collapse">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_SESSION['username']; ?> <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu" style="min-width: 0px;">
-						<li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
-						<li class="divider"></li>
-						<?php /*<li><a href="#" data-toggle="modal" data-target="#settings"><?php echo text('Setting'); ?></a></li>*/ ?>
-						<li><a href="preference.php"><?php echo text('Preference'); ?></a></li>
-						<li class="divider"></li>
-						<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
-					</ul>					
-				</li>
-			</ul>
-        </div><!--/.navbar-collapse -->
+<div class="navbar navbar-default navbar-fixed-top">
+	
+      <div class="container-fluid">
+		  
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+
+				<a class="navbar-brand" href="home.php">FavNow<sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup></a>
+			</div>
+		
+	        <div class="collapse navbar-collapse" id="navbar-menu">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><?php echo $_SESSION['username']; ?></a></li>
+					<li class="active"><a href="preference.php"><?php echo text('Preference'); ?></a></li>
+					<li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
+					<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
+				</ul>
+	        </div>
+		
       </div>
 </div>
 
-<div class="container">
+<div class="container user-page">
 	<div class="row">
-		<div class="col-xs-3">
-		</div>
 		
-		<div class="col-xs-6"  style="background-color: #f8f8f8; ">
-			<h3 style="margin-bottom: 30px;"><?php echo text('Preference'); ?></h3>
-		
-			<div class="col-xs-12" style="padding-top: 7px; padding-bottom: 7px; margin-bottom: 10px; word-wrap: break-word; background-color: #fffdcb; <?php if (empty($msg)) echo 'display: none;';?>" role="alert">
-				<?php if (!empty($msg)) echo $msg; ?>
+		<div class="col-xs-12 col-sm-8 col-sm-offset-2">
+			<div class="page-header">
+				<h2 style="margin-bottom: 30px;"><?php echo text('Preference'); ?></h2>
+				<?php // $msg = 'A quick fox jumped over a lazy dog. A quick fox jumped over a lazy dog.'; ?>
+				<?php if (isset($msg) and !empty($msg)) {?>
+					<div class="row">
+						<div class="alert alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<?php echo $msg; ?>
+						</div>
+					</div>
+				<?php } ?>
 			</div>
 			
-			<div class="col-xs-6 preference-left">
-				<div>
-					<span><?php echo text('Email'); ?>: </span>
-					<span><?php echo $currentEmail; ?></span>
+			<div class="row">
+				<div class="col-xs-6 preference-left">
+						<span class="hidden-xs"><?php echo text('Email'); ?>: </span>
+						<span><?php echo $currentEmail; ?></span>
+				</div>
+			
+				<div class="col-xs-6 preference-right">
+						<a href="#" data-toggle="modal" data-target="#email-change"><?php echo text('Change Email'); ?></a>
 				</div>
 			</div>
 			
-			<div class="col-xs-6 preference-right">
-				<div>
-					<a href="#" data-toggle="modal" data-target="#email-change"><?php echo text('Change Email'); ?></a>
+			<div class="row">
+				<div class="col-xs-6 preference-left">
+						<span class="hidden-xs"><?php echo text('Password'); ?>: </span>
+						<span>·······</span>
+				</div>
+			
+				<div class="col-xs-6 preference-right">
+						<a href="#" data-toggle="modal" data-target="#password-change"><?php echo text('Change Password'); ?></a>
 				</div>
 			</div>
 			
-			<div class="col-xs-6 preference-left">
-				<div>
-					<span><?php echo text('Password'); ?>: </span>
-					<span>·······</span>
+			<div class="row">
+				<div class="col-xs-6 preference-left">
+						<form method="post" action="">
+							<span class="hidden-xs">语言 / Language: </span>
+							<span><?php echo $_SESSION['lang']; ?>
+						</form>
 				</div>
-			</div>
 			
-			<div class="col-xs-6 preference-right">
-				<div>
-					<a href="#" data-toggle="modal" data-target="#password-change"><?php echo text('Change Password'); ?></a>
-				</div>
-			</div>
-			
-			<div class="col-xs-6 preference-left">
-				<div>
+				<div class="col-xs-6 preference-right">	
 					<form method="post" action="">
-						<span>语言 / Language: </span>
-						<span><?php echo $_SESSION['lang']; ?>
+						<input type="hidden" name="chlang" value="1">
+						<select name="language-switch" id="language-switch" onchange="this.form.submit();">
+							<option disabled selected="selected">Change language</option>
+							<option value="zh_CN">简体中文</option>
+							<option value="en_US">English</option>
+						</select>
 					</form>
 				</div>
 			</div>
 			
-			<div class="col-xs-6 preference-right">
-				<div class="row">
-					<div class="col-xs-5">
-					</div>
-					
-					<div class="col-xs-7">
-						<form method="post" action="">
-							<input type="hidden" name="chlang" value="1">
-							<select name="language-switch" id="language-switch" onchange="this.form.submit();">
-								<option disabled selected="selected">Change language</option>
-								<option value="zh_CN">简体中文</option>
-								<option value="en_US">English</option>
-							</select>
-						</form>
-					</div>
-				</div>
-			</div>
-			
 		</div>
-		
-		<div class="col-xs-3">
-		</div>
-		
 	</div>
 </div>
 

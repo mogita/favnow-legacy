@@ -20,11 +20,8 @@ if(isset($_POST['language-switch'])){
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="css/favnow.css" rel="stylesheet">
 		
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/dropdown.js"></script>
-		<script type="text/javascript" src="js/modal.js"></script>
-		<script type="text/javascript" src="js/affix.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<style>
 <?php // appending .affix attribute to fix the top position problem caused by the script which fixes the affix width problem :< ?>
 			.affix { top: 12px; }

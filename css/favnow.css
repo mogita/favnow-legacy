@@ -1,6 +1,16 @@
+div.user-page {
+	padding-top: 70px;
+}
+
+.fav-list-cell-title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .fav-list-cell-title a {
 	font-family: sans-serif;
-	font-size: 1.4em;
+	font-size: 1.25em;
 	text-decoration: none;
 }
 

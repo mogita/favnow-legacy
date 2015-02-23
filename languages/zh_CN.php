@@ -65,7 +65,7 @@ $GLOBALS['zh_CN'] = Array (
 	'Logout' => '登出',
 	'New Bookmark' => '新增书签',
 	'URL' => '网址',
-	'Title (Optional. Leave it blank for FavNow to get it for you)' => '标题（可选，留空将尝试自动获取）',
+	'Title (Optional)' => '标题（可选）',
 	'Save' => '保存',
 	'My Bookmarks' => '我的书签',
 	'Add' => '新增',
@@ -104,4 +104,6 @@ $GLOBALS['zh_CN'] = Array (
 	'Could not change your Email, please try again later.' => '无法修改电子邮箱，请刷稍后重试。',
 	'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.' => '电子邮箱格式无效。如果遇到问题，请<a href="mailto:favnow@mogita.com?Subject=电子邮箱格式无效的问题">联系我们</a>。',
 	'Email changed to ' => '电子邮箱已变更为 ',
+	
+	'Add Bookmark' => '新增书签',
 );
