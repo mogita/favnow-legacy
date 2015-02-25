@@ -88,3 +88,35 @@ function safePassword ($pw, $username) {
 	
 	return $salted;
 }
+
+// Getting HTML content from URL
+function getHTML($url) {
+	$msg = '';
+	
+	if (isset($url) and !empty($url)) {
+		$ch = curl_init();
+		$timeout = 5;
+		$ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36";
+	
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_USERAGENT, $ua);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+		
+		// curl_setopt($ch, CURLOPT_HEADER, 1);
+		// curl_setopt($ch, CURLOPT_NOBODY, 1);
+		
+		$msg = curl_exec($ch);
+
+		curl_close($ch);
+		
+	} else {
+		$msg = false;
+	}
+	
+	return $msg;
+}

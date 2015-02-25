@@ -12,28 +12,29 @@ $username = $_SESSION['username'];
 $title_pattern = text('Home');
 
 // Adding a bookmark
-if (isset($_POST['url']) and $_POST['url'] <> '') {
-	$msg = addBookmark($_POST['url'], $userid, $_POST['title']);
+if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
+	// echo "<script>alert('Add')</script>";
+	$msg = addBookmark($userid, $_POST['add-url'], $_POST['add-title']);
+}
+
+// Editing a bookmark
+if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POST['edit-favid'])) {
+	// echo "<script>alert('Edit')</script>";
+	$msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title']);
 }
 
 // Deleting a bookmark
-if (isset($_GET['delete']) and $_GET['delete'] <> '') {
-	$msg = deleteBookmark($_GET['delete'], $userid);
+if (isset($_POST['delete-favid']) and !empty($_POST['delete-favid'])) {
+	// echo "<script>alert('Delete')</script>";
+	$msg = deleteBookmark($_POST['delete-favid'], $userid);
 }
 
 // Loading home page now
 include('head.php');
 ?>
 
-<script>
-$(function(){
-	var sideBarNavWidth=$('#leftColumn').width() - parseInt($('#sidePanel').css('paddingLeft')) - parseInt($('#sidePanel').css('paddingRight'));
-	$('#sidePanel').css('width', sideBarNavWidth);
-	});
-</script>
-
 <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
@@ -50,7 +51,7 @@ $(function(){
 	</div>
 </div>
 
-<div class="modal fade" id="add-bookmark" tabindex="-1" role="dialog" aria-labelledby="addLinkLabel" aria-hidden="true">
+<div class="modal fade" id="add-bookmark" tabindex="-1" role="dialog" aria-labelledby="addBookmarkLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -60,10 +61,10 @@ $(function(){
 			<div class="modal-body">
 				<form action="" method="post" role="form">
 					<div class="form-group">
-						<input type="text" name="url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" required autofocus />
+						<input type="text" id="add-url" name="add-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" required autofocus />
 					</div>
 					<div class="form-group">
-						<input type="text" name="title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" />
+						<input type="text" id="add-title" name="add-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" />
 					</div>
 					
 					<div class="modal-footer">
@@ -71,6 +72,67 @@ $(function(){
 						<button type="submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
 					</div>
 					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="edit-bookmark" tabindex="-1" role="dialog" aria-labelledby="editBookmarkLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
+				<h4 class="modal-title" id="settings"><?php echo text('Edit Bookmark'); ?></h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post" role="form">
+					<input type="hidden" id="edit-favid" name="edit-favid" value="" class="form-control" />
+
+					<div class="form-group">
+						<input type="text" id="edit-url" name="edit-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" required disabled />
+					</div>
+					
+					<div class="form-group">
+						<input type="text" id="edit-title" name="edit-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" autofocus />
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+						<button type="submit" class="btn btn-primary"><?php echo text('Save'); ?></button>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="delete-bookmark" tabindex="-1" role="dialog" aria-labelledby="deleteBookmarkLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
+				<h4 class="modal-title" id="settings"><?php echo text('Delete Bookmark'); ?></h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post" role="form">
+					<input type="hidden" id="delete-favid" name="delete-favid" value="" class="form-control" />
+			
+					<p><?php echo text('Are you sure you want to permanently delete this bookmark?')?></p>
+					<p>
+						<span><?php echo text('URL: ')?></span>
+						<span><strong id="delete-url"></strong></span>
+					</p>
+					<p>
+						<span><?php echo text('Title: ')?></span>
+						<span id="delete-title"></span>
+					</p>
+			
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Cancel'); ?></button>
+						<button type="submit" class="btn btn-danger"><?php echo text('Delete'); ?></button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -109,18 +171,22 @@ $(function(){
 			<div class="row">
 				<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 					<div class="fav-list">
-						<div class="panel panel-primary">
+						<div class="panel panel-default">
 						
 							<div class="panel-heading">
-								<?php echo text('My Bookmarks'); ?>
-								<button data-toggle="modal" data-target="#add-bookmark" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i> <?php echo text('Add Bookmark'); ?></button>
+								<div class="pull-right">
+									<button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <strong><?php echo text('Add Bookmark'); ?></strong></button>
+								</div>
+								<h4>
+									<?php echo text('My Bookmarks'); ?>
+								</h4>
 							</div>
 						
 							<div class="panel-body">
 								<?php // $msg = 'A quick fox jumped over a lazy dog. A quick fox jumped over a lazy dog.'; ?>
 								<?php if (isset($msg) and !empty($msg)) {?>
 									<div class="row">
-										<div class="alert alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
+										<div class="alert fade in alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
 											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											<?php echo $msg; ?>
 										</div>
@@ -168,7 +234,7 @@ $(function(){
 															<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
 														</span>
 														<span class="fav-list-cell-service">
-															<a class="edit-button" href="#" data-toggle="modal" data-target="#edit"><?php echo text('Edit'); ?></a>
+															<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
 														</span>
 													</div>
 													<div class="fav-list-cell-bottom">
@@ -176,7 +242,7 @@ $(function(){
 															<?php echo date(text('H:i:s M d, Y'), $time); ?>
 														</span>
 														<span class="fav-list-cell-service">
-															<a class="delete-button" href="<?php echo $_SERVER['REQUEST_URI']; ?>?delete=<?php echo $favid; ?>"><?php echo text('Delete'); ?></a>
+															<a class="delete-button" href="#" data-toggle="modal" data-target="#delete-bookmark" data-deleteurl="<?php echo $url; ?>" data-deletetitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Delete'); ?></a>
 														</span>
 													</div>
 												</div>
@@ -206,6 +272,31 @@ $(function(){
 			$('.fav-list-cell-service').hide();						
 			$('#fav-list-table tr td').hover(showCellService, hideCellService);
 		});
+		
+		$('#add-bookmark').on('shown.bs.modal', function () {
+		    $('#add-url').focus();
+		})
+		
+		$('#edit-bookmark').on('shown.bs.modal', function () {
+		    $('#edit-title').focus();
+		})
+		
+		$('#edit-bookmark').on('show.bs.modal', function (event) {
+			var a = $(event.relatedTarget);
+			var modal = $(this);
+			modal.find('#edit-url').val(a.data('editurl'));
+			modal.find('#edit-title').val(a.data('edittitle'));
+			modal.find('#edit-favid').val(a.data('favid'));
+		})
+		
+		$('#delete-bookmark').on('show.bs.modal', function (event) {
+			var a = $(event.relatedTarget);
+			var modal = $(this);
+			modal.find('#delete-url').html(a.data('deleteurl'));
+			modal.find('#delete-title').html(a.data('deletetitle'));
+			modal.find('#delete-favid').val(a.data('favid'));
+		})
+
 		</script>
 	</body>
 </html>

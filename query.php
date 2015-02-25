@@ -25,13 +25,18 @@ function newDBConn() {
 
 /***************** BOOKMARK DATA *****************/
 
-function readBookmark($userid) {
+function readBookmark($userid, $favID = '') {
 	$msg = '';
 	$count = 0;
 	$results = array();
 	
 	$mysqli = newDBConn();
-	$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
+	
+	if ($favID <> '') {
+		$sql = "SELECT * FROM Favs WHERE userid='$userid' AND id='$favID'";
+	} else {
+		$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
+	}
 	
 	if ($result = $mysqli->query($sql)) {
 		
@@ -52,7 +57,7 @@ function readBookmark($userid) {
 }
 
 
-function addBookmark($url, $userid, $title) {
+function addBookmark($userid, $url, $title) {
 	$msg = '';
 	
 	$mysqli = newDBConn();
@@ -105,19 +110,91 @@ function addBookmark($url, $userid, $title) {
 	return $msg;
 }
 
+function editBookmark($userid, $favID, $title) {
+	$msg = '';
+	
+	$mysqli = newDBConn();
+	$favID = sanitize($mysqli->real_escape_string($favID));
+	$resultRead = readBookmark($userid, $favID);
+	
+	$count = $resultRead[1];
+	$bookmark = $resultRead[2];
+	
+	if ($count <= 0) {
+		$msg = 'The bookmark could not be located, please try again.';
+	} else {
+		foreach ($bookmark as $row) {
+			$url = $row['url'];
+		}
+		
+		if (!isset($title) or $title == '') {
 
-function deleteBookmark($fav_id, $userid) {
+			$content = getHTML($url);
+			
+			/*
+			$n = 0;
+			while (preg_match("!Location: (.*)!", $content, $matches)) {
+				sleep($n + 1);
+				$content = getHTML($matches[1]);
+				$n++;
+				if ($n > 4) break;
+			}
+			*/
+			
+			if (!$content) {
+				
+				$title = $url;
+				
+			} elseif (strlen($content) > 0) {
+				
+				preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
+				if (isset($title[1]) and $title[1] <> '') {
+					$title = $title[1];
+				} else {
+					$title = $url;
+				}
+				
+			} else {
+				
+				$title = $url;
+			}
+		}
+
+		$title = sanitize($mysqli->real_escape_string($title));
+		// echo "<script>alert('$title')</script>";
+
+		$sql = "UPDATE Favs SET title = '$title' WHERE id = '$favID'";
+		$result = $mysqli->query($sql);
+		$affectedRows = $mysqli->affected_rows;
+
+		if ($affectedRows != 1) {
+			$msg = text('Bookmark not modified.');
+		} elseif ($result) {
+			$msg = text('Bookmark updated successfully.');
+		} else {
+			$msg = text('There was an error saving your bookmark, please try again.');
+		}
+	}
+	
+	return $msg;
+}
+
+
+function deleteBookmark($favID, $userid) {
 
 	$msg = '';
 	
 	$mysqli = newDBConn();
-	$sql = "DELETE FROM Favs WHERE id=\"".$fav_id."\" AND userid=\"".$userid."\"";
+	$sql = "DELETE FROM Favs WHERE id=\"".$favID."\" AND userid=\"".$userid."\"";
 	$result = $mysqli->query($sql);
-
-	if (!$result) {
-		$msg = text('There were problems deleting, please try again.');
-	} else {
+	$affectedRows = $mysqli->affected_rows;
+	
+	if ($affectedRows != 1) {
+		$msg = text('This bookmark does not exist.');
+	} elseif ($result) {
 		$msg = text('Bookmark deleted.');
+	} else {
+		$msg = text('There were problems deleting, please try again.');
 	}
 	
 	return $msg;

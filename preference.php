@@ -38,7 +38,7 @@ include('head.php');
 ?>
 
 <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
@@ -154,7 +154,7 @@ include('head.php');
 				<?php // $msg = 'A quick fox jumped over a lazy dog. A quick fox jumped over a lazy dog.'; ?>
 				<?php if (isset($msg) and !empty($msg)) {?>
 					<div class="row">
-						<div class="alert alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
+						<div class="alert fade in alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<?php echo $msg; ?>
 						</div>

@@ -81,6 +81,7 @@ $GLOBALS['en_US'] = Array (
 	'This is about dialog text' => 'FavNow is a place for your bookmarks online. You can save, edit and delete your bookmarks with ease, and manage them in an effective way.',
 	
 	'This URL already exists.' => 'This URL already exists.',
+	'This bookmark does not exist.' => 'This bookmark does not exist.',
 	
 	'Bookmark deleted.' => 'Bookmark deleted.',
 	'Unable to establish database connection: ' => 'Unable to establish database connection: ',
@@ -104,4 +105,16 @@ $GLOBALS['en_US'] = Array (
 	'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.' => 'Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.',
 	'Email changed to ' => 'Email changed to ',
 	'Add Bookmark' => 'Add Bookmark',
+	
+	'Edit Bookmark' => 'Edit Bookmark',
+	'Bookmark not modified.' => 'Bookmark not modified.',
+	'Bookmark updated successfully.' => 'Bookmark updated successfully.',
+	'There was an error saving your bookmark, please try again.' => 'There was an error saving your bookmark, please try again.',
+	'The bookmark could not be located, please try again.' => 'The bookmark could not be located, please try again.',
+	
+	'Delete Bookmark' => 'Delete Bookmark',
+	'Are you sure you want to permanently delete this bookmark?' => 'Are you sure you want to permanently delete this bookmark?',
+	'URL: ' => 'URL: ',
+	'Title: ' => 'Title: ',
+	'Cancel' => 'Cancel',
 );
