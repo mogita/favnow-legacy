@@ -12,6 +12,7 @@ $GLOBALS['zh_CN'] = Array (
 	'Signup for FREE' => '立刻免费注册！',
 	'Lost Password?' => '忘记密码',
 	'Username or password incorrect' => '登入失败，用户名或密码错误',
+	'Profile' => '个人页面',
 
 	'Preserve' => '预留',
 	'Register' => '注册',

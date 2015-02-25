@@ -12,6 +12,7 @@ $GLOBALS['en_US'] = Array (
 	'Signup for FREE' => 'Signup for FREE',
 	'Lost Password?' => 'Lost Password?',
 	'Username or password incorrect' => 'Username or password incorrect',
+	'Profile' => 'Profile',
 	
 	'Preserve' => 'Preserve',
 	'Register' => 'Register',

@@ -119,9 +119,7 @@ include('head.php');
 
 
 <div class="navbar navbar-default navbar-fixed-top">
-	
       <div class="container-fluid">
-		  
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
 					<span class="sr-only">Toggle navigation</span>
@@ -135,13 +133,20 @@ include('head.php');
 		
 	        <div class="collapse navbar-collapse" id="navbar-menu">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#"><?php echo $_SESSION['username']; ?></a></li>
-					<li class="active"><a href="preference.php"><?php echo text('Preference'); ?></a></li>
 					<li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
-					<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+							<?php echo $_SESSION['username']; ?> <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="profile.php"><?php echo text('Profile'); ?></a></li>
+							<li><a href="preference.php"><?php echo text('Preference'); ?></a></li>
+							<li role="presentation" class="divider"></li>
+							<li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
+						</ul>
+					</li>
 				</ul>
 	        </div>
-		
       </div>
 </div>
 
