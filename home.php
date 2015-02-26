@@ -122,7 +122,7 @@ include('head.php');
 					<p><?php echo text('Are you sure you want to permanently delete this bookmark?')?></p>
 					<p>
 						<span><?php echo text('URL: ')?></span>
-						<span><strong id="delete-url"></strong></span>
+						<span id="delete-url"></span>
 					</p>
 					<p>
 						<span><?php echo text('Title: ')?></span>
@@ -198,8 +198,7 @@ include('head.php');
 									</div>
 								<?php } ?>
 								
-								<div class="table-responsive">
-								<table class="table table-hover" id="fav-list-table">
+								<div class="fav-list-content">
 										<?php
 										// Reading bookmarks
 										$result = readBookmark($userid);
@@ -231,15 +230,11 @@ include('head.php');
 												$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
 												$titleHTML = ($title == $titleTrimmed) ? '' : $title;
 										?>
-										<tr>
-											<td>
-												<div class="fav-list-cell" id="<?php echo $favid; ?>">
+										<article class="fav-list-cell" id="<?php echo $favid; ?>">
+												<div class="fav-list-inner-item">
 													<div class="fav-list-cell-top">
 														<span class="fav-list-cell-title">
 															<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
-														</span>
-														<span class="fav-list-cell-service">
-															<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
 														</span>
 													</div>
 													<div class="fav-list-cell-bottom">
@@ -247,17 +242,16 @@ include('head.php');
 															<?php echo date(text('H:i:s M d, Y'), $time); ?>
 														</span>
 														<span class="fav-list-cell-service">
+															<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
 															<a class="delete-button" href="#" data-toggle="modal" data-target="#delete-bookmark" data-deleteurl="<?php echo $url; ?>" data-deletetitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Delete'); ?></a>
 														</span>
 													</div>
 												</div>
-											</td>
-										</tr>
+										</article>
 										<?php 
 												}
 											}
 										?>
-								</table>
 							</div>
 						</div>
 					</div>
@@ -275,7 +269,7 @@ include('head.php');
 		
 		$(document).ready(function(){
 			$('.fav-list-cell-service').hide();						
-			$('#fav-list-table tr td').hover(showCellService, hideCellService);
+			$('.fav-list-cell').hover(showCellService, hideCellService);
 		});
 		
 		$('#add-bookmark').on('shown.bs.modal', function () {

@@ -2,10 +2,17 @@ div.user-page {
 	padding-top: 70px;
 }
 
+.fav-list-inner-item {
+	border-bottom: solid 1px #dddddd;
+	padding: 10px 0 5px;
+}
+
 .fav-list-cell-title {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	max-width: 100%;
+	display: block;
 }
 
 .fav-list-cell-title a {
@@ -51,11 +58,11 @@ div.user-page {
 #delete-url {
 	-ms-word-break: break-all;
 	word-break: break-all;
-
 	/* Non standard for webkit */
 	word-break: break-word;
-
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
 	hyphens: auto;
+	
+	font-weight: bold;
 }
