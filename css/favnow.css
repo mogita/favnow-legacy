@@ -6,6 +6,12 @@ div.user-page {
 	outline: none !important;
 }
 
+.add-url-indicator {
+	margin: 5px;
+	-moz-animation-duration: 2.3s;
+	-webkit-animation-duration: 2.3s;
+}
+
 .fav-list-inner-item {
 	border-bottom: solid 1px #dddddd;
 	padding: 10px 0 5px;
@@ -40,7 +46,7 @@ div.user-page {
 	color: #999;
 }
 
-.edit-button :hover {
+.fav-list-cell-service a:hover {
 	color: #4e84d1;
 }
 

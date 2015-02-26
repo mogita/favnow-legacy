@@ -25,7 +25,7 @@ function newDBConn() {
 
 /***************** BOOKMARK DATA *****************/
 
-function readBookmark($userid, $favID = '') {
+function readBookmark($userid, $favID = '', $limit = '') {
 	$msg = '';
 	$count = 0;
 	$results = array();
@@ -35,7 +35,11 @@ function readBookmark($userid, $favID = '') {
 	if ($favID <> '') {
 		$sql = "SELECT * FROM Favs WHERE userid='$userid' AND id='$favID'";
 	} else {
-		$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
+		if (isset($limit) and !empty($limit)) {
+			$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC LIMIT ".$limit;
+		} else {
+			$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
+		}
 	}
 	
 	if ($result = $mysqli->query($sql)) {
@@ -63,7 +67,10 @@ function addBookmark($userid, $url, $title) {
 	$mysqli = newDBConn();
 
 	if (strlen($url) > 500) {
-		$msg = text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.');
+		$return = array(
+			"code" => 233,
+			"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.')
+		);
 	} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
 		$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
 	}*/ else {
@@ -99,15 +106,30 @@ function addBookmark($userid, $url, $title) {
 		$affectedRows = $mysqli->affected_rows;
 
 		if ($affectedRows != 1) {
-			$msg = text('This URL already exists.');
+			$return = array(
+				"code" => 233,
+				"message" => text('This URL already exists.')
+			);
 		} elseif ($result) {
-			$msg = '';
+			$return = array(
+				"code" => 200,
+				"message" => array(
+					"time" => date(text('H:i:s M d, Y'), $time),
+					"title" => $title,
+					"url" => $url,
+					"favid" => $mysqli->insert_id
+				)
+			);
 		} else {
-			$msg = text('There was an error, please try again.');
+			$return = array(
+				"code" => 233,
+				"message" => text('There was an error, please try again.')
+			);
 		}
 	}
 	
-	return $msg;
+	echo json_encode($return);
+	exit();
 }
 
 function editBookmark($userid, $favID, $title) {

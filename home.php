@@ -57,19 +57,19 @@ include('head.php');
 				<h4 class="modal-title" id="settings"><?php echo text('Add Bookmark'); ?></h4>
 			</div>
 			<div class="modal-body">
-				<form action="" method="post" role="form">
+				<form name="add-url-form" id="add-url-form" action="" method="POST">
 					<div class="form-group">
-						<input type="text" id="add-url" name="add-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" required autofocus />
+						<input type="text" tabindex="0" id="add-url" name="add-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" autofocus required />
 					</div>
 					<div class="form-group">
 						<input type="text" id="add-title" name="add-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" />
 					</div>
-					
+				
 					<div class="modal-footer">
+						<span class="small" id="add-url-message"></span>
 						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
-						<button type="submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
+						<button type="submit" id="add-url-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
 					</div>
-					
 				</form>
 			</div>
 		</div>
@@ -166,6 +166,7 @@ include('head.php');
 								<?php } ?>
 								
 								<div class="fav-list-content">
+									<div id="before-first"></div>
 									<div class="no-bookmark-label hide">
 										<h3>
 											<span class="label label-default">
@@ -245,12 +246,10 @@ include('head.php');
 					if(data) {
 						$('#fav-list-cell-' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 							$('#fav-list-cell-' + id).remove();
-							// alert($('div.fav-list-content > article').length);
 							if ($('div.fav-list-content > article').length <= 0) {
 								$('.no-bookmark-label').removeClass('hide');
 							}
 						});
-						
 					} else {
 						// alert('Success data false');
 					}
@@ -258,7 +257,47 @@ include('head.php');
 			});
 		}
 		
-		$(document).ready(function(){
+		$('#add-url-form').submit(function(e) {
+			e.preventDefault();
+			
+			$('#add-url-submit').addClass('disabled');
+			$('#add-url-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+			
+			var postData = $(this).serializeArray();
+			$.ajax({
+				url: 'home.php',
+				type: 'POST',
+				data: postData,
+				success: function(response) {
+					$('#add-url-submit').removeClass('disabled');
+					$('#add-url-submit').html('<?php echo text('Add'); ?>');
+					
+					response = $.parseJSON(response);
+					if (response.code == 200) {
+						$('#add-bookmark').modal('hide');
+						url = response.message.url;
+						title = response.message.title;
+						time = response.message.time;
+						favid = response.message.favid;
+						$('<article class="fav-list-cell animated zoomIn" id="fav-list-cell-' + favid + '"><div class="fav-list-inner-item"><div class="fav-list-cell-top"><span class="fav-list-cell-title"><a href="' + url + '" title="' + title + '" target="_blank">' + title + '</a></span></div><div class="fav-list-cell-bottom"><span class="fav-list-cell-datetime">' + time + '</span><span class="fav-list-cell-service"><a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="' + url + '" data-edittitle="' + title + '" data-favid="' + favid + '"><?php echo text('Edit'); ?></a><a tabindex="0" href="#" class="delete-button" data-toggle="popover" data-trigger="focus" data-placement="top" data-content=\'<button class="btn btn-danger delete-button-confirm" id="' + favid + '" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>\'><i class="glyphicon glyphicon-trash"></i></a></span></div></div></article>').insertAfter('#before-first');
+						$('.fav-list-cell-service').hide();						
+						$('.fav-list-cell').hover(showCellService, hideCellService);
+						$('a[data-toggle=popover]').popover({
+						    html: 'true'
+						})
+					} else {
+						$('#add-url-message').html(response.message);
+					}
+				},
+				error: function(xhr, ajaxOptions, errorThrown) {
+					alert('error eh');
+					$('#add-url-submit').removeClass('disabled');
+					$('#add-url-submit').html('<?php echo text('Add'); ?>');
+				}
+			});
+		});
+				
+		$(function(){
 			$('.fav-list-cell-service').hide();						
 			$('.fav-list-cell').hover(showCellService, hideCellService);
 		});
