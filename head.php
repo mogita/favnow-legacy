@@ -15,17 +15,14 @@ if(isset($_POST['language-switch'])){
 		<meta name="keywords" content="书签, 网址, 工具, 实用, 小工具, 服务, 批量管理, URL, 浏览器">
 		<meta name="author" content="mogita">
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-		<title><?php if(isset($title_pattern) && $title_pattern <> '') echo $title_pattern.' - '; ?>FavNow</title>
+		<title><?php if(isset($title_pattern) && !empty($title_pattern)) echo $title_pattern.' - '; ?>FavNow</title>
 		
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/animate.min.css" rel="stylesheet">
 		<link href="css/favnow.css" rel="stylesheet">
 		
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
-		<style>
-<?php // appending .affix attribute to fix the top position problem caused by the script which fixes the affix width problem :< ?>
-			.affix { top: 12px; }
-		</style>
 	</head>
 	
 	<body>

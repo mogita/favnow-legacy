@@ -3,9 +3,7 @@ require_once 'config.php';
 include 'function.php';
 include 'query.php';
 
-// if (empty($_SESSION['loggedin'])) header("Location: logout.php");
-// if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
-if (empty($_SESSION['username']) or empty($_SESSION['userid']) or empty($_SESSION['loggedin'])) header("Location: logout.php");
+if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SESSION['userid']) or empty($_SESSION['userid']) or !isset($_SESSION['userid']) or  empty($_SESSION['loggedin']) or !$_SESSION['loggedin']) header("Location: logout.php");
 
 $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
@@ -24,9 +22,9 @@ if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POS
 }
 
 // Deleting a bookmark
-if (isset($_POST['delete-favid']) and !empty($_POST['delete-favid'])) {
+if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
 	// echo "<script>alert('Delete')</script>";
-	$msg = deleteBookmark($_POST['delete-favid'], $userid);
+	$msg = deleteBookmark($_POST['delete-confirm'], $userid);
 }
 
 // Loading home page now
@@ -108,37 +106,6 @@ include('head.php');
 	</div>
 </div>
 
-<div class="modal fade" id="delete-bookmark" tabindex="-1" role="dialog" aria-labelledby="deleteBookmarkLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
-				<h4 class="modal-title" id="settings"><?php echo text('Delete Bookmark'); ?></h4>
-			</div>
-			<div class="modal-body">
-				<form action="" method="post" role="form">
-					<input type="hidden" id="delete-favid" name="delete-favid" value="" class="form-control" />
-			
-					<p><?php echo text('Are you sure you want to permanently delete this bookmark?')?></p>
-					<p>
-						<span><?php echo text('URL: ')?></span>
-						<span id="delete-url"></span>
-					</p>
-					<p>
-						<span><?php echo text('Title: ')?></span>
-						<span id="delete-title"></span>
-					</p>
-			
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Cancel'); ?></button>
-						<button type="submit" class="btn btn-danger"><?php echo text('Delete'); ?></button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-
 <div class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
 			<div class="navbar-header">
@@ -199,12 +166,18 @@ include('head.php');
 								<?php } ?>
 								
 								<div class="fav-list-content">
+									<div class="no-bookmark-label hide">
+										<h3>
+											<span class="label label-default">
+												<?php echo text('No bookmarks yet? Start to save them right away!'); ?>
+											</span>
+										</h3>
+									</div>
 										<?php
 										// Reading bookmarks
 										$result = readBookmark($userid);
 										$count = $result[1];
 										$bookmark = $result[2];
-										$favlist = '';
 								
 										if ($count < 0) {
 										?>
@@ -214,11 +187,7 @@ include('head.php');
 												</span>
 											</h4>
 										<?php } elseif ($count == 0) { ?>
-											<h2>
-												<span class="label label-default">
-													<?php echo text('No bookmarks yet? Start to save them right away!'); ?>
-												</span>
-											</h2>
+											<script>$('.no-bookmark-label').removeClass('hide');</script>
 										<?php } else {
 												foreach ($bookmark as $row) {
 												$favid = $row['id'];
@@ -227,26 +196,26 @@ include('head.php');
 												$time = $row['timepoint'];
 										
 												// Shortening the title if it's too long (Method from Discuz!)		
-												$titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
-												$titleHTML = ($title == $titleTrimmed) ? '' : $title;
+												// $titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
+												// $titleHTML = ($title == $titleTrimmed) ? '' : $title;
 										?>
-										<article class="fav-list-cell" id="<?php echo $favid; ?>">
-												<div class="fav-list-inner-item">
-													<div class="fav-list-cell-top">
-														<span class="fav-list-cell-title">
-															<a href="<?php echo $url; ?>" title="<?php echo $titleHTML; ?>" target="_blank"><?php echo $titleTrimmed; ?></a>
-														</span>
-													</div>
-													<div class="fav-list-cell-bottom">
-														<span class="fav-list-cell-datetime">
-															<?php echo date(text('H:i:s M d, Y'), $time); ?>
-														</span>
-														<span class="fav-list-cell-service">
-															<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
-															<a class="delete-button" href="#" data-toggle="modal" data-target="#delete-bookmark" data-deleteurl="<?php echo $url; ?>" data-deletetitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Delete'); ?></a>
-														</span>
-													</div>
+										<article class="fav-list-cell" id="fav-list-cell-<?php echo $favid; ?>">
+											<div class="fav-list-inner-item">
+												<div class="fav-list-cell-top">
+													<span class="fav-list-cell-title">
+														<a href="<?php echo $url; ?>" title="<?php echo $title; ?>" target="_blank"><?php echo $title; ?></a>
+													</span>
 												</div>
+												<div class="fav-list-cell-bottom">
+													<span class="fav-list-cell-datetime">
+														<?php echo date(text('H:i:s M d, Y'), $time); ?>
+													</span>
+													<span class="fav-list-cell-service">
+														<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
+														<a tabindex="0" href="#" class="delete-button" data-toggle="popover" data-trigger="focus" data-placement="top" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $favid; ?>" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"></i></a>
+													</span>
+												</div>
+											</div>
 										</article>
 										<?php 
 												}
@@ -265,6 +234,28 @@ include('head.php');
 		
 		function hideCellService() {
 			$(this).find('.fav-list-cell-service').hide();
+		}
+		
+		function deleteConfirm(id) {
+			$.ajax({
+				type: 'POST',
+				url: 'home.php',
+				data: 'delete-confirm=' + id,
+				success:function(data) {
+					if(data) {
+						$('#fav-list-cell-' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+							$('#fav-list-cell-' + id).remove();
+							// alert($('div.fav-list-content > article').length);
+							if ($('div.fav-list-content > article').length <= 0) {
+								$('.no-bookmark-label').removeClass('hide');
+							}
+						});
+						
+					} else {
+						// alert('Success data false');
+					}
+				}
+			});
 		}
 		
 		$(document).ready(function(){
@@ -295,7 +286,10 @@ include('head.php');
 			modal.find('#delete-title').html(a.data('deletetitle'));
 			modal.find('#delete-favid').val(a.data('favid'));
 		})
-
+		
+		$('a[data-toggle=popover]').popover({
+		    html: 'true'
+		})
 		</script>
 	</body>
 </html>

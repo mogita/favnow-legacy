@@ -2,6 +2,10 @@ div.user-page {
 	padding-top: 70px;
 }
 
+*:focus {
+	outline: none !important;
+}
+
 .fav-list-inner-item {
 	border-bottom: solid 1px #dddddd;
 	padding: 10px 0 5px;
@@ -18,7 +22,6 @@ div.user-page {
 .fav-list-cell-title a {
 	font-family: sans-serif;
 	font-size: 1.25em;
-	text-decoration: none;
 }
 
 .fav-list-cell-bottom {
@@ -34,6 +37,19 @@ div.user-page {
 .fav-list-cell-service a {
 	margin-left: 10px;
 	text-decoration: none;
+	color: #999;
+}
+
+.edit-button :hover {
+	color: #4e84d1;
+}
+
+.delete-button {
+	padding: 5px;
+}
+
+.delete-button :hover {
+	color: #CA6E5E;
 }
 
 .password-info {

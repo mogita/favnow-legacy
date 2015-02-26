@@ -30,7 +30,7 @@ if (isset($_POST['usn']) and isset($_POST['pwd']) and $_POST['usn'] <> '' and $_
 		$safepw = safePassword($_POST['pwd'], $username);
 		
 		if ($password == $safepw) {
-			$_SESSION['loggedin'] = True;
+			$_SESSION['loggedin'] = true;
 			$_SESSION['username'] = $username;
 			$_SESSION['userid'] = $userid;
 	
