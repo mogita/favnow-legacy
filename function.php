@@ -95,7 +95,7 @@ function getHTML($url) {
 	
 	if (isset($url) and !empty($url)) {
 		$ch = curl_init();
-		$timeout = 5;
+		$timeout = 10;
 		$ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36";
 	
 		curl_setopt($ch, CURLOPT_URL, $url);

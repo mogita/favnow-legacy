@@ -62,70 +62,72 @@ function readBookmark($userid, $favID = '', $limit = '') {
 
 
 function addBookmark($userid, $url, $title) {
-	$msg = '';
 	
 	$mysqli = newDBConn();
+	if (isset($url) and !empty($url) and isset($userid) and !empty($userid)) {
+		if (strlen($url) > 500) {
+			$return = array(
+				"code" => 233,
+				"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.')
+			);
+		} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
+			$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
+		}*/ else {
 
-	if (strlen($url) > 500) {
-		$return = array(
-			"code" => 233,
-			"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.')
-		);
-	} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
-		$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
-	}*/ else {
+			$time = time();
+			if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
 
-		$time = time();
+			if (!isset($title) or $title == '') {
+				$content = getHTML($url);
 
-		if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
-
-		if (!isset($title) or $title == '') {
-
-			$ctx = stream_context_create(array('http' => array('timeout' => 7)));
-			$content = file_get_contents($url, 0, $ctx);
-
-			if (strlen($content) > 0) {
-				preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
-				if (isset($title[1]) and $title[1] <> '') {
-					$title = $title[1];
+				if (strlen($content) > 0) {
+					preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
+					if (isset($title[1]) and $title[1] <> '') {
+						$title = $title[1];
+					} else {
+						$title = $url;
+					}
 				} else {
 					$title = $url;
 				}
-			} else {
-				$title = $url;
+
 			}
 
+			$url = sanitize($mysqli->real_escape_string($url));
+			$title = sanitize($mysqli->real_escape_string($title));
+			$hash = md5($url);
+
+			$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
+			$result = $mysqli->query($sql);
+			$affectedRows = $mysqli->affected_rows;
+
+			if ($affectedRows != 1) {
+				$return = array(
+					"code" => 233,
+					"message" => text('This URL already exists.')
+				);
+			} elseif ($result) {
+				$return = array(
+					"code" => 200,
+					"message" => array(
+						"time" => date(text('H:i:s M d, Y'), $time),
+						"title" => $title,
+						"url" => $url,
+						"favid" => $mysqli->insert_id
+					)
+				);
+			} else {
+				$return = array(
+					"code" => 233,
+					"message" => text('There was an error, please try again.')
+				);
+			}
 		}
-
-		$url = sanitize($mysqli->real_escape_string($url));
-		$title = sanitize($mysqli->real_escape_string($title));
-		$hash = md5($url);
-
-		$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
-		$result = $mysqli->query($sql);
-		$affectedRows = $mysqli->affected_rows;
-
-		if ($affectedRows != 1) {
-			$return = array(
-				"code" => 233,
-				"message" => text('This URL already exists.')
-			);
-		} elseif ($result) {
-			$return = array(
-				"code" => 200,
-				"message" => array(
-					"time" => date(text('H:i:s M d, Y'), $time),
-					"title" => $title,
-					"url" => $url,
-					"favid" => $mysqli->insert_id
-				)
-			);
-		} else {
-			$return = array(
-				"code" => 233,
-				"message" => text('There was an error, please try again.')
-			);
-		}
+	} else {
+		$return = array(
+			"code" => 233,
+			"message" => text('There was an error, please try again.')
+		);
 	}
 	
 	echo json_encode($return);
@@ -133,7 +135,6 @@ function addBookmark($userid, $url, $title) {
 }
 
 function editBookmark($userid, $favID, $title) {
-	$msg = '';
 	
 	$mysqli = newDBConn();
 	$favID = sanitize($mysqli->real_escape_string($favID));
@@ -143,7 +144,10 @@ function editBookmark($userid, $favID, $title) {
 	$bookmark = $resultRead[2];
 	
 	if ($count <= 0) {
-		$msg = 'The bookmark could not be located, please try again.';
+		$return = array(
+			"code" => 233,
+			"message" => text('The bookmark could not be located, please try again.')
+		);
 	} else {
 		foreach ($bookmark as $row) {
 			$url = $row['url'];
@@ -153,52 +157,51 @@ function editBookmark($userid, $favID, $title) {
 
 			$content = getHTML($url);
 			
-			/*
-			$n = 0;
-			while (preg_match("!Location: (.*)!", $content, $matches)) {
-				sleep($n + 1);
-				$content = getHTML($matches[1]);
-				$n++;
-				if ($n > 4) break;
-			}
-			*/
-			
 			if (!$content) {
-				
 				$title = $url;
 				
 			} elseif (strlen($content) > 0) {
-				
 				preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
 				if (isset($title[1]) and $title[1] <> '') {
 					$title = $title[1];
 				} else {
 					$title = $url;
 				}
-				
 			} else {
-				
 				$title = $url;
 			}
 		}
 
 		$title = sanitize($mysqli->real_escape_string($title));
-		// echo "<script>alert('$title')</script>";
 
 		$sql = "UPDATE Favs SET title = '$title' WHERE id = '$favID'";
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
 
 		if ($affectedRows != 1) {
-			$msg = text('Bookmark not modified.');
+			$return = array(
+				"code" => 200,
+				"message" => text('Bookmark not modified.')
+			);
 		} elseif ($result) {
-			$msg = text('Bookmark updated successfully.');
+			$return = array(
+				"code" => 200,
+				"message" => array(
+					"title" => $title,
+					"url" => $url,
+					"favid" => $favID
+				)
+			);
 		} else {
-			$msg = text('There was an error saving your bookmark, please try again.');
+			$return = array(
+				"code" => 233,
+				"message" => text('There was an error saving your bookmark, please try again.')
+			);
 		}
 	}
 	
-	return $msg;
+	echo json_encode($return);
+	exit();
 }
 
 
