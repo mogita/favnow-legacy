@@ -14,7 +14,7 @@ function newDBConn() {
 		if (DEBUGGIN) {
 			die(text('Unable to establish database connection: ').$mysqli->connect_error);
 		} else {
-			die(text('Unable to establish database connection.'));
+			die(text('Unable to establish database connection'));
 		}
 	}
 	
@@ -68,7 +68,7 @@ function addBookmark($userid, $url, $title) {
 		if (strlen($url) > 500) {
 			$return = array(
 				"code" => 233,
-				"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please.')
+				"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please')
 			);
 		} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
 			$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
@@ -104,7 +104,7 @@ function addBookmark($userid, $url, $title) {
 			if ($affectedRows != 1) {
 				$return = array(
 					"code" => 233,
-					"message" => text('This URL already exists.')
+					"message" => text('This URL already exists')
 				);
 			} elseif ($result) {
 				$return = array(
@@ -119,14 +119,14 @@ function addBookmark($userid, $url, $title) {
 			} else {
 				$return = array(
 					"code" => 233,
-					"message" => text('There was an error, please try again.')
+					"message" => text('There was an error, please try again')
 				);
 			}
 		}
 	} else {
 		$return = array(
 			"code" => 233,
-			"message" => text('There was an error, please try again.')
+			"message" => text('There was an error, please try again')
 		);
 	}
 	
@@ -146,7 +146,7 @@ function editBookmark($userid, $favID, $title) {
 	if ($count <= 0) {
 		$return = array(
 			"code" => 233,
-			"message" => text('The bookmark could not be located, please try again.')
+			"message" => text('The bookmark could not be located, please try again')
 		);
 	} else {
 		foreach ($bookmark as $row) {
@@ -181,7 +181,7 @@ function editBookmark($userid, $favID, $title) {
 		if ($affectedRows != 1) {
 			$return = array(
 				"code" => 200,
-				"message" => text('Bookmark not modified.')
+				"message" => text('Bookmark not modified')
 			);
 		} elseif ($result) {
 			$return = array(
@@ -195,7 +195,7 @@ function editBookmark($userid, $favID, $title) {
 		} else {
 			$return = array(
 				"code" => 233,
-				"message" => text('There was an error saving your bookmark, please try again.')
+				"message" => text('There was an error saving your bookmark, please try again')
 			);
 		}
 	}
@@ -205,24 +205,31 @@ function editBookmark($userid, $favID, $title) {
 }
 
 
-function deleteBookmark($favID, $userid) {
-
-	$msg = '';
-	
+function deleteBookmark($favID, $userid) {	
 	$mysqli = newDBConn();
 	$sql = "DELETE FROM Favs WHERE id=\"".$favID."\" AND userid=\"".$userid."\"";
 	$result = $mysqli->query($sql);
 	$affectedRows = $mysqli->affected_rows;
 	
 	if ($affectedRows != 1) {
-		$msg = text('This bookmark does not exist.');
+		$return = array(
+			"code" => 233,
+			"message" => text('This bookmark does not exist')
+		);
 	} elseif ($result) {
-		$msg = text('Bookmark deleted.');
+		$return = array(
+			"code" => 200,
+			"message" => text('Bookmark deleted')
+		);
 	} else {
-		$msg = text('There were problems deleting, please try again.');
+		$return = array(
+			"code" => 233,
+			"message" => text('There were problems deleting, please try again')
+		);
 	}
 	
-	return $msg;
+	echo json_encode($return);
+	exit();
 }
 
 

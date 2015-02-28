@@ -66,7 +66,7 @@ include('head.php');
 					</div>
 				
 					<div class="modal-footer">
-						<span class="small" id="add-url-message"></span>
+						<span class="" id="add-url-message"></span>
 						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
 						<button type="submit" id="add-url-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
 					</div>
@@ -96,7 +96,7 @@ include('head.php');
 					</div>
 					
 					<div class="modal-footer">
-						<span class="small" id="edit-url-message"></span>
+						<span class="" id="edit-url-message"></span>
 						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
 						<button type="submit" id="edit-url-submit" class="btn btn-primary"><?php echo text('Save'); ?></button>
 					</div>
@@ -166,7 +166,7 @@ include('head.php');
 									</div>
 								<?php } ?>
 								
-								<div class="fav-list-content">
+								<div class="fav-list-content">									
 									<div id="before-first"></div>
 									<div class="no-bookmark-label hide">
 										<h3>
@@ -196,10 +196,6 @@ include('head.php');
 												$url = $row['url'];
 												$title = $row['title'];
 												$time = $row['timepoint'];
-										
-												// Shortening the title if it's too long (Method from Discuz!)		
-												// $titleTrimmed = cutstr($title, 70, 'utf-8', $dot = ' ...');
-												// $titleHTML = ($title == $titleTrimmed) ? '' : $title;
 										?>
 										<article class="fav-list-cell" id="fav-list-cell-<?php echo $favid; ?>">
 											<div class="fav-list-inner-item">
@@ -213,7 +209,7 @@ include('head.php');
 														<?php echo date(text('H:i:s M d, Y'), $time); ?>
 													</span>
 													<span class="fav-list-cell-service">
-														<a class="edit-button" href="#" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
+														<a class="edit-button" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
 														<a tabindex="0" class="delete-button" data-toggle="popover" data-placement="top" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $favid; ?>" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"></i></a>
 													</span>
 												</div>
@@ -230,6 +226,33 @@ include('head.php');
 			</div>
 		</div>
 		<script language="javascript">
+		$(function(){
+			$('.fav-list-cell-service').hide();						
+			$('.fav-list-cell').hover(showCellService, hideCellService);
+			
+			$.notifyDefaults({
+				newest_on_top: true,
+				placement: {
+					from: 'top',
+					align: 'center'
+				},
+				z_index: 1031,
+				timer: 100,
+				offset: {
+					x: 0,
+					y: 8
+				},
+				animate: {
+					enter: 'animated fadeInDown',
+					exit: 'animated fadeOutUp'
+				},
+				template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert>"' +
+				'<span data-notify="message">{2}</span>' +
+				'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">&times;</button>' +
+				'</div>'
+			});
+		});
+		
 		function showCellService() {
 			$(this).find('.fav-list-cell-service').show();
 		}
@@ -239,20 +262,28 @@ include('head.php');
 		}
 		
 		function deleteConfirm(id) {
+			$('.delete-button').popover('hide');
+			
 			$.ajax({
 				type: 'POST',
 				url: 'home.php',
 				data: 'delete-confirm=' + id,
-				success:function(data) {
-					if(data) {
+				success: function(response) {
+					response = $.parseJSON(response);
+					if(response.code == 200) {
 						$('#fav-list-cell-' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 							$('#fav-list-cell-' + id).remove();
 							if ($('div.fav-list-content > article').length <= 0) {
 								$('.no-bookmark-label').removeClass('hide');
 							}
 						});
+						$.notify(response.message, {
+							type: 'danger'
+						});
 					} else {
-						// alert('Success data false');
+						$.notify(response.message, {
+							type: 'danger'
+						});
 					}
 				}
 			});
@@ -263,6 +294,7 @@ include('head.php');
 			
 			$('#edit-url-submit').addClass('disabled');
 			$('#edit-url-submit').html('<span class="animated infinite flash edit-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+			$('#edit-url-message').html('');
 			
 			var postData = $(this).serializeArray();
 			$.ajax({
@@ -306,13 +338,13 @@ include('head.php');
 							$('article#fav-list-cell-' + favid + ' > div > div > span > a.fav-list-cell-link').removeClass('animated zoomIn');
 						});
 					} else {
-						$('#edit-url-message').fadeOut('fast', function(){$('#add-url-message').html(response.message).fadeIn('normal');});
+						$('#edit-url-message').removeClass().addClass('text-danger').html(response.message);
 					}
 				},
 				error: function(xhr, ajaxOptions, errorThrown) {
 					$('#edit-url-submit').removeClass('disabled');
 					$('#edit-url-submit').html('<?php echo text('Add'); ?>');
-					$('#edit-url-message').fadeOut('normal', function(){$('#edit-url-message').html('ERROR').fadeIn('fast');});
+					$('#edit-url-message').removeClass().addClass('text-danger').html('ERROR');
 				}
 			});
 		});
@@ -322,6 +354,7 @@ include('head.php');
 			
 			$('#add-url-submit').addClass('disabled');
 			$('#add-url-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+			$('#add-url-message').html('');
 			
 			var postData = $(this).serializeArray();
 			$.ajax({
@@ -351,20 +384,15 @@ include('head.php');
 						    html: 'true'
 						})
 					} else {
-						$('#add-url-message').fadeOut('fast', function(){$('#add-url-message').html(response.message).fadeIn('normal');});
+						$('#add-url-message').removeClass().addClass('text-danger').html(response.message);
 					}
 				},
 				error: function(xhr, ajaxOptions, errorThrown) {
 					$('#add-url-submit').removeClass('disabled');
 					$('#add-url-submit').html('<?php echo text('Add'); ?>');
-					$('#add-url-message').fadeOut('normal', function(){$('#add-url-message').html('ERROR').fadeIn('fast');});
+					$('#add-url-message').removeClass().addClass('text-danger').html('ERROR');
 				}
 			});
-		});
-				
-		$(function(){
-			$('.fav-list-cell-service').hide();						
-			$('.fav-list-cell').hover(showCellService, hideCellService);
 		});
 		
 		$('#add-bookmark').on('shown.bs.modal', function () {
