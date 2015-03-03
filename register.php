@@ -16,11 +16,11 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 	$securimage = new Securimage();
 	
 	if ($_POST['pre-email'] == '' or $_POST['captcha'] == '') {
-		$msg = text('Please fill in all the required fields.');
+		$msg = text('Please fill in all the required fields');
 	} elseif (!$securimage->check($_POST['captcha'])) {
-		$msg = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again');
 	} elseif (strlen($_POST['pre-email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['pre-email'])) {
-		$msg = text('Email format incorrect, please try again.');
+		$msg = text('Email format incorrect, please try again');
 	} else {
 		$email = strip_tags($_POST['pre-email']);
 		$time = time();
@@ -30,7 +30,7 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows <> 0) {
-			$_SESSION['warncode'] = $email.text(' has already been a registered user, please login.');
+			$_SESSION['warncode'] = $email.text(' has already been a registered user, please login');
 			header("Location: index.php");
 			exit;
 		}
@@ -44,7 +44,7 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 			$result = $mysqli->query($sql);
 			
 			if (!$result) {
-				$msg = text('There were problems processing your preservation, please try again.');
+				$msg = text('There were problems processing your preservation, please try again');
 			} else {
 				$_SESSION['warncode'] = text('Thank you! I\'ll make FavNow getting to you as soon as possible!');
 				header("Location: index.php");
@@ -63,15 +63,15 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 	$securimage = new Securimage();
 	
 	if ($_POST['usn'] == '' or $_POST['pwd1'] == '' or $_POST['pwd2'] == '' or $_POST['email'] == '' or $_POST['captcha'] == '') {
-		$msg = text('Please fill in all the required fields.');
+		$msg = text('Please fill in all the required fields');
 	} elseif (!$securimage->check($_POST['captcha'])) {
-		$msg = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again');
 	} elseif (strlen($_POST['usn']) < 3) {
-		$msg = text('Username must be between 3 and 32 chars long.');
+		$msg = text('Username must be between 3 and 32 chars long');
 	} elseif ($_POST['pwd1'] <> $_POST['pwd2']) {
-		$msg = text('The passwords you entered do not match.');
+		$msg = text('The passwords you entered do not match');
 	} elseif (strlen($_POST['email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['email'])) {
-		$msg = text('Email format incorrect, please try again.');
+		$msg = text('Email format incorrect, please try again');
 	} else {
 		$username = strip_tags(substr($_POST['usn'], 0, 32));
 		$password = strip_tags(substr($_POST['pwd1'], 0, 32));
@@ -85,13 +85,13 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows <> 0) {
-			$msg = text('This Email has already been a registered user, please <a href="index.php">login</a>. If you got difficulties logging in, please try to <a href="reset.php">reset</a> your password.');
+			$msg = text('This Email has already been a registered user, please <a href="index.php">login</a>. If you got difficulties logging in, please try to <a href="reset.php">reset</a> your password');
 		} else {
 			$sql = "SELECT * FROM Users WHERE user='".$username."'";
 			$result = $mysqli->query($sql);
 			
 			if ($result->num_rows <> 0) {
-				$msg = text('Username was taken by another user, please pick a different one.');
+				$msg = text('Username was taken by another user, please pick a different one');
 			} else {
 				$sql = "INSERT INTO Users (user, password, email, jointime) VALUES ('".$mysqli->real_escape_string($username)."', '".$mysqli->real_escape_string($safepw)."', '".$mysqli->real_escape_string($email)."', '".$time."')";
 				$result = $mysqli->query($sql);
@@ -113,7 +113,7 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 			
 				} else {
 					unset($mysqli);
-					$msg = text('There were problems processing your registration, please try again.');
+					$msg = text('There were problems processing your registration, please try again');
 				}
 			}
 		}
@@ -133,22 +133,22 @@ include('head.php');
 						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						
 						<?php if (!REGISTER_OPEN) { ?>
-							<div class="alert alert-warning" role="alert"><?php echo text('FavNow still needs a little while to open register. Submit your Email to get notified right away about the public registration.'); ?></div>
+							<div class="alert alert-warning" role="alert"><?php echo text('FavNow still needs a little while to open register. Submit your Email to get notified right away about the public registration'); ?></div>
 							<div class="form-group">
 								<label for="email"><?php echo text('Email'); ?></label>
 								<input type="email" name="pre-email" id="email" class="form-control" required autofocus />
 							</div>
 						<?php } else { ?>
 							<div class="form-group">
-								<label for="email"><?php echo text('Email'); ?><small style="margin-left: 5px;"><?php echo text('(Please enter a valid Email address for receiving password reset links.)'); ?></small></label>
+								<label for="email"><?php echo text('Email'); ?><small style="margin-left: 5px;"><?php echo text('(Please enter a valid Email address for receiving password reset links)'); ?></small></label>
 								<input type="email" name="email" id="email" class="form-control" required autofocus />
 							</div>
 							<div class="form-group">
-								<label for="username"><?php echo text('Username'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 3 and 32 chars long.)'); ?></small></label>
+								<label for="username"><?php echo text('Username'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 3 and 32 chars long)'); ?></small></label>
 								<input type="text" name="usn" class="form-control" id="username" required />
 							</div>
 							<div class="form-group">
-								<label for="password1"><?php echo text('Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small></label>
+								<label for="password1"><?php echo text('Password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long)'); ?></small></label>
 								<input type="password" name="pwd1" id="password1" class="form-control" required />
 							</div>
 							<div class="form-group">

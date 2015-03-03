@@ -36,7 +36,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 				$sql = "UPDATE Users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
 				$result = $mysqli->query($sql);
 				
-				$_SESSION['errcode'] = text('The link has expired, please send another link.');
+				$_SESSION['errcode'] = text('The link has expired, please send another link');
 				header("Location: index.php");
 				exit;
 			} else {
@@ -45,9 +45,9 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 					$securimage = new Securimage();
 
 					if (!$securimage->check($_POST['captcha'])) {
-						$msg = text('Captcha incorrect, please try again.');
+						$msg = text('Captcha incorrect, please try again');
 					} elseif ($_POST['newpwd1'] <> $_POST['newpwd2']) {
-						$msg = text('The passwords you entered do not match.');
+						$msg = text('The passwords you entered do not match');
 					} else {
 						$password = strip_tags(substr($_POST['newpwd1'], 0, 32));
 						$safepwd = crypt(md5($password), md5($username).'romeoyjulieta');
@@ -59,7 +59,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 							$sql = "UPDATE Users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
 							$result = $mysqli->query($sql);
 							
-							$_SESSION['warncode'] = text('Password successfully changed. Please login.');
+							$_SESSION['warncode'] = text('Password successfully changed. Please login');
 							header("Location: index.php");
 							exit;
 						}
@@ -94,7 +94,7 @@ include('head.php');
 						<div class="alert alert-warning <?php if ($warncode == '') echo 'hidden'; ?>" role="alert"><?php echo $warncode; ?></div>
 						
 						<div class="form-group">
-							<label for="newpwd1"><?php echo text('New password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long.)'); ?></small></label>
+							<label for="newpwd1"><?php echo text('New password'); ?><small style="margin-left: 5px;"><?php echo text('(Must be between 6 and 32 chars long)'); ?></small></label>
 							<input type="password" name="newpwd1" class="form-control" id="newpwd1" required autofocus />
 						</div>
 						<div class="form-group">

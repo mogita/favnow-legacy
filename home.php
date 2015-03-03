@@ -263,7 +263,6 @@ include('head.php');
 		
 		function deleteConfirm(id) {
 			$('.delete-button').popover('hide');
-			
 			$.ajax({
 				type: 'POST',
 				url: 'home.php',
@@ -277,9 +276,7 @@ include('head.php');
 								$('.no-bookmark-label').removeClass('hide');
 							}
 						});
-						$.notify(response.message, {
-							type: 'danger'
-						});
+						// $.notify(response.message, {type: 'danger'});
 					} else {
 						$.notify(response.message, {
 							type: 'danger'

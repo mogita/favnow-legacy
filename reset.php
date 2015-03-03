@@ -14,11 +14,11 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 	$securimage = new Securimage();
 
 	if (!$securimage->check($_POST['captcha'])) {
-		$msg = text('Captcha incorrect, please try again.');
+		$msg = text('Captcha incorrect, please try again');
 	} else {
 		
 		if (strlen($_POST['email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['email'])) {
-			$msg = text('Email incorrect, please try again.');
+			$msg = text('Email incorrect, please try again');
 		} else {
 			$sql = "SELECT email FROM Users WHERE email='".$mysqli->real_escape_string($_POST['email'])."' LIMIT 1";
 			$result = $mysqli->query($sql);
@@ -49,21 +49,21 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					
 					$mailer->Subject = text('FavNow Password reset');
 					$mailer->Body = "
-						<p>".text('Click the link below to reset your FavNow password.')."</p>
+						<p>".text('Click the link below to reset your FavNow password')."</p>
 						<h3><a href=\"http://0.0.0.0/favnow/reset_step2.php?code=".$resetcode."\" target=\"_blank\">http://0.0.0.0/favnow/reset_step2.php?code=".$resetcode."</a></h3>
 						<p><a href=\"http://favnow.mogita.com\" target=\"_blank\">FavNow</a> | <small>".text('Your bookmarks in the cloud')."</small></p>";
 					$mailer->AltBody = $mailer->Body;
 						
 					if (!$mailer->Send()) {
-						$msg = text('There were problems sending the link, please try again.')/*.$mailer->ErrorInfo*/;
+						$msg = text('There were problems sending the link, please try again')/*.$mailer->ErrorInfo*/;
 					} else {
-						$warncode = text('The link was sent to ').$_POST['email'].text(', only valid within 48 hours and once. Keep it safe and secret. Check your spam folder if you didn\'t see the email.');
+						$warncode = text('The link was sent to ').$_POST['email'].text(', only valid within 48 hours and once. Keep it safe and secret. Check your spam folder if you didn\'t see the email');
 					}					
 				} else {
-					$msg = text('This Email does not match any records.');
+					$msg = text('This Email does not match any records');
 				}
 			} else {
-				$msg = text('There were problems inquiring, please try again.');
+				$msg = text('There were problems inquiring, please try again');
 			}
 		}
 	}

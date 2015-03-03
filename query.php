@@ -258,9 +258,9 @@ function getUserFromID($userid) {
 
 function emailChange($email, $userid) {
 	if (!isset($userid) or empty($userid) or !isset($email) or empty($email)) {
-		$emailChangeResult = text('Could not change your Email, please reload the page and try again.');
+		$emailChangeResult = text('Could not change your Email, please reload the page and try again');
 	} elseif (!preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $email)) {
-		$emailChangeResult = text('Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem.');
+		$emailChangeResult = text('Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem');
 	} else {
 		$mysqli = newDBConn();
 		$sql = "UPDATE Users SET email='".$mysqli->real_escape_string($email)."' WHERE id='".$userid."'";
@@ -270,7 +270,7 @@ function emailChange($email, $userid) {
 		if ($result) {
 			$emailChangeResult = text('Email changed to ').$email;
 		} else {
-			$emailChangeResult = text('Could not change your Email, please try again later.');
+			$emailChangeResult = text('Could not change your Email, please try again later');
 		}
 	}
 	
@@ -285,12 +285,12 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 	if ($userid == '' or !isset($userid) or $username == '' or !isset($username)) {
 		
 		// Something wrong with the session.
-		$pwcmsg = text('Could not change your password, please reload the page and try again.');
+		$pwcmsg = text('Could not change your password, please reload the page and try again');
 		
 	} elseif ($pwc2 <> $pwc3) {
 		
 		// New passwords don't match
-		$pwcmsg = text('New passwords mismatch, please try again.');
+		$pwcmsg = text('New passwords mismatch, please try again');
 		
 	} else {
 		
@@ -299,7 +299,7 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 		$result = $mysqli->query($sql);
 		
 		if (!$result) {
-			$pwcmsg = text('Could not change your password, please reload the page and try again.');
+			$pwcmsg = text('Could not change your password, please reload the page and try again');
 		} else {
 			$row = $result->fetch_array(MYSQLI_NUM);
 			$oldPassword = $row[2];
@@ -307,15 +307,15 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 			$safePassword2 = safePassword($pwc2, $username);
 			
 			if ($oldPassword <> $safePassword1) {
-				$pwcmsg = text('Current password incorrect, please try again.');
+				$pwcmsg = text('Current password incorrect, please try again');
 			} else {
 				$pwcsql = "UPDATE Users SET password='".$mysqli->real_escape_string($safePassword2)."' WHERE id='".$userid."'";
 				$pwcresult = $mysqli->query($pwcsql);
 				
 				if (!$pwcresult) {
-					$pwcmsg = text('Could not change your password, please try again.');
+					$pwcmsg = text('Could not change your password, please try again');
 				} else {
-					$_SESSION['warncode'] = text('Password successfully changed. Please login.');
+					$_SESSION['warncode'] = text('Password successfully changed. Please login');
 					header("Location: logout.php");
 				}
 			}

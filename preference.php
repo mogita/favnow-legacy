@@ -3,9 +3,7 @@ require_once 'config.php';
 include 'function.php';
 include 'query.php';
 
-// if (empty($_SESSION['loggedin'])) header("Location: logout.php");
-// if (!isset($_SESSION['username']) or $_SESSION['username'] == '' or !isset($_SESSION['userid']) or $_SESSION['userid'] == '') header("Location: logout.php");
-if (empty($_SESSION['username']) or empty($_SESSION['userid']) or empty($_SESSION['loggedin'])) header("Location: logout.php");
+if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SESSION['userid']) or empty($_SESSION['userid']) or !isset($_SESSION['userid']) or  empty($_SESSION['loggedin']) or !$_SESSION['loggedin']) header("Location: logout.php");
 
 $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
