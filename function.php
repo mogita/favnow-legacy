@@ -89,6 +89,14 @@ function safePassword ($pw, $username) {
 	return $salted;
 }
 
+// Auth code generator. For the use of bookmarklet etc.
+function authCode($userid, $username, $pw) {
+	$pw = strip_tags(substr($pw, 0, 32));
+	$authCode = crypt(md5($pw), md5($username).'monmilk');
+	
+	return $authCode;
+}
+
 // Getting HTML content from URL
 function getHTML($url) {
 	$msg = '';
@@ -120,3 +128,4 @@ function getHTML($url) {
 	
 	return $msg;
 }
+

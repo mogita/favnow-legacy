@@ -61,10 +61,27 @@ function readBookmark($userid, $favID = '', $limit = '') {
 }
 
 
-function addBookmark($userid, $url, $title) {
+function addBookmark($userid = '', $authcode = '', $url, $title) {
+	
+	if (isset($authcode) and !empty($authcode)) {
+		$id = getUserByAuth($authcode);
+		
+		if ($id) {
+			$userid = $id[0];
+		} else {
+			$return = array(
+				"code" => 233,
+				"message" => text('Invalid User')
+			);
+			
+			echo json_encode($return);
+			exit ();
+		}
+	}
+	
 	
 	$mysqli = newDBConn();
-	if (isset($url) and !empty($url) and isset($userid) and !empty($userid)) {
+	if (isset($url) and !empty($url) /*and isset($userid) and !empty($userid)*/) {
 		if (strlen($url) > 500) {
 			$return = array(
 				"code" => 233,
@@ -73,60 +90,76 @@ function addBookmark($userid, $url, $title) {
 		} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
 			$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
 		}*/ else {
+			
+			if (!empty($userid) or !empty($userid)) {
+				$time = time();
+				if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
 
-			$time = time();
-			if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
+				if (!isset($title) or $title == '') {
+					$content = getHTML($url);
 
-			if (!isset($title) or $title == '') {
-				$content = getHTML($url);
-
-				if (strlen($content) > 0) {
-					preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
-					if (isset($title[1]) and $title[1] <> '') {
-						$title = $title[1];
+					if (strlen($content) > 0) {
+						preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
+						if (isset($title[1]) and $title[1] <> '') {
+							$title = $title[1];
+						} else {
+							$title = $url;
+						}
 					} else {
 						$title = $url;
 					}
-				} else {
-					$title = $url;
+
 				}
 
-			}
+				$url = $mysqli->real_escape_string($url);
+				$title = $mysqli->real_escape_string($title);
+				$hash = md5($url);
+				
+				$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
+				
+				if (!empty($userid)) {
+					
+				} elseif (!empty($authcode)) {
+					$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
+				}
+				
+				$result = $mysqli->query($sql);
+				$affectedRows = $mysqli->affected_rows;
 
-			$url = sanitize($mysqli->real_escape_string($url));
-			$title = sanitize($mysqli->real_escape_string($title));
-			$hash = md5($url);
-
-			$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
-			$result = $mysqli->query($sql);
-			$affectedRows = $mysqli->affected_rows;
-
-			if ($affectedRows != 1) {
-				$return = array(
-					"code" => 233,
-					"message" => text('This URL already exists')
-				);
-			} elseif ($result) {
-				$return = array(
-					"code" => 200,
-					"message" => array(
-						"time" => date(text('H:i:s M d, Y'), $time),
-						"title" => $title,
-						"url" => $url,
-						"favid" => $mysqli->insert_id
-					)
-				);
+				if ($affectedRows != 1) {
+					$return = array(
+						"code" => 233,
+						"message" => text('This URL already exists')
+					);
+				} elseif ($result) {
+					$return = array(
+						"code" => 200,
+						"message" => array(
+							"time" => date(text('H:i:s M d, Y'), $time),
+							"title" => $title,
+							"url" => $url,
+							"favid" => $mysqli->insert_id
+						)
+					);
+				} else {
+					$return = array(
+						"code" => 233,
+						"message" => text('There was an error, please try again')
+					);
+				}
+				
 			} else {
 				$return = array(
 					"code" => 233,
-					"message" => text('There was an error, please try again')
+					"message" => text('Invalid request')
 				);
 			}
 		}
 	} else {
 		$return = array(
 			"code" => 233,
-			"message" => text('There was an error, please try again')
+			/*"message" => text('There was an error, please try again')*/
+			"message" => text('Please provide a URL')
 		);
 	}
 	
@@ -235,9 +268,8 @@ function deleteBookmark($favID, $userid) {
 
 /***************** USER DATA *****************/
 
-function getUserFromID($userid) {
+function getUserByID($userid) {
 	if (!isset($userid) or empty($userid)) {
-		// $getUserResult = text('Could not get user information, please reload the page and try again.')
 		$getUserResult = false;
 	} else {
 		$mysqli = newDBConn();
@@ -248,12 +280,28 @@ function getUserFromID($userid) {
 		if ($result->num_rows <> 0) {
 			$getUserResult = $result->fetch_array(MYSQLI_NUM);
 		} else {
-			// $getUserResult = text('Could not get user information, please reload the page and try again.');
 			$getUserResult = false;
 		}
 	}
 	
 	return $getUserResult;
+}
+
+function getUserByAuth($authcode) {
+	if (!isset($authcode) or empty($authcode)) {
+		$return = false;
+	} else {
+		$mysqli = newDBConn();
+		$sql = "SELECT * FROM Users WHERE authcode='".$authcode."' LIMIT 1";
+		$result = $mysqli->query($sql);
+		if ($result->num_rows != 0) {
+			$return = $result->fetch_array(MYSQLI_NUM);
+		} else {
+			$return = false;
+		}
+	}
+	
+	return $return;
 }
 
 function emailChange($email, $userid) {

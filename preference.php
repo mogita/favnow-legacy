@@ -9,7 +9,7 @@ $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
 $title_pattern = text('Preference');
 
-$userInfo = getUserFromID($_SESSION['userid']);
+$userInfo = getUserByID($_SESSION['userid']);
 if (!$userInfo) {
 	header("Location: logout.php");
 } else {

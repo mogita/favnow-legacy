@@ -1,0 +1,1 @@
+javascript:(function(){var jsScript=document.createElement('script');jsScript.setAttribute('type', 'text/javascript');jsScript.setAttribute('src','//127.0.0.1/favnow/bookmarklet.php?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=123456789');document.getElementsByTagName('head')[0].appendChild(jsScript);})();
