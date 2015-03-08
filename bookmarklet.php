@@ -5,7 +5,7 @@ require_once 'config.php';
 require_once 'function.php';
 require_once 'query.php';
 
-if (empty($_GET['url']) or empty($_GET['title']) or empty($_GET['user'])) die();
+if (empty($_GET['url']) or empty($_GET['title']) or empty($_GET['user'])) die(text('Invalid request'));
 
 $_GET['url'] = sanitize($_GET['url']);
 $_GET['title'] = sanitize($_GET['title']);

@@ -12,7 +12,11 @@ $title_pattern = text('Home');
 // Adding a bookmark
 if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
 	// echo "<script>alert('Add')</script>";
-	$msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title']);
+	if (isset($_POST['add-title']) and !empty($_POST['add-title'])) {
+		$msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title']);
+	} else {
+		$msg = addBookmark($userid, '', $_POST['add-url'], '');
+	}
 }
 
 // Editing a bookmark
