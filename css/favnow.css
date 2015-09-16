@@ -67,6 +67,10 @@ div.user-page {
 	color: #4e84d1;
 }
 
+.edit-button {
+	cursor: pointer;
+}
+
 .delete-button {
 	padding: 5px;
 }

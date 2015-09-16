@@ -4,12 +4,12 @@
  * Author: mogita 
  * 
 */
- 
+
 if (basename($_SERVER['PHP_SELF'] == basename(__FILE__))) die();
 
 function newDBConn() {
 	$mysqli = new Mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-	
+
 	if ($mysqli->connect_errno > 0) {
 		if (DEBUGGIN) {
 			die(text('Unable to establish database connection: ').$mysqli->connect_error);
@@ -17,55 +17,83 @@ function newDBConn() {
 			die(text('Unable to establish database connection'));
 		}
 	}
-	
+
 	$mysqli->set_charset("utf8");
-	
+
 	return $mysqli;
+}
+
+/***************** CATEGORY DATA *****************/
+
+function readCat($userid = 0)
+{
+    $msg = '';
+    $results = array();
+
+    $mysqli = newDBConn();
+    $sql = "SELECT id, catname AS `name` FROM cat_terms WHERE userid='" . $userid . "'";
+
+    if ($result = $mysqli->query($sql))
+    {
+        while ($row = $result->fetch_assoc())
+        {
+            $results[] = $row;
+        }
+        $count = $result->num_rows;
+    }
+    else
+    {
+        $msg = (DEBUGGING) ? $mysqli->error : '';
+        $count = -1;
+    }
+
+    $result->free();
+    return array($msg, $count, $results);
 }
 
 /***************** BOOKMARK DATA *****************/
 
-function readBookmark($userid, $favID = '', $limit = '') {
+function readBookmark($userid, $catid = '', $favid = '', $amount = 25, $page = 1) {
 	$msg = '';
-	$count = 0;
 	$results = array();
-	
+
 	$mysqli = newDBConn();
-	
-	if ($favID <> '') {
-		$sql = "SELECT * FROM favs WHERE userid='$userid' AND id='$favID'";
+
+	if (!empty($favid)) {
+		$sql = "SELECT * FROM favs WHERE userid='$userid' AND id='$favid'";
 	} else {
-		if (isset($limit) and !empty($limit)) {
-			$sql = "SELECT * FROM favs WHERE userid='".$userid."' ORDER BY timepoint DESC LIMIT ".$limit;
-		} else {
-			$sql = "SELECT * FROM favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
-		}
+        $sql = "SELECT * FROM favs";
+
+        if (!empty($catid)) {
+            $sql .= " JOIN cat_relation ON cat_relation.obj_id = favs.id";
+        }
+
+        $sql .= " WHERE favs.userid='" . $userid . "' ORDER BY favs.timepoint DESC LIMIT " . ($page - 1) * $amount . ", " . $amount;
 	}
-	
+
 	if ($result = $mysqli->query($sql)) {
-		
+
 		while ($row = $result->fetch_assoc()) {
 			$results[] = $row;
 		}
-		
+
 		$count = $result->num_rows;
-		
+
 	} else {
 		$msg = (DEBUGGING) ? $mysqli->error : '';
 		$count = -1;
 	}
-	
+
 	$result->free();
 	return array($msg, $count, $results);
-	
 }
 
 
 function addBookmark($userid = '', $authcode = '', $url, $title) {
-	
+
 	if (isset($authcode) and !empty($authcode)) {
 		$id = getUserByAuth($authcode);
-		
+
 		if ($id) {
 			$userid = $id[0];
 		} else {
@@ -73,13 +101,13 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 				"code" => 233,
 				"message" => text('Invalid User')
 			);
-			
+
 			echo json_encode($return);
 			exit ();
 		}
 	}
-	
-	
+
+
 	$mysqli = newDBConn();
 	if (isset($url) and !empty($url) /*and isset($userid) and !empty($userid)*/) {
 		if (strlen($url) > 500) {
@@ -90,7 +118,7 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 		} /*elseif (!preg_match("/^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"])*$/", $url)) {
 			$msg = "URL 格式可能有误。如果你认为是 FavNow 的误判，请将 URL 发送给管理员进行检查。";
 		}*/ else {
-			
+
 			if (!empty($userid) or !empty($userid)) {
 				$time = time();
 				if (!preg_match("~^(?:f|ht)tps?://~i", $url)) $url = "http://".$url;
@@ -114,15 +142,15 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 				$url = $mysqli->real_escape_string($url);
 				$title = $mysqli->real_escape_string($title);
 				$hash = md5($url);
-				
+
 				$sql = "INSERT INTO favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
-				
+
 				if (!empty($userid)) {
-					
+
 				} elseif (!empty($authcode)) {
 					$sql = "INSERT INTO favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
 				}
-				
+
 				$result = $mysqli->query($sql);
 				$affectedRows = $mysqli->affected_rows;
 
@@ -147,7 +175,7 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 						"message" => text('There was an error, please try again')
 					);
 				}
-				
+
 			} else {
 				$return = array(
 					"code" => 233,
@@ -162,20 +190,20 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 			"message" => text('Please provide a URL')
 		);
 	}
-	
+
 	echo json_encode($return);
 	exit();
 }
 
-function editBookmark($userid, $favID, $title) {
-	
+function editBookmark($userid, $favid, $title) {
+
 	$mysqli = newDBConn();
-	$favID = sanitize($mysqli->real_escape_string($favID));
-	$resultRead = readBookmark($userid, $favID);
-	
+	$favid = sanitize($mysqli->real_escape_string($favid));
+	$resultRead = readBookmark($userid, $favid);
+
 	$count = $resultRead[1];
 	$bookmark = $resultRead[2];
-	
+
 	if ($count <= 0) {
 		$return = array(
 			"code" => 233,
@@ -185,14 +213,14 @@ function editBookmark($userid, $favID, $title) {
 		foreach ($bookmark as $row) {
 			$url = $row['url'];
 		}
-		
+
 		if (!isset($title) or $title == '') {
 
 			$content = getHTML($url);
-			
+
 			if (!$content) {
 				$title = $url;
-				
+
 			} elseif (strlen($content) > 0) {
 				preg_match("/\<title\>(.*)\<\/title\>/", $content, $title);
 				if (isset($title[1]) and $title[1] <> '') {
@@ -207,7 +235,7 @@ function editBookmark($userid, $favID, $title) {
 
 		$title = sanitize($mysqli->real_escape_string($title));
 
-		$sql = "UPDATE favs SET title = '$title' WHERE id = '$favID'";
+		$sql = "UPDATE favs SET title = '$title' WHERE id = '$favid'";
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
 
@@ -222,7 +250,7 @@ function editBookmark($userid, $favID, $title) {
 				"message" => array(
 					"title" => $title,
 					"url" => $url,
-					"favid" => $favID
+					"favid" => $favid
 				)
 			);
 		} else {
@@ -232,18 +260,18 @@ function editBookmark($userid, $favID, $title) {
 			);
 		}
 	}
-	
+
 	echo json_encode($return);
 	exit();
 }
 
 
-function deleteBookmark($favID, $userid) {	
+function deleteBookmark($favid, $userid) {
 	$mysqli = newDBConn();
-	$sql = "DELETE FROM favs WHERE id=\"".$favID."\" AND userid=\"".$userid."\"";
+	$sql = "DELETE FROM favs WHERE id=\"".$favid."\" AND userid=\"".$userid."\"";
 	$result = $mysqli->query($sql);
 	$affectedRows = $mysqli->affected_rows;
-	
+
 	if ($affectedRows != 1) {
 		$return = array(
 			"code" => 233,
@@ -260,7 +288,7 @@ function deleteBookmark($favID, $userid) {
 			"message" => text('There were problems deleting, please try again')
 		);
 	}
-	
+
 	echo json_encode($return);
 	exit();
 }
@@ -274,16 +302,16 @@ function getUserByID($userid) {
 	} else {
 		$mysqli = newDBConn();
 		$sql = "SELECT * FROM users WHERE id='".$userid."' LIMIT 1";
-		
+
 		$result = $mysqli->query($sql);
-		
+
 		if ($result->num_rows <> 0) {
 			$getUserResult = $result->fetch_array(MYSQLI_NUM);
 		} else {
 			$getUserResult = false;
 		}
 	}
-	
+
 	return $getUserResult;
 }
 
@@ -300,7 +328,7 @@ function getUserByAuth($authcode) {
 			$return = false;
 		}
 	}
-	
+
 	return $return;
 }
 
@@ -312,40 +340,40 @@ function emailChange($email, $userid) {
 	} else {
 		$mysqli = newDBConn();
 		$sql = "UPDATE users SET email='".$mysqli->real_escape_string($email)."' WHERE id='".$userid."'";
-		
+
 		$result = $mysqli->query($sql);
-		
+
 		if ($result) {
 			$emailChangeResult = text('Email changed to ').$email;
 		} else {
 			$emailChangeResult = text('Could not change your Email, please try again later');
 		}
 	}
-	
+
 	return $emailChangeResult;
 }
 
 function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 	// $pwcmsg = 'You wanted a change';
-	
+
 	// 先判断是否有 userid，若无就返回错误；若有则进行数据库操作逻辑。
-	
+
 	if ($userid == '' or !isset($userid) or $username == '' or !isset($username)) {
-		
+
 		// Something wrong with the session.
 		$pwcmsg = text('Could not change your password, please reload the page and try again');
-		
+
 	} elseif ($pwc2 <> $pwc3) {
-		
+
 		// New passwords don't match
 		$pwcmsg = text('New passwords mismatch, please try again');
-		
+
 	} else {
-		
+
 		$mysqli = newDBConn();
 		$sql = "SELECT * FROM users WHERE id='".$userid."' LIMIT 1";
 		$result = $mysqli->query($sql);
-		
+
 		if (!$result) {
 			$pwcmsg = text('Could not change your password, please reload the page and try again');
 		} else {
@@ -353,13 +381,13 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 			$oldPassword = $row[2];
 			$safePassword1 = safePassword($pwc1, $username);
 			$safePassword2 = safePassword($pwc2, $username);
-			
+
 			if ($oldPassword <> $safePassword1) {
 				$pwcmsg = text('Current password incorrect, please try again');
 			} else {
 				$pwcsql = "UPDATE users SET password='".$mysqli->real_escape_string($safePassword2)."' WHERE id='".$userid."'";
 				$pwcresult = $mysqli->query($pwcsql);
-				
+
 				if (!$pwcresult) {
 					$pwcmsg = text('Could not change your password, please try again');
 				} else {
@@ -369,7 +397,7 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 			}
 		}
 	}
-	
-	
+
+
 	return $pwcmsg;
 }

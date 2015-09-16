@@ -37,6 +37,6 @@ function text($string) {
 		return $GLOBALS[$lang][$string];
 	} else {
 		// error_log("l10n error: locale: "."$lang, message:'$string'");
-		return $string.' *L10N ERROR';
+		return $string.' *L10N_ERR';
 	}
 }
