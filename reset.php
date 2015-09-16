@@ -20,7 +20,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 		if (strlen($_POST['email']) < 6 or !preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['email'])) {
 			$msg = text('Email incorrect, please try again');
 		} else {
-			$sql = "SELECT email FROM Users WHERE email='".$mysqli->real_escape_string($_POST['email'])."' LIMIT 1";
+			$sql = "SELECT email FROM users WHERE email='".$mysqli->real_escape_string($_POST['email'])."' LIMIT 1";
 			$result = $mysqli->query($sql);
 			
 			if ($result) {
@@ -28,7 +28,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$myemail = "favnow@mogita.com";
 					$time = time();
 					$resetcode = crypt(md5($time), md5($_POST['email']).'romeoyjulieta');
-					$sql = "UPDATE Users SET resetcode = '".$resetcode."', resetcodetime='".$time."' WHERE email='".$_POST['email']."'";
+					$sql = "UPDATE users SET resetcode = '".$resetcode."', resetcodetime='".$time."' WHERE email='".$_POST['email']."'";
 					$result = $mysqli->query($sql);
 					
 					$mailer = new PHPMailer();
@@ -37,10 +37,10 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$mailer->IsSMTP();
 					$mailer->SMTPAuth = true;
 					$mailer->SMTPSecure = "ssl";
-					$mailer->Host = "smtp.mxhichina.com";
+					$mailer->Host = "smtp.zoho.com";
 					$mailer->Port = 465;
 					$mailer->Username = $myemail;
-					$mailer->Password = "Nan0conmigo";
+					$mailer->Password = "nanoconmigo";
 					$mailer->From = $myemail;
 					$mailer->FromName = "FavNow";
 					$mailer->AddAddress($_POST['email'], $_POST['email']);
@@ -73,8 +73,8 @@ include('head.php');
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-4">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
 										
 					<form action="reset.php" method="post" role="form">
@@ -99,7 +99,7 @@ include('head.php');
 					<br />
 					<p><a href="index.php"><?php echo text('Back to login'); ?></a></p>
 				</div>
-				<div class="col-md-4"></div>
+				<div class="col-md-3"></div>
 			</div>
 		</div>
 	</body>

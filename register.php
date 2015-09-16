@@ -26,7 +26,7 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 		$time = time();
 		
 		// 检查是否已是注册用户
-		$sql = "SELECT email FROM Users WHERE email='".$mysqli->real_escape_string($email)."'";
+		$sql = "SELECT email FROM users WHERE email='".$mysqli->real_escape_string($email)."'";
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows <> 0) {
@@ -36,11 +36,11 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 		}
 		
 		// 检查是否已是预留的 email
-		$sql = "SELECT email FROM PreRegister WHERE email='".$mysqli->real_escape_string($email)."'";
+		$sql = "SELECT email FROM preregister WHERE email='".$mysqli->real_escape_string($email)."'";
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows == 0) {
-			$sql = "INSERT INTO PreRegister (email, preregtime, notified) VALUES ('".$mysqli->real_escape_string($email)."', '".$time."', 0)";
+			$sql = "INSERT INTO preregister (email, preregtime, notified) VALUES ('".$mysqli->real_escape_string($email)."', '".$time."', 0)";
 			$result = $mysqli->query($sql);
 			
 			if (!$result) {
@@ -81,23 +81,23 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 		$safepw = crypt(md5($password), md5($username).'romeoyjulieta');
 		
 		// 是否已有同 email 注册过检查
-		$sql = "SELECT email FROM Users WHERE email='".$mysqli->real_escape_string($email)."'";
+		$sql = "SELECT email FROM users WHERE email='".$mysqli->real_escape_string($email)."'";
 		$result = $mysqli->query($sql);
 		
 		if ($result->num_rows <> 0) {
 			$msg = text('This Email has already been a registered user, please <a href="index.php">login</a>. If you got difficulties logging in, please try to <a href="reset.php">reset</a> your password');
 		} else {
-			$sql = "SELECT * FROM Users WHERE user='".$username."'";
+			$sql = "SELECT * FROM users WHERE user='".$username."'";
 			$result = $mysqli->query($sql);
 			
 			if ($result->num_rows <> 0) {
 				$msg = text('Username was taken by another user, please pick a different one');
 			} else {
-				$sql = "INSERT INTO Users (user, password, email, jointime) VALUES ('".$mysqli->real_escape_string($username)."', '".$mysqli->real_escape_string($safepw)."', '".$mysqli->real_escape_string($email)."', '".$time."')";
+				$sql = "INSERT INTO users (user, password, email, jointime) VALUES ('".$mysqli->real_escape_string($username)."', '".$mysqli->real_escape_string($safepw)."', '".$mysqli->real_escape_string($email)."', '".$time."')";
 				$result = $mysqli->query($sql);
 		
 				if ($result) {
-					$sql = "SELECT id FROM Users WHERE user='".$mysqli->real_escape_string($username)."' LIMIT 1";
+					$sql = "SELECT id FROM users WHERE user='".$mysqli->real_escape_string($username)."' LIMIT 1";
 					$result = $mysqli->query($sql);
 					$row = $result->fetch_array(MYSQLI_NUM);
 					$userid = $row[0];
@@ -124,8 +124,8 @@ include('head.php');
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-4">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
 					
 					<form action="register.php" method="post" class="form">
@@ -169,7 +169,7 @@ include('head.php');
 					<br />
 					<p><a href="index.php"><?php echo text('Have an account? Login now!'); ?></a></p>
 				</div>
-				<div class="col-md-4"></div>
+				<div class="col-md-3"></div>
 			</div>
 		</div>
 	</body>

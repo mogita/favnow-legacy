@@ -36,7 +36,7 @@ include('head.php');
 ?>
 
 <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
+	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
@@ -152,7 +152,7 @@ include('head.php');
 						
 							<div class="panel-heading">
 								<div class="pull-right">
-									<button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <strong><?php echo text('Add Bookmark'); ?></strong></button>
+									<button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;<strong><?php echo text('Add Bookmark'); ?></strong></button>
 								</div>
 								<h4>
 									<?php echo text('My Bookmarks'); ?>
@@ -173,11 +173,11 @@ include('head.php');
 								<div class="fav-list-content">									
 									<div id="before-first"></div>
 									<div class="no-bookmark-label hide">
-										<h3>
+										<h4>
 											<span class="label label-default">
 												<?php echo text('No bookmarks yet? Start to save them right away!'); ?>
 											</span>
-										</h3>
+										</h4>
 									</div>
 										<?php
 										// Reading bookmarks
@@ -228,6 +228,7 @@ include('head.php');
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 		<script language="javascript">
 		$(function(){
@@ -383,7 +384,10 @@ include('head.php');
 						$('.fav-list-cell').hover(showCellService, hideCellService);
 						$('a[data-toggle=popover]').popover({
 						    html: 'true'
-						})
+						});
+						if ($('div.fav-list-content > article').length > 0) {
+							$('.no-bookmark-label').addClass('hide');
+						}
 					} else {
 						$('#add-url-message').removeClass().addClass('text-danger').html(response.message);
 					}

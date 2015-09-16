@@ -13,10 +13,10 @@ if (isset($_POST['usn']) and isset($_POST['pwd']) and $_POST['usn'] <> '' and $_
 	
 	if (preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/", $_POST['usn'])) {
 		$email = $_POST['usn'];
-		$sql = "SELECT * FROM Users WHERE email='".$mysqli->real_escape_string($email)."' LIMIT 1";
+		$sql = "SELECT * FROM users WHERE email='".$mysqli->real_escape_string($email)."' LIMIT 1";
 	} else {
 		$username = strip_tags(substr($_POST['usn'], 0, 32));
-		$sql = "SELECT * FROM Users WHERE user='".$mysqli->real_escape_string($username)."' LIMIT 1";
+		$sql = "SELECT * FROM users WHERE user='".$mysqli->real_escape_string($username)."' LIMIT 1";
 	}
 	
 	$result = $mysqli->query($sql);
@@ -50,12 +50,13 @@ include('head.php');
 ?>
 		<div class="container login-page">
 			<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-4">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
+					<hr>
 										
 					<form action="index.php" method="post" role="form">
-						<h2 class="form-signin-heading"><?php echo text('Login') ?></h2>
+						<h4 class="form-signin-heading"><?php echo text('Login') ?></h4>
 						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						<div class="alert alert-success <?php if (!isset($_SESSION['warncode']) or $_SESSION['warncode'] == '') echo 'hidden'; ?>" role="alert"><?php if (isset($_SESSION['warncode']) and $_SESSION['warncode'] <> '') { echo $_SESSION['warncode']; $_SESSION['warncode'] = ''; } ?></div>
 						
@@ -83,7 +84,7 @@ include('head.php');
 						</select>
 					</form>
 				</div>
-				<div class="col-md-4"></div>
+				<div class="col-md-3"></div>
 			</div>
 		</div>
 	</body>

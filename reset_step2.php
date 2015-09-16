@@ -18,7 +18,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 		exit;
 	}
 	
-	$sql = "SELECT * FROM Users WHERE resetcode='".$mysqli->real_escape_string($code)."' LIMIT 1";
+	$sql = "SELECT * FROM users WHERE resetcode='".$mysqli->real_escape_string($code)."' LIMIT 1";
 	$result = $mysqli->query($sql);
 	
 	if ($result) {
@@ -33,7 +33,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 			
 			if ($timepassed > 48*60*60 ) {
 				// echo "<script>alert('Time exceeded!')</script>";
-				$sql = "UPDATE Users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
+				$sql = "UPDATE users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
 				$result = $mysqli->query($sql);
 				
 				$_SESSION['errcode'] = text('The link has expired, please send another link');
@@ -52,11 +52,11 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 						$password = strip_tags(substr($_POST['newpwd1'], 0, 32));
 						$safepwd = crypt(md5($password), md5($username).'romeoyjulieta');
 						
-						$sql = "UPDATE Users SET password='".$mysqli->real_escape_string($safepwd)."' WHERE id='".$userid."'";
+						$sql = "UPDATE users SET password='".$mysqli->real_escape_string($safepwd)."' WHERE id='".$userid."'";
 						$result = $mysqli->query($sql);
 						
 						if ($result) {
-							$sql = "UPDATE Users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
+							$sql = "UPDATE users SET resetcode = '', resetcodetime = '' WHERE id = '".$userid."'";
 							$result = $mysqli->query($sql);
 							
 							$_SESSION['warncode'] = text('Password successfully changed. Please login');
@@ -84,8 +84,8 @@ include('head.php');
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-4">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
 										
 					<form action="reset_step2.php" method="post" role="form">
@@ -114,7 +114,7 @@ include('head.php');
 					<br />
 					<p><a href="index.php"><?php echo text('Back to login'); ?></a></p>
 				</div>
-				<div class="col-md-4"></div>
+				<div class="col-md-3"></div>
 			</div>
 		</div>
 	</body>

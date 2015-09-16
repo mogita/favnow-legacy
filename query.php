@@ -33,12 +33,12 @@ function readBookmark($userid, $favID = '', $limit = '') {
 	$mysqli = newDBConn();
 	
 	if ($favID <> '') {
-		$sql = "SELECT * FROM Favs WHERE userid='$userid' AND id='$favID'";
+		$sql = "SELECT * FROM favs WHERE userid='$userid' AND id='$favID'";
 	} else {
 		if (isset($limit) and !empty($limit)) {
-			$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC LIMIT ".$limit;
+			$sql = "SELECT * FROM favs WHERE userid='".$userid."' ORDER BY timepoint DESC LIMIT ".$limit;
 		} else {
-			$sql = "SELECT * FROM Favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
+			$sql = "SELECT * FROM favs WHERE userid='".$userid."' ORDER BY timepoint DESC";
 		}
 	}
 	
@@ -115,12 +115,12 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 				$title = $mysqli->real_escape_string($title);
 				$hash = md5($url);
 				
-				$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
+				$sql = "INSERT INTO favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
 				
 				if (!empty($userid)) {
 					
 				} elseif (!empty($authcode)) {
-					$sql = "INSERT INTO Favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
+					$sql = "INSERT INTO favs (hash, userid, url, title, timepoint) VALUES ('".$hash."', '".$userid."', '".$url."', '".$title."', '".$time."')";
 				}
 				
 				$result = $mysqli->query($sql);
@@ -207,7 +207,7 @@ function editBookmark($userid, $favID, $title) {
 
 		$title = sanitize($mysqli->real_escape_string($title));
 
-		$sql = "UPDATE Favs SET title = '$title' WHERE id = '$favID'";
+		$sql = "UPDATE favs SET title = '$title' WHERE id = '$favID'";
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
 
@@ -240,7 +240,7 @@ function editBookmark($userid, $favID, $title) {
 
 function deleteBookmark($favID, $userid) {	
 	$mysqli = newDBConn();
-	$sql = "DELETE FROM Favs WHERE id=\"".$favID."\" AND userid=\"".$userid."\"";
+	$sql = "DELETE FROM favs WHERE id=\"".$favID."\" AND userid=\"".$userid."\"";
 	$result = $mysqli->query($sql);
 	$affectedRows = $mysqli->affected_rows;
 	
@@ -273,7 +273,7 @@ function getUserByID($userid) {
 		$getUserResult = false;
 	} else {
 		$mysqli = newDBConn();
-		$sql = "SELECT * FROM Users WHERE id='".$userid."' LIMIT 1";
+		$sql = "SELECT * FROM users WHERE id='".$userid."' LIMIT 1";
 		
 		$result = $mysqli->query($sql);
 		
@@ -292,7 +292,7 @@ function getUserByAuth($authcode) {
 		$return = false;
 	} else {
 		$mysqli = newDBConn();
-		$sql = "SELECT * FROM Users WHERE authcode='".$authcode."' LIMIT 1";
+		$sql = "SELECT * FROM users WHERE authcode='".$authcode."' LIMIT 1";
 		$result = $mysqli->query($sql);
 		if ($result->num_rows != 0) {
 			$return = $result->fetch_array(MYSQLI_NUM);
@@ -311,7 +311,7 @@ function emailChange($email, $userid) {
 		$emailChangeResult = text('Invalid Email format. <a href="mailto:favnow@mogita.com?Subject=Invalid Email format trouble">Contact us</a> if you meet any problem');
 	} else {
 		$mysqli = newDBConn();
-		$sql = "UPDATE Users SET email='".$mysqli->real_escape_string($email)."' WHERE id='".$userid."'";
+		$sql = "UPDATE users SET email='".$mysqli->real_escape_string($email)."' WHERE id='".$userid."'";
 		
 		$result = $mysqli->query($sql);
 		
@@ -343,7 +343,7 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 	} else {
 		
 		$mysqli = newDBConn();
-		$sql = "SELECT * FROM Users WHERE id='".$userid."' LIMIT 1";
+		$sql = "SELECT * FROM users WHERE id='".$userid."' LIMIT 1";
 		$result = $mysqli->query($sql);
 		
 		if (!$result) {
@@ -357,7 +357,7 @@ function pwChange($pwc1, $pwc2, $pwc3, $userid, $username) {
 			if ($oldPassword <> $safePassword1) {
 				$pwcmsg = text('Current password incorrect, please try again');
 			} else {
-				$pwcsql = "UPDATE Users SET password='".$mysqli->real_escape_string($safePassword2)."' WHERE id='".$userid."'";
+				$pwcsql = "UPDATE users SET password='".$mysqli->real_escape_string($safePassword2)."' WHERE id='".$userid."'";
 				$pwcresult = $mysqli->query($pwcsql);
 				
 				if (!$pwcresult) {
