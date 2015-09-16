@@ -3,7 +3,7 @@ header('Content-type: application/javascript');
 
 require_once 'config.php';
 require_once 'function.php';
-require_once 'query.php';
+require_once 'fav_query.php';
 
 if (empty($_GET['url']) or empty($_GET['title']) or empty($_GET['user'])) die(text('Invalid request'));
 

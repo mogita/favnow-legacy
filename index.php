@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 include 'function.php';
-include 'query.php';
+include 'fav_query.php';
 
 $title_pattern = text('Login');
 

@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS `cat_relation` (
 `id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `obj_id` int(11) NOT NULL,
-  `cat_id` int(11) NOT NULL
+  `cat_id` int(11) NOT NULL,
+  `created_at` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -46,7 +47,8 @@ DROP TABLE IF EXISTS `cat_terms`;
 CREATE TABLE IF NOT EXISTS `cat_terms` (
 `id` int(11) NOT NULL,
   `catname` tinytext NOT NULL,
-  `userid` int(11) NOT NULL
+  `userid` int(11) NOT NULL,
+  `created_at` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

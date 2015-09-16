@@ -18,37 +18,9 @@ function newDBConn() {
 		}
 	}
 
-	$mysqli->set_charset("utf8");
+	$mysqli->set_charset("utf8mb4");
 
 	return $mysqli;
-}
-
-/***************** CATEGORY DATA *****************/
-
-function readCat($userid = 0)
-{
-    $msg = '';
-    $results = array();
-
-    $mysqli = newDBConn();
-    $sql = "SELECT id, catname AS `name` FROM cat_terms WHERE userid='" . $userid . "'";
-
-    if ($result = $mysqli->query($sql))
-    {
-        while ($row = $result->fetch_assoc())
-        {
-            $results[] = $row;
-        }
-        $count = $result->num_rows;
-    }
-    else
-    {
-        $msg = (DEBUGGING) ? $mysqli->error : '';
-        $count = -1;
-    }
-
-    $result->free();
-    return array($msg, $count, $results);
 }
 
 /***************** BOOKMARK DATA *****************/
