@@ -199,7 +199,7 @@ function editBookmark($userid, $favid, $title) {
 
 	$mysqli = newDBConn();
 	$favid = sanitize($mysqli->real_escape_string($favid));
-	$resultRead = readBookmark($userid, $favid);
+	$resultRead = readBookmark($userid, '', $favid);
 
 	$count = $resultRead[1];
 	$bookmark = $resultRead[2];
