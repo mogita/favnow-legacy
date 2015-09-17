@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-include 'query.php';
+include 'fav_query.php';
 // include 'function.php';
 require_once 'lib/phpmailer/class.phpmailer.php';
 require_once 'lib/phpmailer/class.smtp.php';

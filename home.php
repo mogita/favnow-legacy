@@ -1,7 +1,8 @@
 <?php
 require_once 'config.php';
 include 'function.php';
-include 'query.php';
+include 'fav_query.php';
+require_once 'cat_query.php';
 
 if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SESSION['userid']) or empty($_SESSION['userid']) or !isset($_SESSION['userid']) or empty($_SESSION['loggedin']) or !$_SESSION['loggedin']) header("Location: logout.php");
 
@@ -9,9 +10,7 @@ $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
 $title_pattern = text('Home');
 
-// Adding a bookmark
 if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
-    // echo "<script>alert('Add')</script>";
     if (isset($_POST['add-title']) and !empty($_POST['add-title'])) {
         $msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title']);
     } else {
@@ -19,22 +18,22 @@ if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
     }
 }
 
-// Editing a bookmark
+if (isset($_POST['add-cat']) and !empty($_POST['add-cat'])) {
+    $msg = addCategory($userid, $_POST['add-cat']);
+}
+
 if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POST['edit-favid'])) {
-    // echo "<script>alert('Edit')</script>";
     $msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title']);
 }
 
-// Deleting a bookmark
 if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
-    // echo "<script>alert('Delete')</script>";
     $msg = deleteBookmark($_POST['delete-confirm'], $userid);
 }
 
 // Loading home page now
 include('head.php');
 ?>
-
+<?php // About Dialogue ?>
 <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -55,6 +54,35 @@ include('head.php');
     </div>
 </div>
 
+<?php // Add Category ?>
+<div class="modal fade" id="add-category" tabindex="-1" role="dialog" aria-labelledby="addCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only"><?php echo text('Close'); ?></span>
+                </button>
+                <h4 class="modal-title" id="settings"><?php echo text('Add Category'); ?></h4>
+            </div>
+            <div class="modal-body">
+                <form name="add-cat-form" id="add-cat-form" action="" method="POST">
+                    <div class="form-group">
+                        <input type="text" tabindex="0" id="add-cat" name="add-cat" size="100" class="form-control" placeholder="<?php echo text('Name'); ?>" autofocus required/>
+                    </div>
+
+                    <div class="modal-footer">
+                        <span class="" id="add-cat-message"></span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+                        <button type="submit" id="add-url-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php // Add Bookmark ?>
 <div class="modal fade" id="add-bookmark" tabindex="-1" role="dialog" aria-labelledby="addBookmarkLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -67,20 +95,16 @@ include('head.php');
             <div class="modal-body">
                 <form name="add-url-form" id="add-url-form" action="" method="POST">
                     <div class="form-group">
-                        <input type="text" tabindex="0" id="add-url" name="add-url" size="100" class="form-control"
-                               placeholder="<?php echo text('URL'); ?>" autofocus required/>
+                        <input type="text" tabindex="0" id="add-url" name="add-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" autofocus required/>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="add-title" name="add-title" size="100" class="form-control"
-                               placeholder="<?php echo text('Title (Optional)'); ?>"/>
+                        <input type="text" id="add-title" name="add-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>"/>
                     </div>
 
                     <div class="modal-footer">
                         <span class="" id="add-url-message"></span>
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal"><?php echo text('Close'); ?></button>
-                        <button type="submit" id="add-url-submit"
-                                class="btn btn-primary"><?php echo text('Add'); ?></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+                        <button type="submit" id="add-url-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
                     </div>
                 </form>
             </div>
@@ -88,6 +112,7 @@ include('head.php');
     </div>
 </div>
 
+<?php // Edit Bookmark ?>
 <div class="modal fade" id="edit-bookmark" tabindex="-1" role="dialog" aria-labelledby="editBookmarkLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -125,6 +150,7 @@ include('head.php');
     </div>
 </div>
 
+<?php // Navigation Bar ?>
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -135,8 +161,7 @@ include('head.php');
                 <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="home.php">FavNow<sup><span
-                        style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup></a>
+            <a class="navbar-brand" href="home.php">FavNow<sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup></a>
         </div>
 
         <div class="collapse navbar-collapse" id="navbar-menu">
@@ -164,12 +189,21 @@ include('head.php');
         <div class="col-sm-3">
             <div class="panel panel-default">
                 <div class="panel-heading">
+                    <div class="pull-right">
+                        <button data-toggle="modal" data-target="#add-category" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;<?php echo text('Add Category'); ?></strong>
+                        </button>
+                    </div>
                     <h6><?php echo text('Category'); ?></h6>
                 </div>
 
                 <div class="panel-body">
+                    <article class="cat-list-cell" id="cat-list-cell-0">
+                        <div class="cat-list-inner-item">
+                            <a href="home.php"><strong><?php echo text('All Bookmarks'); ?></strong></a>
+                        </div>
+                    </article>
                     <?php
-                    $cats_result = readCat($userid);
+                    $cats_result = readCategory($userid);
                     $cats_count = $cats_result[1];
                     $cats = $cats_result[2];
 
@@ -179,7 +213,7 @@ include('head.php');
                         <?php
                     } elseif ($cats_count == 0) {
                         ?>
-                        <strong><?php echo text('No category yet'); ?></strong>
+                        <strong><?php // echo text('No category yet'); ?></strong>
                         <?php
                     } else {
                         foreach ($cats as $cat) {
@@ -188,7 +222,7 @@ include('head.php');
                             ?>
                             <article class="cat-list-cell" id="cat-list-cell-<?php echo $catid; ?>">
                                 <div class="cat-list-inner-item">
-                                    <a href="/home.php?cat=<?php echo $catid; ?>"><?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? "<strong>" . $category . "</strong>&nbsp;&nbsp;<a href=\"home.php\"><i class=\"glyphicon glyphicon-remove\"></i></a>" : $category; ?></a>
+                                    <a href="/home.php?cat=<?php echo $catid; ?>"><?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? $category . "&nbsp;&nbsp;<a href=\"home.php\"><i class=\"glyphicon glyphicon-remove\"></i></a>" : $category; ?></a>
                                 </div>
                             </article>
                             <?php
@@ -218,8 +252,7 @@ include('head.php');
                             <div class="row">
                                 <div class="alert fade in alert-warning alert-dismissible col-xs-10 col-xs-offset-1"
                                      role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <?php echo $msg; ?>
                                 </div>
                             </div>
@@ -229,9 +262,9 @@ include('head.php');
                             <div id="before-first"></div>
                             <div class="no-bookmark-label hide">
                                 <h4>
-											<span class="label label-default">
-												<?php echo text('No bookmarks yet? Start to save them right away!'); ?>
-											</span>
+                                    <span class="label label-default">
+                                        <?php echo text('No bookmarks yet? Start to save them right away!'); ?>
+                                    </span>
                                 </h4>
                             </div>
                             <?php
@@ -264,32 +297,25 @@ include('head.php');
                                 <article class="fav-list-cell" id="fav-list-cell-<?php echo $favid; ?>">
                                     <div class="fav-list-inner-item">
                                         <div class="fav-list-cell-top">
-													<span class="fav-list-cell-title">
-														<a class="fav-list-cell-link" href="<?php echo $url; ?>"
-                                                           title="<?php echo $title; ?>"
-                                                           target="_blank"><?php echo $title; ?></a>
-													</span>
+                                            <span class="fav-list-cell-title">
+                                                <a class="fav-list-cell-link" href="<?php echo $url; ?>"
+                                                   title="<?php echo $title; ?>"
+                                                   target="_blank"><?php echo $title; ?></a>
+                                            </span>
                                         </div>
                                         <div class="fav-list-cell-bottom">
-													<span class="fav-list-cell-datetime">
-														<?php echo date(text('H:i:s M d, Y'), $time); ?>
-													</span>
-													<span class="fav-list-cell-service">
-														<a class="edit-button" data-toggle="modal"
-                                                           data-target="#edit-bookmark"
-                                                           data-editurl="<?php echo $url; ?>"
-                                                           data-edittitle="<?php echo $title; ?>"
-                                                           data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
-														<a tabindex="0" class="delete-button" data-toggle="popover"
-                                                           data-placement="top"
-                                                           data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $favid; ?>" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i
-                                                                class="glyphicon glyphicon-trash"></i></a>
-													</span>
+                                            <span class="fav-list-cell-datetime">
+                                                <?php echo date(text('H:i:s M d, Y'), $time); ?>
+                                            </span>
+                                            <span class="fav-list-cell-service">
+                                                <a class="edit-button" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
+                                                <a tabindex="0" class="delete-button" data-toggle="popover" data-placement="top" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $favid; ?>" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"></i></a>
+                                            </span>
                                         </div>
                                     </div>
                                 </article>
                                 <?php
-                            }
+                                }
                             }
                             ?>
                         </div>
@@ -425,6 +451,45 @@ include('head.php');
         });
     });
 
+    $('#add-cat-form').submit(function (e) {
+        e.preventDefault();
+
+        $('#add-cat-submit').addClass('disabled');
+        $('#add-cat-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#add-cat-message').html('');
+
+        var postData = $(this).serializeArray();
+        $.ajax({
+            url: 'home.php',
+            type: 'POST',
+            data: postData,
+            success: function (response) {
+                $('#add-cat-submit').removeClass('disabled');
+                $('#add-cat-submit').html('<?php echo text('Add'); ?>');
+
+                // alert(response);
+                response = $.parseJSON(response);
+                if (response.code == 200) {
+                    $('#add-category').modal('hide');
+                    $('#add-cat').val('');
+                    $('#add-cat-message').fadeOut('fast');
+
+                    name = response.message.name;
+                    cat_id = response.message.cat_id;
+                    url = 'home.php?cat=' + cat_id;
+                    $('<article class="cat-list-cell animated zoomIn" id="cat-list-cell-' + cat_id + '"><div class="cat-list-inner-item"><a class="cat-list-cell-link" href="' + url + '">' + name + '</a></div></article>').insertAfter('.cat-list-cell:last');
+                } else {
+                    $('#add-cat-message').removeClass().addClass('text-danger').html(response.message);
+                }
+            },
+            error: function (xhr, ajaxOptions, errorThrown) {
+                $('#add-cat-submit').removeClass('disabled');
+                $('#add-cat-submit').html('<?php echo text('Add'); ?>');
+                $('#add-cat-message').removeClass().addClass('text-danger').html('ERROR');
+            }
+        });
+    });
+
     $('#add-url-form').submit(function (e) {
         e.preventDefault();
 
@@ -474,13 +539,17 @@ include('head.php');
         });
     });
 
+    $('#add-category').on('shown.bs.modal', function () {
+        $('#add-cat').focus();
+    });
+
     $('#add-bookmark').on('shown.bs.modal', function () {
         $('#add-url').focus();
-    })
+    });
 
     $('#edit-bookmark').on('shown.bs.modal', function () {
         $('#edit-title').focus();
-    })
+    });
 
     $('#edit-bookmark').on('show.bs.modal', function (event) {
         var a = $(event.relatedTarget);
@@ -488,11 +557,11 @@ include('head.php');
         modal.find('#edit-url').val(a.data('editurl'));
         modal.find('#edit-title').val($('article#fav-list-cell-' + a.data('favid') + ' > div > div > span > a.edit-button').attr('data-edittitle'));
         modal.find('#edit-favid').val(a.data('favid'));
-    })
+    });
 
     $('a[data-toggle=popover]').popover({
         html: 'true'
-    })
+    });
 
     $('body').on('click', function (e) {
         $('[data-toggle="popover"]').each(function () {

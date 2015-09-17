@@ -121,4 +121,10 @@ $GLOBALS['zh_CN'] = Array (
 	'URL: ' => '网址：',
 	'Title: ' => '标题：',
 	'Cancel' => '取消',
+
+	'Category' => '分类',
+	'Add Category' => '新增分类',
+	'All Bookmarks' => '所有书签',
+	'Name' => '名称',
+	'Please provide a name' => '请输入名称',
 );

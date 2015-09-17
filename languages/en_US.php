@@ -119,4 +119,10 @@ $GLOBALS['en_US'] = Array (
 	'URL: ' => 'URL: ',
 	'Title: ' => 'Title: ',
 	'Cancel' => 'Cancel',
+
+	'Category' => 'Category',
+	'Add Category' => 'Add Category',
+	'All Bookmarks' => 'All Bookmarks',
+	'Name' => 'Name',
+	'Please provide a name' => 'Please provide a name',
 );

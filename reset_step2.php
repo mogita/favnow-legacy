@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-include 'query.php';
+include 'fav_query.php';
 // include 'function.php';
 
 $title_pattern = text('Change Password');

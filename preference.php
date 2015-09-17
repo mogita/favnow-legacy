@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 include 'function.php';
-include 'query.php';
+include 'fav_query.php';
 
 if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SESSION['userid']) or empty($_SESSION['userid']) or !isset($_SESSION['userid']) or  empty($_SESSION['loggedin']) or !$_SESSION['loggedin']) header("Location: logout.php");
 
