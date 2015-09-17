@@ -67,6 +67,17 @@ div.user-page {
 	color: #4e84d1;
 }
 
+.cat-list-cell-service a {
+	font-size: 0.9em;
+	margin-left: 10px;
+	text-decoration: none;
+	color: #999;
+}
+
+.cat-list-cell-service a:hover {
+	color: #4e84d1;
+}
+
 .edit-button {
 	cursor: pointer;
 }

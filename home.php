@@ -74,7 +74,7 @@ include('head.php');
                     <div class="modal-footer">
                         <span class="" id="add-cat-message"></span>
                         <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
-                        <button type="submit" id="add-url-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
+                        <button type="submit" id="add-cat-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
                     </div>
                 </form>
             </div>
@@ -196,7 +196,7 @@ include('head.php');
                     <h6><?php echo text('Category'); ?></h6>
                 </div>
 
-                <div class="list-group">
+                <ul class="list-group">
                     <a href="home.php" class="cat-list-item list-group-item <?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '' : ' active' ;?>" id="cat-list-cell-0"><strong><?php echo text('All Bookmarks'); ?></strong></a>
                     <?php
                     $cats_result = readCategory($userid);
@@ -216,12 +216,18 @@ include('head.php');
                             $category = $cat['name'];
                             $catid = $cat['id'];
                             ?>
-                            <a href="/home.php?cat=<?php echo $catid; ?>" class="cat-list-item list-group-item<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' active' : '' ; ?>" id="cat-list-cell-<?php echo $catid; ?>"><?php echo $category; ?></a>
+                            <li class="cat-list-cell list-group-item<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' active' : '' ; ?>" id="<?php echo $cat['id']; ?>" onclick="showcat(this.id)">
+                                <a href="/home.php?cat=<?php echo $catid; ?>" class="cat-list-item" id="cat-list-cell-<?php echo $catid; ?>"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>><?php echo $category; ?></a>
+                                <span class="list-group-item-text cat-list-cell-service">
+                                    <a class="edit-button" data-toggle="modal" data-target="#edit-category" data-editcat="<?php echo $cat['name']; ?>" data-catid="<?php echo $cat['id']; ?>"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>><?php echo text('Edit'); ?></a>
+                                    <a tabindex="0" class="delete-cat-button" data-toggle="popover" data-placement="right" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $cat['id']; ?>" onclick="deleteCategoryConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>></i></a>
+                                </span>
+                            </li>
                             <?php
                         }
                     }
                     ?>
-                </div>
+                </ul>
             </div>
         </div>
         <div class="col-sm-9">
@@ -230,7 +236,7 @@ include('head.php');
 
                     <div class="panel-heading">
                         <div class="pull-right">
-                            <button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;<strong><?php echo text('Add Bookmark'); ?></strong>
+                            <button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;&nbsp;<strong><?php echo text('Add Bookmark'); ?></strong>
                             </button>
                         </div>
                         <h4>
@@ -252,12 +258,13 @@ include('head.php');
 
                         <div class="fav-list-content">
                             <div id="before-first"></div>
-                            <div class="no-bookmark-label hide">
-                                <h4>
-                                    <span class="label label-default">
+                            <div class="no-bookmark-label text-right hide">
+                                <h5>
+                                    <span class="well">
                                         <?php echo text('No bookmarks yet? Start to save them right away!'); ?>
+                                        <i class="glyphicon glyphicon-arrow-up"></i>
                                     </span>
-                                </h4>
+                                </h5>
                             </div>
                             <?php
                             // Reading bookmarks
@@ -320,7 +327,9 @@ include('head.php');
 <script language="javascript">
     $(function () {
         $('.fav-list-cell-service').hide();
+        $('.cat-list-cell-service').hide();
         $('.fav-list-cell').hover(showCellService, hideCellService);
+        $('.cat-list-cell').hover(showCellService, hideCellService);
 
         $.notifyDefaults({
             newest_on_top: true,
@@ -347,13 +356,42 @@ include('head.php');
 
     function showCellService() {
         $(this).find('.fav-list-cell-service').show();
+        $(this).find('.cat-list-cell-service').show();
     }
 
     function hideCellService(e) {
         $(this).find('.fav-list-cell-service').hide();
+        $(this).find('.cat-list-cell-service').hide();
         $('[data-toggle="popover"]').each(function () {
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                 $(this).popover('hide');
+            }
+        });
+    }
+
+    function showcat(id)
+    {
+        window.location.replace('/home.php?cat=' + id);
+    }
+
+    function deleteCategoryConfirm(id) {
+        $('.delete-cat-button').popover('hide');
+        $.ajax({
+            type: 'POST',
+            url: 'home.php',
+            data: 'delete-cat-confirm=' + id,
+            success: function (response) {
+                response = $.parseJSON(response);
+                if (response.code == 200) {
+                    $('#cat-list-cell-' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                        $('#cat-list-cell-' + id).remove();
+                    });
+                    // $.notify(response.message, {type: 'danger'});
+                } else {
+                    $.notify(response.message, {
+                        type: 'danger'
+                    });
+                }
             }
         });
     }
