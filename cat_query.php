@@ -11,11 +11,6 @@ if (basename($_SERVER['PHP_SELF'] == basename(__FILE__))) die();
 
 /***************** CATEGORY DATA *****************/
 
-function countItemsInCategory($catid)
-{
-
-}
-
 function readCategory($userid = 0)
 {
 	$msg = '';

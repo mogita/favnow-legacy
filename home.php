@@ -42,6 +42,21 @@ if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
     $msg = deleteBookmark($_POST['delete-confirm'], $userid);
 }
 
+// Reading bookmarks
+if (isset($_GET['cat']) && !empty($_GET['cat'])) {
+    $cat = $_GET['cat'];
+} else {
+    $cat = '';
+}
+
+$bookmarks = readBookmark($userid, $cat);
+$count = $bookmarks[1];
+$bookmark = $bookmarks[2];
+
+$cats_result = readCategory($userid);
+$cats_count = $cats_result[1];
+$cats = $cats_result[2];
+
 // Loading home page now
 include('head.php');
 ?>
@@ -220,7 +235,7 @@ include('head.php');
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <button data-toggle="modal" data-target="#add-category" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;<?php echo text('Add Category'); ?></strong>
+                        <button data-toggle="modal" data-target="#add-category" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;<?php echo text('Add Category'); ?>
                         </button>
                     </div>
                     <h6><?php echo text('Category'); ?></h6>
@@ -229,13 +244,9 @@ include('head.php');
                 <ul class="list-group">
                     <li id="0" class="cat-list-cell list-group-item<?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '" onclick="showcat(this.id)' : ' active' ; ?>">
                         <a href="home.php" class="cat-list-item" id="cat-list-cell-0"<?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '' : ' style="color: #fff;"' ; ?>><strong><?php echo text('All Bookmarks'); ?></strong></a>
-                        <span class="badge"><?php echo countItemsInCategory(0); ?></span>
+                        <?php if (1==0) : ?><span class="badge"><?php echo $count; ?></span><?php endif; ?>
                     </li>
                     <?php
-                    $cats_result = readCategory($userid);
-                    $cats_count = $cats_result[1];
-                    $cats = $cats_result[2];
-
                     if ($cats_count < 0) {
                         ?>
                         <strong><?php echo text('Unable to fetch categories: ') . $cats_result[0]; ?></strong>
@@ -300,21 +311,11 @@ include('head.php');
                                 </h5>
                             </div>
                             <?php
-                            // Reading bookmarks
-                            if (isset($_GET['cat']) && !empty($_GET['cat'])) {
-                                $cat = $_GET['cat'];
-                            } else {
-                                $cat = '';
-                            }
-                            $result = readBookmark($userid, $cat);
-                            $count = $result[1];
-                            $bookmark = $result[2];
-
                             if ($count < 0) {
                                 ?>
                                 <h4>
                                     <span class="label label-error">
-                                        <?php echo text('Unable to fetch bookmarks: ') . $result[0]; ?>
+                                        <?php echo text('Unable to fetch bookmarks: ') . $bookmarks[0]; ?>
                                     </span>
                                 </h4>
                             <?php } elseif ($count == 0) { ?>
