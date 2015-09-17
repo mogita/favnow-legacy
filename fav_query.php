@@ -61,7 +61,7 @@ function readBookmark($userid, $catid = '', $favid = '', $amount = 25, $page = 1
 }
 
 
-function addBookmark($userid = '', $authcode = '', $url, $title) {
+function addBookmark($userid = '', $authcode = '', $url, $title, $category = 0) {
 
 	if (isset($authcode) and !empty($authcode)) {
 		$id = getUserByAuth($authcode);
@@ -132,13 +132,17 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 						"message" => text('This URL already exists')
 					);
 				} elseif ($result) {
+					$latest_favid = $mysqli->insert_id;
+					$sql = "INSERT INTO cat_relation (userid, obj_id, cat_id, created_at) VALUES (" . $userid . ", " . $latest_favid . ", " . $category  . ", " . time() . ")";
+					$mysqli->query($sql);
+
 					$return = array(
 						"code" => 200,
 						"message" => array(
 							"time" => date(text('H:i:s M d, Y'), $time),
 							"title" => $title,
 							"url" => $url,
-							"favid" => $mysqli->insert_id
+							"favid" => $latest_favid
 						)
 					);
 				} else {
@@ -167,7 +171,7 @@ function addBookmark($userid = '', $authcode = '', $url, $title) {
 	exit();
 }
 
-function editBookmark($userid, $favid, $title) {
+function editBookmark($userid, $favid, $title, $category = 0) {
 
 	$mysqli = newDBConn();
 	$favid = sanitize($mysqli->real_escape_string($favid));
@@ -210,6 +214,9 @@ function editBookmark($userid, $favid, $title) {
 		$sql = "UPDATE favs SET title = '$title' WHERE id = '$favid'";
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
+
+		$sql = "INSERT INTO cat_relation (userid, obj_id, cat_id, created_at) VALUES (" . $userid . ", " . $favid . ", " . $category . ", " . time() . ") ON DUPLICATE KEY UPDATE cat_id=VALUES(cat_id)";
+		$mysqli->query($sql);
 
 		if ($affectedRows != 1) {
 			$return = array(

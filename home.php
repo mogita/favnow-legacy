@@ -11,7 +11,6 @@ $username = $_SESSION['username'];
 $title_pattern = text('Home');
 
 // category CRUD
-
 if (isset($_POST['add-cat']) and !empty($_POST['add-cat'])) {
     $msg = addCategory($userid, $_POST['add-cat']);
 }
@@ -27,15 +26,31 @@ if (isset($_POST['delete-cat-confirm']) and !empty($_POST['delete-cat-confirm'])
 // Bookmark CRUD
 
 if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
+    if (isset($_POST['put-category']) && !empty($_POST['put-category']))
+    {
+        $put_category = $_POST['put-category'];
+    }
+    else
+    {
+        $put_category = 0;
+    }
     if (isset($_POST['add-title']) and !empty($_POST['add-title'])) {
-        $msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title']);
+        $msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title'], $put_category);
     } else {
-        $msg = addBookmark($userid, '', $_POST['add-url'], '');
+        $msg = addBookmark($userid, '', $_POST['add-url'], '', $put_category);
     }
 }
 
 if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POST['edit-favid'])) {
-    $msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title']);
+    if (isset($_POST['put-category']) && !empty($_POST['put-category']))
+    {
+        $put_category = $_POST['put-category'];
+    }
+    else
+    {
+        $put_category = 0;
+    }
+    $msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title'], $put_category);
 }
 
 if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
@@ -152,6 +167,17 @@ include('head.php');
                     <div class="form-group">
                         <input type="text" id="add-title" name="add-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>"/>
                     </div>
+                    <div class="form-group">
+                        <select name="put-category" id="put-category">
+                            <option disabled selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <?php
+                            foreach($cats as $cat)
+                            {
+                                echo '<option value="' . $cat['id'] . '">' . $cat['name'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
 
                     <div class="modal-footer">
                         <span class="" id="add-url-message"></span>
@@ -182,6 +208,18 @@ include('head.php');
 
                     <div class="form-group">
                         <input type="text" id="edit-title" name="edit-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" autofocus/>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="put-category" id="put-category">
+                            <option disabled selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <?php
+                            foreach($cats as $cat)
+                            {
+                                echo '<option value="' . $cat['id'] . '">' . $cat['name'] . '</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
 
                     <div class="modal-footer">
