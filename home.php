@@ -196,12 +196,8 @@ include('head.php');
                     <h6><?php echo text('Category'); ?></h6>
                 </div>
 
-                <div class="panel-body">
-                    <article class="cat-list-cell" id="cat-list-cell-0">
-                        <div class="cat-list-inner-item">
-                            <a href="home.php"><strong><?php echo text('All Bookmarks'); ?></strong></a>
-                        </div>
-                    </article>
+                <div class="list-group">
+                    <a href="home.php" class="cat-list-item list-group-item <?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '' : ' active' ;?>" id="cat-list-cell-0"><strong><?php echo text('All Bookmarks'); ?></strong></a>
                     <?php
                     $cats_result = readCategory($userid);
                     $cats_count = $cats_result[1];
@@ -220,11 +216,7 @@ include('head.php');
                             $category = $cat['name'];
                             $catid = $cat['id'];
                             ?>
-                            <article class="cat-list-cell" id="cat-list-cell-<?php echo $catid; ?>">
-                                <div class="cat-list-inner-item">
-                                    <a href="/home.php?cat=<?php echo $catid; ?>"><?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? $category . "&nbsp;&nbsp;<a href=\"home.php\"><i class=\"glyphicon glyphicon-remove\"></i></a>" : $category; ?></a>
-                                </div>
-                            </article>
+                            <a href="/home.php?cat=<?php echo $catid; ?>" class="cat-list-item list-group-item<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' active' : '' ; ?>" id="cat-list-cell-<?php echo $catid; ?>"><?php echo $category; ?></a>
                             <?php
                         }
                     }
@@ -477,7 +469,7 @@ include('head.php');
                     name = response.message.name;
                     cat_id = response.message.cat_id;
                     url = 'home.php?cat=' + cat_id;
-                    $('<article class="cat-list-cell animated zoomIn" id="cat-list-cell-' + cat_id + '"><div class="cat-list-inner-item"><a class="cat-list-cell-link" href="' + url + '">' + name + '</a></div></article>').insertAfter('.cat-list-cell:last');
+                    $('<a class="cat-list-item animated zoomIn list-group-item" id="cat-list-cell-' + cat_id + '" href="' + url + '">' + name + '</a>').insertAfter('.cat-list-item:last');
                 } else {
                     $('#add-cat-message').removeClass().addClass('text-danger').html(response.message);
                 }

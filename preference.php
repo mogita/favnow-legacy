@@ -27,7 +27,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($currentEmail) an
 		$msg = text('New Email is the same as current Email ').$currentEmail;
 	} else {
 		$msg = emailChange($_POST['email'], $_SESSION['userid']);
-		$currentEmail = getUserFromID($_SESSION['userid'])[3];
+		$currentEmail = getUserByID($_SESSION['userid'])[3];
 	}
 }
 
