@@ -10,6 +10,22 @@ $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
 $title_pattern = text('Home');
 
+// category CRUD
+
+if (isset($_POST['add-cat']) and !empty($_POST['add-cat'])) {
+    $msg = addCategory($userid, $_POST['add-cat']);
+}
+
+if (isset($_POST['edit-name']) and isset($_POST['edit-catid']) and !empty($_POST['edit-catid'])) {
+    $msg = editCategory($userid, $_POST['edit-catid'], $_POST['edit-name']);
+}
+
+if (isset($_POST['delete-cat-confirm']) and !empty($_POST['delete-cat-confirm'])) {
+    $msg = deleteCategory($_POST['delete-cat-confirm'], $userid);
+}
+
+// Bookmark CRUD
+
 if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
     if (isset($_POST['add-title']) and !empty($_POST['add-title'])) {
         $msg = addBookmark($userid, '', $_POST['add-url'], $_POST['add-title']);
@@ -18,16 +34,8 @@ if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
     }
 }
 
-if (isset($_POST['add-cat']) and !empty($_POST['add-cat'])) {
-    $msg = addCategory($userid, $_POST['add-cat']);
-}
-
 if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POST['edit-favid'])) {
     $msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title']);
-}
-
-if (isset($_POST['edit-name']) and isset($_POST['edit-catid']) and !empty($_POST['edit-catid'])) {
-    $msg = editCategory($userid, $_POST['edit-catid'], $_POST['edit-name']);
 }
 
 if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
@@ -219,7 +227,10 @@ include('head.php');
                 </div>
 
                 <ul class="list-group">
-                    <a href="home.php" class="cat-list-item list-group-item <?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '' : ' active' ;?>" id="cat-list-cell-0"><strong><?php echo text('All Bookmarks'); ?></strong></a>
+                    <li id="0" class="cat-list-cell list-group-item<?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '" onclick="showcat(this.id)' : ' active' ; ?>">
+                        <a href="home.php" class="cat-list-item" id="cat-list-cell-0"<?php echo (isset($_GET['cat']) && !empty($_GET['cat'])) ? '' : ' style="color: #fff;"' ; ?>><strong><?php echo text('All Bookmarks'); ?></strong></a>
+                        <span class="badge"><?php echo countItemsInCategory(0); ?></span>
+                    </li>
                     <?php
                     $cats_result = readCategory($userid);
                     $cats_count = $cats_result[1];
@@ -389,11 +400,19 @@ include('head.php');
 
     function showcat(id)
     {
-        window.location.replace('/home.php?cat=' + id);
+        if (id == 0)
+        {
+            window.location.replace('/home.php');
+        }
+        else
+        {
+            window.location.replace('/home.php?cat=' + id);
+        }
     }
 
     function deleteCategoryConfirm(id) {
         $('.delete-cat-button').popover('hide');
+        last_id = $('.cat-list-cell#' + id).prev().attr('id');
         $.ajax({
             type: 'POST',
             url: 'home.php',
@@ -401,8 +420,9 @@ include('head.php');
             success: function (response) {
                 response = $.parseJSON(response);
                 if (response.code == 200) {
-                    $('#cat-list-cell-' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                        $('#cat-list-cell-' + id).remove();
+                    $('.cat-list-cell#' + id).addClass('animated zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                        $('.cat-list-cell#' + id).remove();
+                        showcat(last_id);
                     });
                     // $.notify(response.message, {type: 'danger'});
                 } else {
@@ -470,13 +490,11 @@ include('head.php');
                         'data-catid': catid
                     });
 
-                    $('.cat-list-cell-service').hide();
-                    $('.cat-list-cell').hover(showCellService, hideCellService);
                     $('a[data-toggle=popover]').popover({
                         html: 'true'
                     });
 
-                    $('a#fav-list-cell-' + catid).addClass('animated zoomIn').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                    $('a#cat-list-cell-' + catid).addClass('animated zoomIn').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                         $('a#cat-list-cell-' + catid).removeClass('animated zoomIn');
                     });
                 } else {
