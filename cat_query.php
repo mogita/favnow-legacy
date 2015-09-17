@@ -42,11 +42,11 @@ function addCategory($userid = 0, $name = '')
 	$mysqli = newDBConn();
 	if (!empty($name))
 	{
-		if (strlen($name) > 254)
+		if (strlen($name) > 60)
 		{
 			$return = array(
 				"code"    => 233,
-				"message" => text('URL too long. Use URL shorteners (e.g. <a href="http://is.gd" target="_blank">http://is.gd</a>) please')
+				"message" => text('Category name too long')
 			);
 		}
 		else
@@ -61,7 +61,6 @@ function addCategory($userid = 0, $name = '')
 				$return = array(
 					"code" => 200,
 					"message" => array(
-						"time" => date(text('H:i:s M d, Y'), $time),
 						"name" => $name,
 						"cat_id" => $mysqli->insert_id
 					)
@@ -81,6 +80,87 @@ function addCategory($userid = 0, $name = '')
 		$return = array(
 			"code" => 233,
 			"message" => text('Please provide a name')
+		);
+	}
+
+	echo json_encode($return);
+	exit();
+}
+
+function editCategory($userid = 0, $catid = 0, $name = '')
+{
+	$mysqli = newDBConn();
+	if (!empty($name))
+	{
+		if (strlen($name) > 60)
+		{
+			$return = array(
+				"code"    => 233,
+				"message" => text('Category name too long')
+			);
+		}
+		else
+		{
+			$name = $mysqli->real_escape_string($name);
+			$sql = "UPDATE cat_terms SET catname='" . $name . "' WHERE id='" . $catid . "' AND userid='" . $userid . "'";
+			$result = $mysqli->query($sql);
+
+			if ($mysqli->affected_rows != 1) {
+				$return = array(
+					"code" => 200,
+					"message" => text('Category not modified')
+				);
+			} elseif ($result) {
+				$return = array(
+					"code" => 200,
+					"message" => array(
+						"name" => $name,
+						"catid" => $catid
+					)
+				);
+			} else {
+				$return = array(
+					"code" => 233,
+					"message" => text('There was an error saving your category, please try again')
+				);
+			}
+		}
+	}
+	else
+	{
+		$return = array(
+			"code" => 233,
+			"message" => text('Please provide a name')
+		);
+	}
+
+	echo json_encode($return);
+	exit();
+}
+
+function deleteCategory($catid, $userid) {
+	$mysqli = newDBConn();
+	$sql = "DELETE FROM cat_terms WHERE id='".$catid."' AND userid='".$userid."'";
+	$result = $mysqli->query($sql);
+	$affectedRows = $mysqli->affected_rows;
+
+	if ($affectedRows != 1) {
+		$return = array(
+			"code" => 233,
+			"message" => text('This category does not exist')
+		);
+	} elseif ($result) {
+		$sql = "DELETE FROM cat_relation WHERE cat_id='" . $catid . "'";
+		$result = $mysqli->query($sql);
+
+		$return = array(
+			"code" => 200,
+			"message" => text('Category deleted')
+		);
+	} else {
+		$return = array(
+			"code" => 233,
+			"message" => text('There were problems deleting, please try again')
 		);
 	}
 

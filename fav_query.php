@@ -237,7 +237,6 @@ function editBookmark($userid, $favid, $title) {
 	exit();
 }
 
-
 function deleteBookmark($favid, $userid) {
 	$mysqli = newDBConn();
 	$sql = "DELETE FROM favs WHERE id=\"".$favid."\" AND userid=\"".$userid."\"";

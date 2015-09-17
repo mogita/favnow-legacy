@@ -26,6 +26,10 @@ if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POS
     $msg = editBookmark($userid, $_POST['edit-favid'], $_POST['edit-title']);
 }
 
+if (isset($_POST['edit-name']) and isset($_POST['edit-catid']) and !empty($_POST['edit-catid'])) {
+    $msg = editCategory($userid, $_POST['edit-catid'], $_POST['edit-name']);
+}
+
 if (isset($_POST['delete-confirm']) and !empty($_POST['delete-confirm'])) {
     $msg = deleteBookmark($_POST['delete-confirm'], $userid);
 }
@@ -70,11 +74,36 @@ include('head.php');
                     <div class="form-group">
                         <input type="text" tabindex="0" id="add-cat" name="add-cat" size="100" class="form-control" placeholder="<?php echo text('Name'); ?>" autofocus required/>
                     </div>
-
                     <div class="modal-footer">
                         <span class="" id="add-cat-message"></span>
                         <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
                         <button type="submit" id="add-cat-submit" class="btn btn-primary"><?php echo text('Add'); ?></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php // Edit Category ?>
+<div class="modal fade" id="edit-category" tabindex="-1" role="dialog" aria-labelledby="editCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
+                <h4 class="modal-title" id="settings"><?php echo text('Edit Category'); ?></h4>
+            </div>
+            <div class="modal-body">
+                <form name="edit-cat-form" id="edit-cat-form" action="" method="post">
+                    <input type="hidden" id="edit-catid" name="edit-catid" value="" class="form-control"/>
+
+                    <div class="form-group">
+                        <input type="text" id="edit-name" name="edit-name" size="100" class="form-control" placeholder="<?php echo text('Name'); ?>" required autofocus/>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="" id="edit-cat-message"></span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+                        <button type="submit" id="edit-cat-submit" class="btn btn-primary"><?php echo text('Save'); ?></button>
                     </div>
                 </form>
             </div>
@@ -113,13 +142,11 @@ include('head.php');
 </div>
 
 <?php // Edit Bookmark ?>
-<div class="modal fade" id="edit-bookmark" tabindex="-1" role="dialog" aria-labelledby="editBookmarkLabel"
-     aria-hidden="true">
+<div class="modal fade" id="edit-bookmark" tabindex="-1" role="dialog" aria-labelledby="editBookmarkLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                        class="sr-only"><?php echo text('Close'); ?></span></button>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only"><?php echo text('Close'); ?></span></button>
                 <h4 class="modal-title" id="settings"><?php echo text('Edit Bookmark'); ?></h4>
             </div>
             <div class="modal-body">
@@ -127,23 +154,18 @@ include('head.php');
                     <input type="hidden" id="edit-favid" name="edit-favid" value="" class="form-control"/>
 
                     <div class="form-group">
-                        <input type="text" id="edit-url" name="edit-url" size="100" class="form-control"
-                               placeholder="<?php echo text('URL'); ?>" required disabled/>
+                        <input type="text" id="edit-url" name="edit-url" size="100" class="form-control" placeholder="<?php echo text('URL'); ?>" required disabled/>
                     </div>
 
                     <div class="form-group">
-                        <input type="text" id="edit-title" name="edit-title" size="100" class="form-control"
-                               placeholder="<?php echo text('Title (Optional)'); ?>" autofocus/>
+                        <input type="text" id="edit-title" name="edit-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>" autofocus/>
                     </div>
 
                     <div class="modal-footer">
                         <span class="" id="edit-url-message"></span>
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal"><?php echo text('Close'); ?></button>
-                        <button type="submit" id="edit-url-submit"
-                                class="btn btn-primary"><?php echo text('Save'); ?></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo text('Close'); ?></button>
+                        <button type="submit" id="edit-url-submit" class="btn btn-primary"><?php echo text('Save'); ?></button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -216,11 +238,11 @@ include('head.php');
                             $category = $cat['name'];
                             $catid = $cat['id'];
                             ?>
-                            <li class="cat-list-cell list-group-item<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' active' : '' ; ?>" id="<?php echo $cat['id']; ?>" onclick="showcat(this.id)">
+                            <li id="<?php echo $cat['id']; ?>" class="cat-list-cell list-group-item<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' active' : '" onclick="showcat(this.id)' ; ?>">
                                 <a href="/home.php?cat=<?php echo $catid; ?>" class="cat-list-item" id="cat-list-cell-<?php echo $catid; ?>"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>><?php echo $category; ?></a>
-                                <span class="list-group-item-text cat-list-cell-service">
-                                    <a class="edit-button" data-toggle="modal" data-target="#edit-category" data-editcat="<?php echo $cat['name']; ?>" data-catid="<?php echo $cat['id']; ?>"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>><?php echo text('Edit'); ?></a>
-                                    <a tabindex="0" class="delete-cat-button" data-toggle="popover" data-placement="right" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $cat['id']; ?>" onclick="deleteCategoryConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>></i></a>
+                                <span class="pull-right list-group-item-text cat-list-cell-service<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? '' : ' hide' ; ?>" style="line-height: 2;">
+                                    <a class="edit-button" data-toggle="modal" data-target="#edit-category" data-edit-name="<?php echo $cat['name']; ?>" data-edit-catid="<?php echo $cat['id']; ?>"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>>[&nbsp;&nbsp;<?php echo text('Edit'); ?></a>
+                                    <a tabindex="0" class="delete-cat-button" data-toggle="popover" data-placement="right" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $cat['id']; ?>" onclick="deleteCategoryConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"<?php echo (isset($_GET['cat']) && $_GET['cat'] == $catid) ? ' style="color: #fff;"' : '' ; ?>></i></a>&nbsp;&nbsp;]
                                 </span>
                             </li>
                             <?php
@@ -327,9 +349,7 @@ include('head.php');
 <script language="javascript">
     $(function () {
         $('.fav-list-cell-service').hide();
-        $('.cat-list-cell-service').hide();
         $('.fav-list-cell').hover(showCellService, hideCellService);
-        $('.cat-list-cell').hover(showCellService, hideCellService);
 
         $.notifyDefaults({
             newest_on_top: true,
@@ -356,12 +376,10 @@ include('head.php');
 
     function showCellService() {
         $(this).find('.fav-list-cell-service').show();
-        $(this).find('.cat-list-cell-service').show();
     }
 
     function hideCellService(e) {
         $(this).find('.fav-list-cell-service').hide();
-        $(this).find('.cat-list-cell-service').hide();
         $('[data-toggle="popover"]').each(function () {
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                 $(this).popover('hide');
@@ -420,6 +438,58 @@ include('head.php');
             }
         });
     }
+
+    $('#edit-cat-form').submit(function (e) {
+        e.preventDefault();
+
+        $('#edit-cat-submit').addClass('disabled');
+        $('#edit-cat-submit').html('<span class="animated infinite flash edit-cat-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#edit-cat-message').html('');
+
+        var postData = $(this).serializeArray();
+        $.ajax({
+            url: 'home.php',
+            type: 'POST',
+            data: postData,
+            success: function (response) {
+                $('#edit-cat-submit').removeClass('disabled');
+                $('#edit-cat-submit').html('<?php echo text('Save'); ?>');
+
+                // alert(response);
+                response = $.parseJSON(response);
+                if (response.code == 200) {
+                    $('#edit-category').modal('hide');
+                    $('#edit-name').val('');
+                    $('#edit-cat-message').fadeOut('fast');
+
+                    name = response.message.name;
+                    catid = response.message.catid;
+                    $('a#cat-list-cell-' + catid).html(name);
+                    $('a#cat-list-cell-' + catid + ' > span > a.edit-button').attr({
+                        'data-editcat': name,
+                        'data-catid': catid
+                    });
+
+                    $('.cat-list-cell-service').hide();
+                    $('.cat-list-cell').hover(showCellService, hideCellService);
+                    $('a[data-toggle=popover]').popover({
+                        html: 'true'
+                    });
+
+                    $('a#fav-list-cell-' + catid).addClass('animated zoomIn').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                        $('a#cat-list-cell-' + catid).removeClass('animated zoomIn');
+                    });
+                } else {
+                    $('#edit-cat-message').removeClass().addClass('text-danger').html(response.message);
+                }
+            },
+            error: function (xhr, ajaxOptions, errorThrown) {
+                $('#edit-cat-submit').removeClass('disabled');
+                $('#edit-cat-submit').html('<?php echo text('Add'); ?>');
+                $('#edit-cat-message').removeClass().addClass('text-danger').html('ERROR');
+            }
+        });
+    });
 
     $('#edit-url-form').submit(function (e) {
         e.preventDefault();
@@ -507,7 +577,7 @@ include('head.php');
                     name = response.message.name;
                     cat_id = response.message.cat_id;
                     url = 'home.php?cat=' + cat_id;
-                    $('<a class="cat-list-item animated zoomIn list-group-item" id="cat-list-cell-' + cat_id + '" href="' + url + '">' + name + '</a>').insertAfter('.cat-list-item:last');
+                    $('<li id="' + cat_id + '" class="cat-list-cell list-group-item" onclick="showcat(this.id)"><a href="/home.php?cat="' + cat_id + ' class="cat-list-item" id="cat-list-cell-' + cat_id + '">' + name + '</a><span class="pull-right list-group-item-text cat-list-cell-service hide" style="line-height: 2;"><a class="edit-button" data-toggle="modal" data-target="#edit-category" data-edit-name="' + name + '" data-edit-catid="' + cat_id + '">[&nbsp;&nbsp;<?php echo text('Edit'); ?></a><a tabindex="0" class="delete-cat-button" data-toggle="popover" data-placement="right" data-content="<button class=\"btn btn-danger delete-button-confirm\" id=\"' + cat_id + '\" onclick="deleteCategoryConfirm(this.id)"><?php echo text('Delete'); ?></button>"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;&nbsp;]</span></li>').insertAfter('.cat-list-cell:last');
                 } else {
                     $('#add-cat-message').removeClass().addClass('text-danger').html(response.message);
                 }
@@ -577,8 +647,19 @@ include('head.php');
         $('#add-url').focus();
     });
 
+    $('#edit-category').on('shown.bs.modal', function () {
+        $('#edit-name').focus();
+    });
+
     $('#edit-bookmark').on('shown.bs.modal', function () {
         $('#edit-title').focus();
+    });
+
+    $('#edit-category').on('show.bs.modal', function (event) {
+        var a = $(event.relatedTarget);
+        var modal = $(this);
+        modal.find('#edit-catid').val(a.data('edit-catid'));
+        modal.find('#edit-name').val(a.data('edit-name'));
     });
 
     $('#edit-bookmark').on('show.bs.modal', function (event) {

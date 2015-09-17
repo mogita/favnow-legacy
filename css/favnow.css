@@ -67,6 +67,10 @@ div.user-page {
 	color: #4e84d1;
 }
 
+.cat-list-cell {
+	cursor: pointer;
+}
+
 .cat-list-cell-service a {
 	font-size: 0.9em;
 	margin-left: 10px;
