@@ -169,7 +169,7 @@ include('head.php');
                     </div>
                     <div class="form-group">
                         <select name="put-category" id="put-category">
-                            <option disabled selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
                             <?php
                             foreach($cats as $cat)
                             {
@@ -212,7 +212,7 @@ include('head.php');
 
                     <div class="form-group">
                         <select name="put-category" id="put-category">
-                            <option disabled selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
                             <?php
                             foreach($cats as $cat)
                             {
@@ -273,7 +273,7 @@ include('head.php');
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <button data-toggle="modal" data-target="#add-category" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;<?php echo text('Add Category'); ?>
+                        <button data-toggle="modal" data-target="#add-category" class="btn btn-default btn-sm panel-heading-button"><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;<?php echo text('Add Category'); ?>
                         </button>
                     </div>
                     <h6><?php echo text('Category'); ?></h6>
@@ -318,7 +318,7 @@ include('head.php');
 
                     <div class="panel-heading">
                         <div class="pull-right">
-                            <button data-toggle="modal" data-target="#add-bookmark" class="btn btn-default"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;&nbsp;<strong><?php echo text('Add Bookmark'); ?></strong>
+                            <button data-toggle="modal" data-target="#add-bookmark" class="btn btn-primary panel-heading-button"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;&nbsp;<strong><?php echo text('Add Bookmark'); ?></strong>
                             </button>
                         </div>
                         <h4>
@@ -341,12 +341,12 @@ include('head.php');
                         <div class="fav-list-content">
                             <div id="before-first"></div>
                             <div class="no-bookmark-label text-right hide">
-                                <h5>
+                                <h6>
                                     <span class="well">
                                         <?php echo text('No bookmarks yet? Start to save them right away!'); ?>
                                         <i class="glyphicon glyphicon-arrow-up"></i>
                                     </span>
-                                </h5>
+                                </h6>
                             </div>
                             <?php
                             if ($count < 0) {
@@ -369,9 +369,7 @@ include('head.php');
                                     <div class="fav-list-inner-item">
                                         <div class="fav-list-cell-top">
                                             <span class="fav-list-cell-title">
-                                                <a class="fav-list-cell-link" href="<?php echo $url; ?>"
-                                                   title="<?php echo $title; ?>"
-                                                   target="_blank"><?php echo $title; ?></a>
+                                                <a class="fav-list-cell-link" href="<?php echo $url; ?>" title="<?php echo $title; ?>" target="_blank"><?php echo $title; ?></a>
                                             </span>
                                         </div>
                                         <div class="fav-list-cell-bottom">
@@ -585,13 +583,13 @@ include('head.php');
                     $('article#fav-list-cell-' + favid + ' > div > div > span > a.edit-button').attr({
                         'data-editurl': url,
                         'data-edittitle': title
-                    })
+                    });
 
                     $('.fav-list-cell-service').hide();
                     $('.fav-list-cell').hover(showCellService, hideCellService);
                     $('a[data-toggle=popover]').popover({
                         html: 'true'
-                    })
+                    });
 
                     $('article#fav-list-cell-' + favid + ' > div > div > span > a.fav-list-cell-link').addClass('animated zoomIn').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                         $('article#fav-list-cell-' + favid + ' > div > div > span > a.fav-list-cell-link').removeClass('animated zoomIn');

@@ -17,7 +17,7 @@ if(isset($_POST['language-switch'])){
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<title><?php if(isset($title_pattern) && !empty($title_pattern)) echo $title_pattern.' - '; ?>FavNow</title>
 		
-		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/bootstrap.paper.min.css" rel="stylesheet">
 		<link href="css/animate.min.css" rel="stylesheet">
 		<link href="css/favnow.css" rel="stylesheet">
 		
