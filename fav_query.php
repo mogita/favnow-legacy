@@ -190,8 +190,8 @@ function editBookmark($userid, $favid, $title, $category = 0) {
 			$url = $row['url'];
 		}
 
-		if (!isset($title) or $title == '') {
-
+		if (!isset($title) or $title == '')
+		{
 			$content = getHTML($url);
 
 			if (!$content) {
@@ -215,7 +215,15 @@ function editBookmark($userid, $favid, $title, $category = 0) {
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
 
-		$sql = "INSERT INTO cat_relation (userid, obj_id, cat_id, created_at) VALUES (" . $userid . ", " . $favid . ", " . $category . ", " . time() . ") ON DUPLICATE KEY UPDATE cat_id=VALUES(cat_id)";
+        if ($category == 0)
+        {
+            $sql = "DELETE FROM cat_relation WHERE obj_id='$favid'";
+        }
+        else
+        {
+            $sql = "INSERT INTO cat_relation (userid, obj_id, cat_id, created_at) VALUES (" . $userid . ", " . $favid . ", " . $category . ", " . time() . ") ON DUPLICATE KEY UPDATE cat_id=VALUES(cat_id)";
+        }
+
 		$mysqli->query($sql);
 
 		if ($affectedRows != 1) {

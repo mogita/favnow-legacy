@@ -26,9 +26,9 @@ if (isset($_POST['delete-cat-confirm']) and !empty($_POST['delete-cat-confirm'])
 // Bookmark CRUD
 
 if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
-    if (isset($_POST['put-category']) && !empty($_POST['put-category']))
+    if (isset($_POST['category']) && !empty($_POST['category']))
     {
-        $put_category = $_POST['put-category'];
+        $put_category = $_POST['category'];
     }
     else
     {
@@ -42,9 +42,9 @@ if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
 }
 
 if (isset($_POST['edit-title']) and isset($_POST['edit-favid']) and !empty($_POST['edit-favid'])) {
-    if (isset($_POST['put-category']) && !empty($_POST['put-category']))
+    if (isset($_POST['category']) && !empty($_POST['category']))
     {
-        $put_category = $_POST['put-category'];
+        $put_category = $_POST['category'];
     }
     else
     {
@@ -168,7 +168,7 @@ include('head.php');
                         <input type="text" id="add-title" name="add-title" size="100" class="form-control" placeholder="<?php echo text('Title (Optional)'); ?>"/>
                     </div>
                     <div class="form-group">
-                        <select name="put-category" id="put-category">
+                        <select name="category" id="category">
                             <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
                             <?php
                             foreach($cats as $cat)
@@ -211,8 +211,9 @@ include('head.php');
                     </div>
 
                     <div class="form-group">
-                        <select name="put-category" id="put-category">
-                            <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
+                        <select name="category" id="category">
+                            <option value="0"><?php echo text('Not in category'); ?></option>
+                            <option disabled><?php echo text('Choose from categories:'); ?></option>
                             <?php
                             foreach($cats as $cat)
                             {
@@ -575,6 +576,7 @@ include('head.php');
                     url = response.message.url;
                     title = response.message.title;
                     favid = response.message.favid;
+
                     // alert(url + ' ' + title + ' ' + favid );
                     $('article#fav-list-cell-' + favid + ' > div > div > span > a.fav-list-cell-link').attr({
                         'href': url,
@@ -723,6 +725,7 @@ include('head.php');
         modal.find('#edit-url').val(a.data('editurl'));
         modal.find('#edit-title').val($('article#fav-list-cell-' + a.data('favid') + ' > div > div > span > a.edit-button').attr('data-edittitle'));
         modal.find('#edit-favid').val(a.data('favid'));
+        modal.find('#edit-category').val(a.data('category'));
     });
 
     $('a[data-toggle=popover]').popover({
