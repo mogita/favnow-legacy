@@ -511,7 +511,7 @@ include('head.php');
         e.preventDefault();
 
         $('#edit-cat-submit').addClass('disabled');
-        $('#edit-cat-submit').html('<span class="animated infinite flash edit-cat-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#edit-cat-submit').html('<span class="animated infinite flash edit-cat-indicator"><i class="glyphicon glyphicon-piggy-bank"></i>&nbsp;'+"<?php echo text('Saving'); ?>"+'</span>');
         $('#edit-cat-message').html('');
 
         var postData = $(this).serializeArray();
@@ -561,7 +561,7 @@ include('head.php');
         e.preventDefault();
 
         $('#edit-url-submit').addClass('disabled');
-        $('#edit-url-submit').html('<span class="animated infinite flash edit-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#edit-url-submit').html('<span class="animated infinite flash edit-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i>&nbsp;'+"<?php echo text('Saving'); ?>"+'</span>');
         $('#edit-url-message').html('');
 
         var postData = $(this).serializeArray();
@@ -625,7 +625,7 @@ include('head.php');
         e.preventDefault();
 
         $('#add-cat-submit').addClass('disabled');
-        $('#add-cat-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#add-cat-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i>&nbsp;'+"<?php echo text('Saving'); ?>"+'</span>');
         $('#add-cat-message').html('');
 
         var postData = $(this).serializeArray();
@@ -664,7 +664,7 @@ include('head.php');
         e.preventDefault();
 
         $('#add-url-submit').addClass('disabled');
-        $('#add-url-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+        $('#add-url-submit').html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i>&nbsp;'+"<?php echo text('Saving'); ?>"+'</span>');
         $('#add-url-message').html('');
 
         var postData = $(this).serializeArray();

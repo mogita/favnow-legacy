@@ -101,7 +101,7 @@ include('head.php');
 		var addUrlSubmit = $('#add-url-submit');
 
 		addUrlSubmit.addClass('disabled');
-		addUrlSubmit.html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i></span>');
+		addUrlSubmit.html('<span class="animated infinite flash add-url-indicator"><i class="glyphicon glyphicon-piggy-bank"></i>&nbsp;'+"<?php echo text('Saving'); ?>"+'</span>');
 		$('#add-url-message').html('');
 
 		var postData = $(this).serializeArray();
