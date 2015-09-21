@@ -271,6 +271,9 @@ function deleteBookmark($favid, $userid) {
 			"message" => text('This bookmark does not exist')
 		);
 	} elseif ($result) {
+        $sql = "DELETE FROM cat_relation WHERE obj_id=" . $favid;
+        $mysqli->query($sql);
+
 		$return = array(
 			"code" => 200,
 			"message" => text('Bookmark deleted')
