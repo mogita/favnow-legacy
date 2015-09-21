@@ -17,4 +17,6 @@ define('REGISTER_OPEN', true);
 
 // Debug mode on? YES to show all error details in the browser.
 define('DEBUGGING', true);
+
+define('SITE_URL', 'http://fav.now/')
 ?>
