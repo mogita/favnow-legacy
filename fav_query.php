@@ -71,6 +71,7 @@ function addBookmark($userid = '', $authcode = '', $url, $title, $category = 0) 
 
 	if (isset($authcode) and !empty($authcode)) {
 		$id = getUserByAuth($authcode);
+		echo "<script>alert(" . $id . ");</script>";
 
 		if ($id) {
 			$userid = $id[0];
@@ -316,10 +317,10 @@ function getUserByAuth($authcode) {
 		$return = false;
 	} else {
 		$mysqli = newDBConn();
-		$sql = "SELECT * FROM users WHERE authcode='".$authcode."' LIMIT 1";
+		$sql = "SELECT id FROM users WHERE authcode='".$authcode."' LIMIT 1";
 		$result = $mysqli->query($sql);
-		if ($result->num_rows != 0) {
-			$return = $result->fetch_array(MYSQLI_NUM);
+		if ($result->num_rows > 0) {
+			$return = $result->fetch_assoc();
 		} else {
 			$return = false;
 		}
