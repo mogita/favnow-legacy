@@ -169,7 +169,7 @@ include('head.php');
                     </div>
                     <div class="form-group">
                         <select name="category" id="category">
-                            <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <option value="0" selected="selected"><?php echo text('Not in category'); ?></option>
                             <option disabled><?php echo text('Choose from categories:'); ?></option>
                             <?php
                             foreach($cats as $cat)
@@ -345,8 +345,16 @@ include('head.php');
                             <div class="no-bookmark-label text-right hide">
                                 <h6>
                                     <span class="well">
-                                        <?php echo text('No bookmarks yet? Start to save them right away!'); ?>
-                                        <i class="glyphicon glyphicon-arrow-up"></i>
+                                        <?php
+                                        if (isset($_GET['cat']) && !empty($_GET['cat']))
+                                        {
+                                            echo text('No bookmarks in this category');
+                                        }
+                                        else
+                                        {
+                                            echo text('No bookmarks yet? Start to save them right away!') . '<i class="glyphicon glyphicon-arrow-up"></i>';
+                                        }
+                                        ?>
                                     </span>
                                 </h6>
                             </div>

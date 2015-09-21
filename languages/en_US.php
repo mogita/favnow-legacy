@@ -125,4 +125,9 @@ $GLOBALS['en_US'] = Array (
 	'All Bookmarks' => 'All Bookmarks',
 	'Name' => 'Name',
 	'Please provide a name' => 'Please provide a name',
+
+    'No bookmarks in this category' => 'No bookmarks in this category',
+    'Unable to fetch categories: ' => 'Unable to fetch categories: ',
+    'Not in category' => 'Not in category',
+    'Choose from categories:' => 'Choose from categories:',
 );

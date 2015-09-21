@@ -127,4 +127,9 @@ $GLOBALS['zh_CN'] = Array (
 	'All Bookmarks' => '所有书签',
 	'Name' => '名称',
 	'Please provide a name' => '请输入名称',
+
+    'No bookmarks in this category' => '此分类下暂无书签',
+    'Unable to fetch categories: ' => '无法获取分类：',
+    'Not in category' => '不在任何分类',
+    'Choose from categories:' => '从下列分类中选择：',
 );
