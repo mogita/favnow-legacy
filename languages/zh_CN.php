@@ -132,4 +132,13 @@ $GLOBALS['zh_CN'] = Array (
     'Unable to fetch categories: ' => '无法获取分类：',
     'Not in category' => '不在任何分类',
     'Choose from categories:' => '从下列分类中选择：',
+
+	'Edit Category' => '编辑分类',
+	'Saving' => '正在保存',
+	'FavNow!' => 'FavNow!',
+	'Cancel and back' => '取消并返回',
+
+	'<h1>Error</h1><p>No URL specified.</p><hr><p><strong>Favnow</strong></p>' => '<h1>错误</h1><p>未指定 URL。</p><hr><p><strong>Favnow</strong></p>',
+	'<h1>Error</h1><p>Please provide your user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>错误</h1><p>请提供身份信息。</p><hr><p><strong>Favnow</strong></p>',
+	'<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>错误</h1><p>用户身份信息有误。</p><hr><p><strong>Favnow</strong></p>',
 );

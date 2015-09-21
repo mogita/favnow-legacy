@@ -130,4 +130,13 @@ $GLOBALS['en_US'] = Array (
     'Unable to fetch categories: ' => 'Unable to fetch categories: ',
     'Not in category' => 'Not in category',
     'Choose from categories:' => 'Choose from categories:',
+
+	'Edit Category' => 'Edit Category',
+	'Saving' => 'Saving',
+	'FavNow!' => 'FavNow!',
+	'Cancel and back' => 'Cancel and back',
+
+	'<h1>Error</h1><p>No URL specified.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>No URL specified.</p><hr><p><strong>Favnow</strong></p>',
+	'<h1>Error</h1><p>Please provide your user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>Please provide your user credentials.</p><hr><p><strong>Favnow</strong></p>',
+	'<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>',
 );
