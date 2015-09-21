@@ -8,8 +8,8 @@ if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SE
 $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
 
-$auth = getAuthById($userid);
-$authHash = $auth['pubcode'];
+$authHash = getAuthById($userid);
+var_dump($authHash);
 
 $title_pattern = text('Bookmarklet');
 

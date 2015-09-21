@@ -341,7 +341,16 @@ function getAuthById($userid)
 		$sql = "SELECT pubcode FROM users WHERE id=" . $userid;
 		$result = $mysqli->query($sql);
 
-		return $result ? $result->fetch_assoc() : setAuthById($userid);
+		if (!$result)
+		{
+			return setAuthById($userid);
+		}
+		else
+		{
+			$rs = $result->fetch_assoc();
+			if (empty($rs['pubcode'])) return setAuthById($userid);
+			return $rs['pubcode'];
+		}
 	}
 }
 
