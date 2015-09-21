@@ -1,1 +1,0 @@
-javascript:(function () {var jsScript = document.createElement('script');jsScript.setAttribute('type', 'text/javascript');jsScript.setAttribute('src', 'http://fav.now/bookmarklet.php?url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title) + '&user=123');document.getElementsByTagName('head')[0].appendChild(jsScript);})();

@@ -329,6 +329,41 @@ function getUserByAuth($authcode) {
 	return $return;
 }
 
+function getAuthById($userid)
+{
+	if (!isset($userid) || empty($userid))
+	{
+		return false;
+	}
+	else
+	{
+		$mysqli = newDBConn();
+		$sql = "SELECT pubcode FROM users WHERE id=" . $userid;
+		$result = $mysqli->query($sql);
+
+		return $result ? $result->fetch_assoc() : setAuthById($userid);
+	}
+}
+
+function setAuthById($userid)
+{
+	if (!isset($userid) || empty($userid))
+	{
+		return false;
+	}
+	else
+	{
+		$mysqli = newDBConn();
+
+		$publicHash = sha1('ayanami' . $userid . time() . rand(1, 9999999) . 'Rei');
+		$authHash = sha1('wishyou' . $publicHash . 'WereHere');
+		$sql = "UPDATE users SET authcode='" . $authHash . "', pubcode='" . $publicHash . "' WHERE id=" . $userid;
+		$result = $mysqli->query($sql);
+
+		return $result ? $publicHash : false;
+	}
+}
+
 function emailChange($email, $userid) {
 	if (!isset($userid) or empty($userid) or !isset($email) or empty($email)) {
 		$emailChangeResult = text('Could not change your Email, please reload the page and try again');

@@ -10,18 +10,9 @@ require_once 'config.php';
 require_once 'function.php';
 require_once 'fav_query.php';
 
-if (isset($_POST['add-url']) and !empty($_POST['add-url'])) {
-	if (isset($_POST['category']) && !empty($_POST['category']))
-	{
-		$put_category = $_POST['category'];
-	}
-	else
-	{
-		$put_category = 0;
-	}
-	if (isset($_POST['add-title']) and !empty($_POST['add-title'])) {
-		addBookmark($_POST['userid'], '', $_POST['add-url'], $_POST['add-title'], $put_category);
-	} else {
-		addBookmark($_POST['userid'], '', $_POST['add-url'], '', $put_category);
-	}
+if (isset($_POST['add-url']) && !empty($_POST['add-url']) && isset($_POST['userid']) && !empty($_POST['userid'])) {
+	$put_category = isset($_POST['category']) && !empty($_POST['category']) ? $_POST['category'] : 0;
+	$title = isset($_POST['add-title']) && !empty($_POST['add-title']) ? $_POST['add-title'] : '';
+
+	addBookmark($_POST['userid'], '', $_POST['add-url'], $title, $put_category);
 }

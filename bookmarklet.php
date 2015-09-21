@@ -1,72 +1,79 @@
 <?php
-header('Content-type: application/javascript');
-
 require_once 'config.php';
-require_once 'function.php';
-require_once 'fav_query.php';
+include 'function.php';
+include 'fav_query.php';
 
-if (empty($_GET['url']) or empty($_GET['title']) or empty($_GET['user'])) die(text('Invalid request'));
+if (!isset($_SESSION['username']) or empty($_SESSION['username']) or !isset($_SESSION['userid']) or empty($_SESSION['userid']) or !isset($_SESSION['userid']) or  empty($_SESSION['loggedin']) or !$_SESSION['loggedin']) header("Location: logout.php");
 
-$_GET['url'] = sanitize($_GET['url']);
-$_GET['title'] = sanitize($_GET['title']);
-$_GET['user'] = sanitize($_GET['user']);
+$userid = $_SESSION['userid'];
+$username = $_SESSION['username'];
 
-$message = addBookmark('', $_GET['user'], $_GET['url'], $_GET['title']);
+$auth = getAuthById($userid);
+$authHash = $auth['pubcode'];
 
-echo 'displayMessage("'.$message.'");';
+$title_pattern = text('Bookmarklet');
 
+// Loading home page now
+include('head.php');
 ?>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
 
-// Bookmarklet function
+            <a class="navbar-brand" href="/home.php">FavNow<sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup></a>
+        </div>
 
-function displayMessage(str) {
-    // Using pure JavaScript to create and style a div element
+        <div class="collapse navbar-collapse" id="navbar-menu">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" data-toggle="modal" data-target="#about"><?php echo text('About'); ?></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <?php echo $_SESSION['username']; ?> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="bookmarklet.php"><?php echo text('Bookmarklet'); ?></a></li>
+                        <li><a href="preference.php"><?php echo text('Preference'); ?></a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li><a href="logout.php"><?php echo text('Logout'); ?></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-    var d = document.createElement('div');
+<div class="container user-page">
+    <div class="row">
 
-    with(d.style)
-    {
-        // Applying styles:
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <div class="page-header">
+                <h2 style="margin-bottom: 30px;"><?php echo text('Bookmarklet'); ?></h2>
+                <?php // $msg = 'A quick fox jumped over a lazy dog. A quick fox jumped over a lazy dog.'; ?>
+                <?php if (isset($msg) and !empty($msg)) {?>
+                    <div class="row">
+                        <div class="alert fade in alert-warning alert-dismissible col-xs-10 col-xs-offset-1" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <?php echo $msg; ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
 
-        position='fixed';
-        width = '350px';
-        height = '20px';
-        top = '50%';
-        left = '50%';
-        margin = '-30px 0 0 -195px';
-        backgroundColor = '#f7f7f7';
-        border = '1px solid #ccc';
-        color = '#777';
-        padding = '20px';
-        fontSize = '18px';
-        fontFamily = '"Myriad Pro",Arial,Helvetica,sans-serif';
-        textAlign = 'center';
-        zIndex = 100000;
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><?php echo text('Drag this button to your bookmark bar'); ?>&nbsp;&nbsp;<i class="glyphicon glyphicon-hand-right"></i></h5>
+                </div>
+                <div class="col-xs-6">
+                    <a href="<?php echo "javascript:window.location='http://fav.now/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
+                </div>
+            </div>
 
-        textShadow = '1px 1px 0 white';
-
-        MozBorderRadius = "12px";
-        webkitBorderRadius = "12px";
-        borderRadius = "12px";
-
-        MozBoxShadow = '0 0 6px #ccc';
-        webkitBoxShadow = '0 0 6px #ccc';
-        boxShadow = '0 0 6px #ccc';
-    }
-
-    d.setAttribute('onclick','document.body.removeChild(this)');
-
-    // Adding the message passed to the function as text:
-    d.appendChild(document.createTextNode(str));
-
-    // Appending the div to document
-    document.body.appendChild(d);
-
-    // The message will auto-hide in 3 seconds:
-
-    setTimeout(function(){
-        try{
-            document.body.removeChild(d);
-        }	catch(error){}
-    },3000);
-}
+        </div>
+    </div>
+</div>

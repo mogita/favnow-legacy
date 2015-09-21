@@ -20,7 +20,8 @@ $title = $_GET['title'];
 // $url = parse_url($_GET['backto']);
 $url = $_GET['backto'];
 
-$user = getUserByAuth($_GET['user']);
+$authHash = sha1('wishyou' . $_GET['user'] . 'WereHere');
+$user = getUserByAuth($authHash);
 if (!$user) exit(text('<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>'));
 $userid = $user['id'];
 

@@ -257,7 +257,7 @@ include('head.php');
                         <?php echo $_SESSION['username']; ?> <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="profile.php"><?php echo text('Profile'); ?></a></li>
+                        <li><a href="bookmarklet.php"><?php echo text('Bookmarklet'); ?></a></li>
                         <li><a href="preference.php"><?php echo text('Preference'); ?></a></li>
                         <li role="presentation" class="divider"></li>
                         <li><a href="logout.php"><?php echo text('Logout'); ?></a></li>

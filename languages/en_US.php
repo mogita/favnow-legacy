@@ -139,4 +139,7 @@ $GLOBALS['en_US'] = Array (
 	'<h1>Error</h1><p>No URL specified.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>No URL specified.</p><hr><p><strong>Favnow</strong></p>',
 	'<h1>Error</h1><p>Please provide your user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>Please provide your user credentials.</p><hr><p><strong>Favnow</strong></p>',
 	'<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>' => '<h1>Error</h1><p>Bad user credentials.</p><hr><p><strong>Favnow</strong></p>',
+
+	'Bookmarklet' => 'Bookmarklet',
+	'Drag this button to your bookmark bar' => 'Drag this button to your bookmark bar',
 );
