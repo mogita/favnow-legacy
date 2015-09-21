@@ -89,7 +89,7 @@ include('head.php');
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
 										
 					<form action="reset_step2.php" method="post" role="form">
-						<h2 class="form-signin-heading"><?php echo text('Change Password'); ?></h2>
+						<h4 class="form-signin-heading"><?php echo text('Change Password'); ?></h4>
 						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						<div class="alert alert-warning <?php if ($warncode == '') echo 'hidden'; ?>" role="alert"><?php echo $warncode; ?></div>
 						
@@ -112,7 +112,9 @@ include('head.php');
 						<input type="submit" value="<?php echo text('Change Password'); ?>" class="btn btn-lg btn-warning btn-block" />
 					</form>
 					<br />
-					<p><a href="index.php"><?php echo text('Back to login'); ?></a></p>
+					<h6><a href="index.php"><?php echo text('Back to login'); ?>&nbsp;&nbsp;<i class="glyphicon glyphicon-log-in"></i></a></h6>
+                    <br />
+                    <br />
 				</div>
 				<div class="col-md-3"></div>
 			</div>

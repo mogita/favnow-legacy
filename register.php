@@ -127,9 +127,9 @@ include('head.php');
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
 					<h1><a href="index.php">FavNow</a><sup><span style="font-size: 0.4em; margin: 10px; color: #cccccc;">Alpha</span></sup><br /><small><?php echo text('Your bookmarks in the cloud'); ?></small></h1>
-					
-					<form action="register.php" method="post" class="form">
-						<h2 class="form-signin-heading"><?php echo $title_pattern; ?></h2>
+
+                    <form action="register.php" method="post" class="form">
+						<h4 class="form-signin-heading"><?php echo $title_pattern; ?></h4>
 						<div class="alert alert-danger <?php if ($msg == '') echo 'hidden'; ?>" role="alert"><?php echo $msg; ?></div>
 						
 						<?php if (!REGISTER_OPEN) { ?>
@@ -167,7 +167,9 @@ include('head.php');
 						<input type="submit" value="<?php echo $title_pattern; ?>" class="btn btn-lg btn-success btn-block" />
 					</form>
 					<br />
-					<p><a href="index.php"><?php echo text('Have an account? Login now!'); ?></a></p>
+                    <h6><a href="index.php"><?php echo text('Have an account? Login now!'); ?>&nbsp;&nbsp;<i class="glyphicon glyphicon-log-in"></i></a></h6>
+					<br />
+					<br />
 				</div>
 				<div class="col-md-3"></div>
 			</div>
