@@ -170,6 +170,7 @@ include('head.php');
                     <div class="form-group">
                         <select name="category" id="category">
                             <option value="0" selected="selected"><?php echo text('Put into category...'); ?></option>
+                            <option disabled><?php echo text('Choose from categories:'); ?></option>
                             <?php
                             foreach($cats as $cat)
                             {
@@ -365,6 +366,7 @@ include('head.php');
                             $url = $row['url'];
                             $title = $row['title'];
                             $time = $row['timepoint'];
+                            $category = ($row['cat_id'] == NULL) ? 0 : $row['cat_id'];
                             ?>
                                 <article class="fav-list-cell" id="fav-list-cell-<?php echo $favid; ?>">
                                     <div class="fav-list-inner-item">
@@ -378,7 +380,7 @@ include('head.php');
                                                 <?php echo date(text('H:i:s M d, Y'), $time); ?>
                                             </span>
                                             <span class="fav-list-cell-service">
-                                                <a class="edit-button" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>"><?php echo text('Edit'); ?></a>
+                                                <a class="edit-button" data-toggle="modal" data-target="#edit-bookmark" data-editurl="<?php echo $url; ?>" data-edittitle="<?php echo $title; ?>" data-favid="<?php echo $favid; ?>" data-category="<?php echo $category; ?>"><?php echo text('Edit'); ?></a>
                                                 <a tabindex="0" class="delete-button" data-toggle="popover" data-placement="top" data-content='<button class="btn btn-danger delete-button-confirm" id="<?php echo $favid; ?>" onclick="deleteConfirm(this.id)"><?php echo text('Delete'); ?></button>'><i class="glyphicon glyphicon-trash"></i></a>
                                             </span>
                                         </div>
@@ -555,6 +557,7 @@ include('head.php');
         $('#edit-url-message').html('');
 
         var postData = $(this).serializeArray();
+        console.log(postData);
         $.ajax({
             url: 'home.php',
             type: 'POST',
@@ -576,6 +579,7 @@ include('head.php');
                     url = response.message.url;
                     title = response.message.title;
                     favid = response.message.favid;
+                    category = response.message.category;
 
                     // alert(url + ' ' + title + ' ' + favid );
                     $('article#fav-list-cell-' + favid + ' > div > div > span > a.fav-list-cell-link').attr({
@@ -584,7 +588,8 @@ include('head.php');
                     }).html(title);
                     $('article#fav-list-cell-' + favid + ' > div > div > span > a.edit-button').attr({
                         'data-editurl': url,
-                        'data-edittitle': title
+                        'data-edittitle': title,
+                        'data-category': category
                     });
 
                     $('.fav-list-cell-service').hide();
@@ -725,7 +730,8 @@ include('head.php');
         modal.find('#edit-url').val(a.data('editurl'));
         modal.find('#edit-title').val($('article#fav-list-cell-' + a.data('favid') + ' > div > div > span > a.edit-button').attr('data-edittitle'));
         modal.find('#edit-favid').val(a.data('favid'));
-        modal.find('#edit-category').val(a.data('category'));
+        modal.find('#category').val(a.data('category'));
+        // console.log(a.data('category'));
     });
 
     $('a[data-toggle=popover]').popover({

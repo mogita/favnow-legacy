@@ -151,7 +151,7 @@ function deleteCategory($catid, $userid) {
 		);
 	} elseif ($result) {
 		$sql = "DELETE FROM cat_relation WHERE cat_id='" . $catid . "'";
-		$result = $mysqli->query($sql);
+		$mysqli->query($sql);
 
 		$return = array(
 			"code" => 200,

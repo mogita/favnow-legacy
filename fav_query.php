@@ -25,7 +25,7 @@ function newDBConn() {
 
 /***************** BOOKMARK DATA *****************/
 
-function readBookmark($userid, $catid = '', $favid = '', $amount = 25, $page = 1) {
+function readBookmark($userid, $catid = 0, $favid = '', $amount = 25, $page = 1) {
 	$msg = '';
 	$results = array();
 
@@ -34,14 +34,20 @@ function readBookmark($userid, $catid = '', $favid = '', $amount = 25, $page = 1
 	if (!empty($favid)) {
 		$sql = "SELECT * FROM favs WHERE userid='$userid' AND id='$favid'";
 	} else {
-        $sql = "SELECT * FROM favs";
+        $sql = "SELECT favs.id, favs.hash, favs.title, favs.url, favs.userid, favs.timepoint, cat_relation.cat_id FROM favs";
 
-        if (!empty($catid)) {
-            $sql .= " JOIN cat_relation ON cat_relation.obj_id = favs.id";
+        if ($catid != 0) {
+            $sql .= " INNER JOIN cat_relation ON cat_relation.cat_id=" . $catid . " AND cat_relation.obj_id=favs.id";
+        }
+        else
+        {
+            $sql .= " LEFT JOIN cat_relation ON cat_relation.obj_id=favs.id";
         }
 
         $sql .= " WHERE favs.userid='" . $userid . "' ORDER BY favs.timepoint DESC LIMIT " . ($page - 1) * $amount . ", " . $amount;
 	}
+
+    // var_dump($sql);
 
 	if ($result = $mysqli->query($sql)) {
 
@@ -50,13 +56,13 @@ function readBookmark($userid, $catid = '', $favid = '', $amount = 25, $page = 1
 		}
 
 		$count = $result->num_rows;
+        $result->free();
 
 	} else {
 		$msg = (DEBUGGING) ? $mysqli->error : '';
 		$count = -1;
 	}
 
-	$result->free();
 	return array($msg, $count, $results);
 }
 
@@ -173,9 +179,11 @@ function addBookmark($userid = '', $authcode = '', $url, $title, $category = 0) 
 
 function editBookmark($userid, $favid, $title, $category = 0) {
 
+    // echo $userid . ' ' . $favid . ' ' . $title . ' ' . $category;
+
 	$mysqli = newDBConn();
 	$favid = sanitize($mysqli->real_escape_string($favid));
-	$resultRead = readBookmark($userid, '', $favid);
+	$resultRead = readBookmark($userid, 0, $favid);
 
 	$count = $resultRead[1];
 	$bookmark = $resultRead[2];
@@ -215,16 +223,15 @@ function editBookmark($userid, $favid, $title, $category = 0) {
 		$result = $mysqli->query($sql);
 		$affectedRows = $mysqli->affected_rows;
 
-        if ($category == 0)
-        {
-            $sql = "DELETE FROM cat_relation WHERE obj_id='$favid'";
-        }
-        else
+        $sql = "DELETE FROM cat_relation WHERE obj_id='$favid'";
+        $mysqli->query($sql);
+
+
+        if ($category != 0)
         {
             $sql = "INSERT INTO cat_relation (userid, obj_id, cat_id, created_at) VALUES (" . $userid . ", " . $favid . ", " . $category . ", " . time() . ") ON DUPLICATE KEY UPDATE cat_id=VALUES(cat_id)";
+            $mysqli->query($sql);
         }
-
-		$mysqli->query($sql);
 
 		if ($affectedRows != 1) {
 			$return = array(
