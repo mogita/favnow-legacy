@@ -144,7 +144,7 @@ $GLOBALS['en_US'] = Array (
 	'Drag this button to your bookmark bar' => 'Drag this button to your bookmark bar',
 
     'If you\'re on a mobile device, where not possible to drag-and-drop, please:' => 'If you\'re on a mobile device, where not possible to drag-and-drop, please:',
-    '1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)' => '1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)',
+    '1. Tap on the text below and copy it as a whole' => '1. Tap on the text below and copy it as a whole',
     '2. Create a new bookmark, paste this text into the URL box' => '2. Create a new bookmark, paste this text into the URL box',
     '3. Tap the newly saved bookmark when you\'re browsing the web to FavNow!' => '3. Tap the newly saved bookmark when you\'re browsing the web to FavNow!',
 );

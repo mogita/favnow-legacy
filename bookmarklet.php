@@ -97,7 +97,7 @@ include('head.php');
 
             <div class="row">
                 <div class="col-xs-12">
-                    <h6><?php echo text('1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)'); ?></h6>
+                    <h6><?php echo text('1. Tap on the text below and copy it as a whole'); ?></h6>
                 </div>
                 <div class="col-xs-12">
                     <div class="well" id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="overflow-x: scroll; white-space: nowrap;"><?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></div>

@@ -146,7 +146,7 @@ $GLOBALS['zh_CN'] = Array (
 	'Drag this button to your bookmark bar' => '将这个按钮拖放到浏览器书签栏',
 
     'If you\'re on a mobile device, where not possible to drag-and-drop, please:' => '如果你正在使用移动设备而无法拖放，请这样做：',
-    '1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)' => '1、点按下边的文字来选中，然后拷贝（文字中不包含换行）',
+    '1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)' => '1、点按下边的文字来选中，完整拷贝',
     '2. Create a new bookmark, paste this text into the URL box' => '2、新增一个书签，将文字粘贴到地址栏中',
     '3. Tap the newly saved bookmark when you\'re browsing the web to FavNow!' => '3、浏览网页时，点按这个新书签，就可以立即保存了！',
 );
