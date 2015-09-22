@@ -25,6 +25,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 			
 			if ($result) {
 				if ($result->num_rows <> 0) {
+                    $url = SITEURL;
 					$myemail = "favnow@mogita.com";
 					$time = time();
 					$resetcode = crypt(md5($time), md5($_POST['email']).'romeoyjulieta');
@@ -40,7 +41,7 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$mailer->Host = "smtp.zoho.com";
 					$mailer->Port = 465;
 					$mailer->Username = $myemail;
-					$mailer->Password = "nanoconmigo";
+					$mailer->Password = "hxmrncg0gsaa";
 					$mailer->From = $myemail;
 					$mailer->FromName = "FavNow";
 					$mailer->AddAddress($_POST['email'], $_POST['email']);
@@ -48,14 +49,11 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$mailer->IsHTML(true);
 					
 					$mailer->Subject = text('FavNow Password reset');
-					$mailer->Body = "
-						<p>".text('Click the link below to reset your FavNow password')."</p>
-						<h3><a href=\"" . SITE_URL . "/favnow/reset_step2.php?code=".$resetcode."\" target=\"_blank\">" . SITE_URL . "/favnow/reset_step2.php?code=".$resetcode."</a></h3>
-						<p><a href=\"" . SITE_URL . "\" target=\"_blank\">FavNow</a> | <small>".text('Your bookmarks in the cloud')."</small></p>";
+					$mailer->Body = '<p>'.text('Click the link below to reset your FavNow password').'</p><h3><a href="' . $url . '/reset_step2.php?code=' . $resetcode .'" target="_blank">' . $url . '/reset_step2.php?code=' . $resetcode . '</a></h3><p><a href="' . $url . '" target="_blank">FavNow</a> | <small> ' . text('Your bookmarks in the cloud') . '</small></p>';
 					$mailer->AltBody = $mailer->Body;
 						
 					if (!$mailer->Send()) {
-						$msg = text('There were problems sending the link, please try again')/*.$mailer->ErrorInfo*/;
+						$msg = text('There were problems sending the link, please try again').': '.$mailer->ErrorInfo;
 					} else {
 						$warncode = text('The link was sent to ').$_POST['email'].text(', only valid within 48 hours and once. Keep it safe and secret. Check your spam folder if you didn\'t see the email');
 					}					

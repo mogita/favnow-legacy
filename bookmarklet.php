@@ -70,7 +70,7 @@ include('head.php');
                     <h5><?php echo text('Drag this button to your bookmark bar'); ?>&nbsp;&nbsp;<i class="glyphicon glyphicon-hand-right"></i></h5>
                 </div>
                 <div class="col-xs-6">
-                    <a href="<?php echo "javascript:window.location='" . SITE_URL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
+                    <a href="<?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
                 </div>
             </div>
 
