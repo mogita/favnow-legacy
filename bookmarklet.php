@@ -9,7 +9,6 @@ $userid = $_SESSION['userid'];
 $username = $_SESSION['username'];
 
 $authHash = getAuthById($userid);
-var_dump($authHash);
 
 $title_pattern = text('Bookmarklet');
 
@@ -97,10 +96,10 @@ include('head.php');
 
             <div class="row">
                 <div class="col-xs-12">
-                    <h6><?php echo text('1. Tap on the text below and copy it as a whole'); ?></h6>
+                    <h6><?php echo text('1. Select the text below and copy it as a whole'); ?></h6>
                 </div>
                 <div class="col-xs-12">
-                    <div class="well" id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="overflow-x: scroll; white-space: nowrap;"><?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></div>
+                    <pre id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="word-wrap: break-word;"><?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></pre>
                 </div>
                 <div class="col-xs-12">
                     <h6><?php echo text('2. Create a new bookmark, paste this text into the URL box'); ?></h6>
@@ -109,7 +108,8 @@ include('head.php');
                     <h6><?php echo text('3. Tap the newly saved bookmark when you\'re browsing the web to FavNow!'); ?></h6>
                 </div>
             </div>
-
+            <br>
+            <br>
         </div>
     </div>
 </div>
