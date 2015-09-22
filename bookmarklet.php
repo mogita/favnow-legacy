@@ -65,15 +65,65 @@ include('head.php');
                 <?php } ?>
             </div>
 
-            <div class="row">
-                <div class="col-xs-6">
-                    <h5><?php echo text('Drag this button to your bookmark bar'); ?>&nbsp;&nbsp;<i class="glyphicon glyphicon-hand-right"></i></h5>
+            <div class="row hidden-xs well well-lg">
+                <div class="col-xs-12">
+                    <h5><?php echo text('Drag this button to your bookmark bar'); ?></h5>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-12">
                     <a href="<?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
+                </div>
+            </div>
+
+            <div class="row visible-xs well">
+                <div class="col-xs-12">
+                    <h6><strong><?php echo text('Drag this button to your bookmark bar'); ?></strong></h6>
+                </div>
+                <div class="col-xs-12">
+                    <a href="<?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
+                </div>
+            </div>
+
+            <div class="row hidden-xs">
+                <div class="col-xs-12">
+                    <h5><i class="glyphicon glyphicon-phone"></i>&nbsp;<?php echo text('If you\'re on a mobile device, where not possible to drag-and-drop, please:'); ?></h5>
+                </div>
+            </div>
+
+            <div class="row visible-xs">
+                <div class="col-xs-12">
+                    <h6><i class="glyphicon glyphicon-phone"></i>&nbsp;<strong><?php echo text('If you\'re on a mobile device, where not possible to drag-and-drop, please:'); ?></strong></h6>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h6><?php echo text('1. Tap on the text below and copy it as a whole (there\'re actually no line-breaks)'); ?></h6>
+                </div>
+                <div class="col-xs-12">
+                    <div class="well" id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="overflow-x: scroll; white-space: nowrap;"><?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></div>
+                </div>
+                <div class="col-xs-12">
+                    <h6><?php echo text('2. Create a new bookmark, paste this text into the URL box'); ?></h6>
+                </div>
+                <div class="col-xs-12">
+                    <h6><?php echo text('3. Tap the newly saved bookmark when you\'re browsing the web to FavNow!'); ?></h6>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function selectText(containerid) {
+        if (document.selection) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(document.getElementById(containerid));
+            range.select();
+        } else if (window.getSelection) {
+            var range = document.createRange();
+            range.selectNode(document.getElementById(containerid));
+            window.getSelection().addRange(range);
+        }
+    }
+</script>
