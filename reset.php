@@ -50,8 +50,8 @@ if (isset($_POST['email']) and $_POST['email'] <> '' and isset($_POST['captcha']
 					$mailer->Subject = text('FavNow Password reset');
 					$mailer->Body = "
 						<p>".text('Click the link below to reset your FavNow password')."</p>
-						<h3><a href=\"http://0.0.0.0/favnow/reset_step2.php?code=".$resetcode."\" target=\"_blank\">http://0.0.0.0/favnow/reset_step2.php?code=".$resetcode."</a></h3>
-						<p><a href=\"http://favnow.mogita.com\" target=\"_blank\">FavNow</a> | <small>".text('Your bookmarks in the cloud')."</small></p>";
+						<h3><a href=\"" . SITE_URL . "/favnow/reset_step2.php?code=".$resetcode."\" target=\"_blank\">" . SITE_URL . "/favnow/reset_step2.php?code=".$resetcode."</a></h3>
+						<p><a href=\"" . SITE_URL . "\" target=\"_blank\">FavNow</a> | <small>".text('Your bookmarks in the cloud')."</small></p>";
 					$mailer->AltBody = $mailer->Body;
 						
 					if (!$mailer->Send()) {
