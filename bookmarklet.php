@@ -78,7 +78,7 @@ include('head.php');
                     <h6><strong><?php echo text('Drag this button to your bookmark bar'); ?></strong></h6>
                 </div>
                 <div class="col-xs-12">
-                    <a href="<?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
+                    <a href="<?php echo "javascript:document.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?>" class="btn btn-large btn-primary">FavNow!</a>
                 </div>
             </div>
 
@@ -99,7 +99,7 @@ include('head.php');
                     <h6><?php echo text('1. Select the text below and copy it as a whole'); ?></h6>
                 </div>
                 <div class="col-xs-12">
-                    <pre id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="word-wrap: break-word;"><?php echo "javascript:window.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></pre>
+                    <pre id="favnow-bookmarklet" onclick="selectText('favnow-bookmarklet')" style="word-wrap: break-word;"><?php echo "javascript:document.location='" . SITEURL . "/favnow.php?backto='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&user=" . $authHash . "';" ?></pre>
                 </div>
                 <div class="col-xs-12">
                     <h6><?php echo text('2. Create a new bookmark, paste this text into the URL box'); ?></h6>
