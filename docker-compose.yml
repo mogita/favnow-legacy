@@ -7,7 +7,7 @@ services:
     image: favnow_web
     restart: always
     ports:
-      - 8080:80
+      - 80
     environment:
       VIRTUAL_HOST: favnow.mogita.rocks
       LETSENCRYPT_HOST: favnow.mogita.rocks
