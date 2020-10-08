@@ -1,3 +1,4 @@
+-- +migrate Up
 -- phpMyAdmin SQL Dump
 -- version 4.0.10.7
 -- http://www.phpmyadmin.net
@@ -28,7 +29,6 @@ USE `favnow`;
 -- 表的结构 `cat_relation`
 --
 
-DROP TABLE IF EXISTS `cat_relation`;
 CREATE TABLE IF NOT EXISTS `cat_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `cat_relation` (
 -- 表的结构 `cat_terms`
 --
 
-DROP TABLE IF EXISTS `cat_terms`;
 CREATE TABLE IF NOT EXISTS `cat_terms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `catname` tinytext NOT NULL,
@@ -59,7 +58,6 @@ CREATE TABLE IF NOT EXISTS `cat_terms` (
 -- 表的结构 `favs`
 --
 
-DROP TABLE IF EXISTS `favs`;
 CREATE TABLE IF NOT EXISTS `favs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) CHARACTER SET utf8 NOT NULL,
@@ -77,7 +75,6 @@ CREATE TABLE IF NOT EXISTS `favs` (
 -- 表的结构 `preregister`
 --
 
-DROP TABLE IF EXISTS `preregister`;
 CREATE TABLE IF NOT EXISTS `preregister` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(254) NOT NULL,
@@ -92,7 +89,6 @@ CREATE TABLE IF NOT EXISTS `preregister` (
 -- 表的结构 `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(32) NOT NULL,
@@ -109,3 +105,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- +migrate Down
+DROP TABLE IF EXISTS `favs`;
+DROP TABLE IF EXISTS `cat_terms`;
+DROP TABLE IF EXISTS `cat_relation`;
+DROP TABLE IF EXISTS `preregister`;
+DROP TABLE IF EXISTS `users`;

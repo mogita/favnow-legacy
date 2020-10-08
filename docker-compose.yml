@@ -1,0 +1,64 @@
+version: '3'
+services:
+  favnow_web:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    image: favnow_web
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_USER: '${FAVNOW_DB_USER}'
+      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
+      VIRTUAL_HOST: favnow.mogita.rocks
+      LETSENCRYPT_HOST: favnow.mogita.rocks
+      LETSENCRYPT_EMAIL: me@mogita.com
+    depends_on:
+      - favnow_db
+    networks:
+      - favnow-network
+    container_name: favnow_web
+
+  favnow_db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - favnow-network
+    container_name: favnow_db
+    environment:
+      MYSQL_DATABASE: '${FAVNOW_DB_DATABASE}'
+      MYSQL_USER: '${FAVNOW_DB_USER}'
+      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${FAVNOW_DB_ROOT_PASSWORD}'
+
+  favnow_migration:
+    build:
+      context: .
+      dockerfile: migration.Dockerfile
+    environment:
+      MYSQL_HOST: 'favnow_db'
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: '${FAVNOW_DB_DATABASE}'
+      MYSQL_USER: '${FAVNOW_DB_USER}'
+      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
+    command:
+      ['./wait-for-it/wait-for-it.sh', 'favnow_db:3306', '--', 'sql-migrate', 'up', '-config=migrations/dbconfig.yml']
+    networks:
+      - favnow-network
+    depends_on:
+      - favnow_db
+    container_name: favnow_migration
+
+networks:
+  favnow-network:
+  nginx-proxy:
+    external:
+      name: nginx-proxy
+
+volumes:
+  mysql-data:
