@@ -8,8 +8,8 @@ $msg = "";
 
 // Database credentials
 define('DB_SERVER', 'favnow_db');
-define('DB_USER', getenv('MYSQL_USER'));
-define('DB_PASS', getenv('MYSQL_PASSWORD'));
+define('DB_USER', getenv('FAVNOW_DB_USER'));
+define('DB_PASS', getenv('FAVNOW_DB_PASSWORD'));
 define('DB_NAME', 'favnow');
 
 // Anyone can play "favnow"

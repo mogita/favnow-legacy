@@ -9,8 +9,6 @@ services:
     ports:
       - 8080:80
     environment:
-      MYSQL_USER: '${FAVNOW_DB_USER}'
-      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
       VIRTUAL_HOST: favnow.mogita.rocks
       LETSENCRYPT_HOST: favnow.mogita.rocks
       LETSENCRYPT_EMAIL: me@mogita.com
