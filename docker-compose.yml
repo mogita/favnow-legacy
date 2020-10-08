@@ -31,8 +31,6 @@ services:
     container_name: favnow_db
     environment:
       MYSQL_DATABASE: '${FAVNOW_DB_DATABASE}'
-      MYSQL_USER: '${FAVNOW_DB_USER}'
-      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
       MYSQL_ROOT_PASSWORD: '${FAVNOW_DB_ROOT_PASSWORD}'
 
   favnow_migration:
@@ -43,8 +41,8 @@ services:
       MYSQL_HOST: 'favnow_db'
       MYSQL_PORT: 3306
       MYSQL_DATABASE: '${FAVNOW_DB_DATABASE}'
-      MYSQL_USER: '${FAVNOW_DB_USER}'
-      MYSQL_PASSWORD: '${FAVNOW_DB_PASSWORD}'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: '${FAVNOW_DB_ROOT_PASSWORD}'
     command:
       ['./wait-for-it/wait-for-it.sh', 'favnow_db:3306', '--', 'sql-migrate', 'up', '-config=migrations/dbconfig.yml']
     networks:

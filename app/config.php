@@ -8,8 +8,8 @@ $msg = "";
 
 // Database credentials
 define('DB_SERVER', 'favnow_db');
-define('DB_USER', getenv('FAVNOW_DB_USER'));
-define('DB_PASS', getenv('FAVNOW_DB_PASSWORD'));
+define('DB_USER', 'root');
+define('DB_PASS', getenv('FAVNOW_DB_ROOT_PASSWORD'));
 define('DB_NAME', 'favnow');
 
 // Anyone can play "favnow"
@@ -18,5 +18,5 @@ define('REGISTER_OPEN', true);
 // Debug mode on? This shows all error details in the browser.
 define('DEBUGGING', false);
 
-define('SITEURL', getenv('VIRTUAL_HOST'));
+define('SITEURL', 'https://favnow.mogita.rocks');
 ?>
