@@ -16,6 +16,7 @@ services:
       - favnow_db
     networks:
       - favnow-network
+      - nginx-proxy
     container_name: favnow_web
 
   favnow_db:
