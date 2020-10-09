@@ -1,11 +1,10 @@
-FROM php:7.2-apache
+FROM php:7.4-apache
 
 COPY ./app /server
 COPY ./.env /server
 COPY ./vhost.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /server
-
 
 RUN apt-get update
 RUN apt-get upgrade -y
