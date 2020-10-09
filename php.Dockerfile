@@ -6,6 +6,8 @@ COPY ./vhost.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /server
 
+RUN composer install
+
 RUN apt-get update
 RUN apt-get upgrade -y
 
