@@ -13,7 +13,7 @@ $msg = "";
 // Database credentials
 define('DB_SERVER', 'favnow_db');
 define('DB_USER', 'root');
-define('DB_PASS', getenv('FAVNOW_DB_ROOT_PASSWORD'));
+define('DB_PASS', $_ENV['FAVNOW_DB_ROOT_PASSWORD']);
 define('DB_NAME', 'favnow');
 
 // Anyone can play "favnow"
