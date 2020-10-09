@@ -2,8 +2,8 @@
 require_once 'config.php';
 include 'fav_query.php';
 // include 'function.php';
-require_once 'lib/phpmailer/class.phpmailer.php';
-require_once 'lib/phpmailer/class.smtp.php';
+require_once 'lib/PHPMailer/class.phpmailer.php';
+require_once 'lib/PHPMailer/class.smtp.php';
 
 $title_pattern = text('Reset Password');
 
