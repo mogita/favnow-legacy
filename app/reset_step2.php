@@ -41,7 +41,7 @@ if (isset($_GET['code']) or isset($_POST['code'])) {
 				exit;
 			} else {
 				if (isset($_POST['newpwd1']) and isset($_POST['newpwd2']) and isset($_POST['captcha']) and $_POST['newpwd1'] <> '' and $_POST['newpwd2'] <> '' and $_POST['captcha'] <> '') {
-					include_once 'lib/securimage/securimage.php';
+					include_once 'lib/SecurImage/securimage.php';
 					$securimage = new Securimage();
 
 					if (!$securimage->check($_POST['captcha'])) {
@@ -104,7 +104,7 @@ include('head.php');
 						<div class="form-group">
 							<label for="captcha"><?php echo text('Captcha'); ?></label>
 							<p>
-								<a href="#" tabindex="-1" onclick="document.getElementById('captcha').src = 'lib/securimage/securimage_show.php?' + Math.random(); return false"><img style="height: 80px;" id="captcha" src="lib/securimage/securimage_show.php" alt="CAPTCHA Image" title="<?php echo text('Click to change a picture'); ?>" /></a>
+								<a href="#" tabindex="-1" onclick="document.getElementById('captcha').src = 'lib/SecurImage/securimage_show.php?' + Math.random(); return false"><img style="height: 80px;" id="captcha" src="lib/SecurImage/securimage_show.php" alt="CAPTCHA Image" title="<?php echo text('Click to change a picture'); ?>" /></a>
 							</p>
 							<input type="text" name="captcha" class="form-control" id="captcha" placeholder="<?php echo text('Enter the word in the picture...'); ?>" required />
 						</div>

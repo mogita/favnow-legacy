@@ -12,7 +12,7 @@ if (!REGISTER_OPEN) {
 $mysqli = newDBConn();
 
 if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
-	include_once 'lib/securimage/securimage.php';
+	include_once 'lib/SecurImage/securimage.php';
 	$securimage = new Securimage();
 	
 	if ($_POST['pre-email'] == '' or $_POST['captcha'] == '') {
@@ -59,7 +59,7 @@ if (isset($_POST['pre-email']) and isset($_POST['captcha'])) {
 }
 
 if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and isset($_POST['email']) and isset($_POST['captcha'])) {
-	include_once 'lib/securimage/securimage.php';
+	include_once 'lib/SecurImage/securimage.php';
 	$securimage = new Securimage();
 	
 	if ($_POST['usn'] == '' or $_POST['pwd1'] == '' or $_POST['pwd2'] == '' or $_POST['email'] == '' or $_POST['captcha'] == '') {
@@ -160,7 +160,7 @@ include('head.php');
 						<div class="form-group">
 							<label for="captcha"><?php echo text('Captcha'); ?></label>
 							<p>
-								<a href="#" tabindex="-1" onclick="document.getElementById('captcha').src = 'lib/securimage/securimage_show.php?' + Math.random(); return false"><img style="height: 80px;" id="captcha" src="lib/securimage/securimage_show.php" alt="CAPTCHA Image" title="<?php echo text('Click to change a picture'); ?>" /></a>
+								<a href="#" tabindex="-1" onclick="document.getElementById('captcha').src = 'lib/SecurImage/securimage_show.php?' + Math.random(); return false"><img style="height: 80px;" id="captcha" src="lib/SecurImage/securimage_show.php" alt="CAPTCHA Image" title="<?php echo text('Click to change a picture'); ?>" /></a>
 							</p>
 							<input type="text" name="captcha" class="form-control" id="captcha" placeholder="<?php echo text('Enter the word in the picture...'); ?>" required />
 						</div>
