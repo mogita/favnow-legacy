@@ -114,6 +114,7 @@ if (isset($_POST['usn']) and isset($_POST['pwd1']) and isset($_POST['pwd2']) and
 				} else {
 					unset($mysqli);
 					$msg = text('There were problems processing your registration, please try again');
+					error_log(mysqli_error($mysqli));
 				}
 			}
 		}
