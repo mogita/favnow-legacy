@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:1.21-alpine
 
 WORKDIR /app/
 
@@ -12,4 +12,4 @@ RUN go env -w GO111MODULE=on
 RUN go env -w CGO_ENABLED=1
 RUN go env -w GOPROXY="https://goproxy.io,direct"
 RUN go env -w GOPRIVATE=github.com/mattn/go-sqlite3
-RUN go get -v github.com/rubenv/sql-migrate/...
+RUN go install github.com/rubenv/sql-migrate/...@latest
