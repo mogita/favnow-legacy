@@ -8,11 +8,8 @@ before_script:
 deploy:
   image: alpine
   stage: deploy
-  environment:
-    name: $ENV
   only:
-    - web
-    - api
+    - tags
   cache:
     paths:
       - .cache
