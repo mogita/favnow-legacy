@@ -19,4 +19,4 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - rsync -av --exclude='.git/' --progress --delete ./ $CI_REMOTE_USERNAME@$CI_REMOTE_HOST:$CI_REMOTE_PATH
-    - ssh $CI_REMOTE_USERNAME@$CI_REMOTE_HOST "cd $CI_REMOTE_PATH && sudo docker-compose up -d --build"
+    - ssh $CI_REMOTE_USERNAME@$CI_REMOTE_HOST "cd $CI_REMOTE_PATH && sudo docker compose up -d --build"
